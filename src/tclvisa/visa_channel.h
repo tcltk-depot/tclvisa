@@ -19,7 +19,7 @@
 
 typedef struct _VisaChannelData {
 	ViSession session;
-	short blocking, isRMSession;
+	short blocking, isRMSession, eof;
 	Tcl_Channel channel;
 } VisaChannelData;
 

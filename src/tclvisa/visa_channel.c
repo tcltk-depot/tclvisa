@@ -71,6 +71,7 @@ VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) 
 	data->session = session;
 	data->blocking = VISA_BLOCKING;
 	data->isRMSession = 0;
+	data->eof = 0;
 
 	/* Attempt to create Tcl channel */
 	sprintf(channelName, "%s%u", TCLVISA_NAME_PREFIX, session);
@@ -177,6 +178,11 @@ static int inputProc(ClientData instanceData, char *buf, int bufSize, int *error
 		return -1;
 	}
 
+	if (data->eof) {
+		data->eof = 0;
+		return 0;
+	}
+
 	if ((ViInt64) bufSize > (ViInt64) VISA_MAX_BUF_SIZE) {
 		/* restrict buffer size */
 		bufSize = VISA_MAX_BUF_SIZE;
@@ -196,6 +202,10 @@ static int inputProc(ClientData instanceData, char *buf, int bufSize, int *error
 			*errorCodePtr = (int) status;
 		}
 		result = -1;
+	} else {
+		if (VI_SUCCESS_MAX_CNT != status) {
+			data->eof = 1;
+		}
 	}
 
 	return result;
