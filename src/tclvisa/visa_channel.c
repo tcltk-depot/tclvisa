@@ -62,7 +62,7 @@ static Tcl_ChannelType visaChannelType = {
 
 static const char* tclVisaOptions = TCLVISA_OPTION_MODE;
 
-Tcl_Channel createVisaChannel(Tcl_Interp* const interp, ViSession session) {
+VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) {
 	Tcl_Channel channel;
 	char channelName[16 + TCL_INTEGER_SPACE];
 	VisaChannelData* data = (VisaChannelData*) malloc(sizeof(VisaChannelData));
@@ -70,6 +70,7 @@ Tcl_Channel createVisaChannel(Tcl_Interp* const interp, ViSession session) {
 	/* Create and fill internal channel data */
 	data->session = session;
 	data->blocking = VISA_BLOCKING;
+	data->isRMSession = 0;
 
 	/* Attempt to create Tcl channel */
 	sprintf(channelName, "%s%u", TCLVISA_NAME_PREFIX, session);
@@ -80,11 +81,12 @@ Tcl_Channel createVisaChannel(Tcl_Interp* const interp, ViSession session) {
 		data->channel = channel;
 	} else {
 		/* Cannot create channel: free allocated resources */
-		free(data);
 		viClose(session);
+		free(data);
+		data = NULL;
 	}
 
-	return channel;
+	return data;
 }
 
 VisaChannelData* getVisaChannelFromObj(Tcl_Interp* const interp, Tcl_Obj* objPtr) {
@@ -93,14 +95,8 @@ VisaChannelData* getVisaChannelFromObj(Tcl_Interp* const interp, Tcl_Obj* objPtr
 	Tcl_ChannelType* type;
 	int mode;
 
-	if (0 == strcmp(objPtr->typePtr->name, "channel")) {
-		/* Channel is passed as an explicit reference */
-printf("Getting channel from channel\n");
-		channel = ((Tcl_Channel) objPtr->internalRep.twoPtrValue.ptr2);
-	} else {
-		/* Retrieve channel from its string representation */
-		channel = Tcl_GetChannel(interp, TclGetString(objPtr), &mode);
-	}
+	/* Retrieve channel from object passed  */
+	channel = Tcl_GetChannel(interp, TclGetString(objPtr), &mode);
 
 	if (NULL != channel) {
 		/* Retrieve channel type */
@@ -108,12 +104,10 @@ printf("Getting channel from channel\n");
 		if (type == &visaChannelType) {
 			/* Channel is of desired type, retrieve internal channel data */
 			data = (VisaChannelData*) Tcl_GetChannelInstanceData(channel);
+		} else {
+			/* Notify about bad channel reference */
+			Tcl_AppendResult(interp, tclvisaErrorMessage(TCLVISA_ERROR_BAD_CHANNEL), NULL);
 		}
-	}
-
-	if (NULL == data) {
-		/* Notify user about bad channel reference */
-		Tcl_AppendResult(interp, tclvisaErrorMessage(TCLVISA_ERROR_BAD_CHANNEL), NULL);
 	}
 
 	return data;
@@ -137,7 +131,9 @@ static int closeProc(ClientData instanceData, Tcl_Interp *interp) {
 		return TCL_ERROR;
 	}
 
-	viFlush(data->session, VI_WRITE_BUF | VI_IO_OUT_BUF | VI_READ_BUF_DISCARD | VI_IO_IN_BUF_DISCARD);
+	if (!data->isRMSession) {
+		viFlush(data->session, VI_WRITE_BUF | VI_IO_OUT_BUF | VI_READ_BUF_DISCARD | VI_IO_IN_BUF_DISCARD);
+	}
 	status = viClose(data->session);
 	if (status < 0) {
 		if (interp) {
@@ -177,7 +173,7 @@ static int inputProc(ClientData instanceData, char *buf, int bufSize, int *error
 	int result;
 	VisaChannelData* data = validateData(instanceData, NULL);
 
-	if (!data) {
+	if (!data || data->isRMSession) {
 		return -1;
 	}
 
@@ -196,7 +192,6 @@ static int inputProc(ClientData instanceData, char *buf, int bufSize, int *error
 	}
 
 	if (status < 0) {
-printf("ERROR %d %s\n", status, visaErrorMessage(status));
 		if (errorCodePtr) {
 			*errorCodePtr = (int) status;
 		}
@@ -210,6 +205,10 @@ static int outputProc(ClientData instanceData, const char *buf, int toWrite, int
 	ViStatus status;
 	int result;
 	VisaChannelData* data = validateData(instanceData, NULL);
+
+	if (!data || data->isRMSession) {
+		return -1;
+	}
 
 	if ((ViInt64) toWrite > (ViInt64) VISA_MAX_BUF_SIZE) {
 		/* restrict buffer size */
@@ -226,7 +225,6 @@ static int outputProc(ClientData instanceData, const char *buf, int toWrite, int
 	}
 
 	if (status < 0) {
-printf("ERROR %d %s\n", status, visaErrorMessage(status));
 		if (errorCodePtr) {
 			*errorCodePtr = (int) status;
 		}

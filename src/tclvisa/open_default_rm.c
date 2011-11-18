@@ -20,7 +20,7 @@
 int tclvisa_open_default_rm(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]) {
 	ViSession session;
 	ViStatus status;
-	Tcl_Channel channel;
+	VisaChannelData *channel;
 
 	UNREFERENCED_PARAMETER(clientData);	/* avoid "unused parameter" warning */
 
@@ -43,8 +43,9 @@ int tclvisa_open_default_rm(const ClientData clientData, Tcl_Interp* const inter
 	if (NULL == channel) {
 		return TCL_ERROR;
 	}
+	channel->isRMSession = 1;
 
 	/* Return channel string representation as a procedure result */
-	Tcl_AppendResult(interp, Tcl_GetChannelName(channel), NULL);
+	Tcl_AppendResult(interp, Tcl_GetChannelName(channel->channel), NULL);
 	return TCL_OK;
 }

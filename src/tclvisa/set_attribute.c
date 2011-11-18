@@ -52,7 +52,9 @@ int tclvisa_set_attribute(const ClientData clientData, Tcl_Interp* const interp,
 	/* Check status returned */
 	if (VI_SUCCESS != status) {
 		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
+	} else {
+		Tcl_ResetResult(interp);
 	}
-
+	
 	return status < 0 ? TCL_ERROR : TCL_OK;
 }

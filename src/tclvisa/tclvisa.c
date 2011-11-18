@@ -32,21 +32,29 @@ int tclvisa_open(const ClientData clientData, Tcl_Interp * const interp, const i
 int tclvisa_open_default_rm(const ClientData clientData, Tcl_Interp * const interp, const int objc, Tcl_Obj *CONST objv[]);
 int tclvisa_set_attribute(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int tclvisa_get_attribute(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_clear(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 
 int setVisaConstants(Tcl_Interp* const interp, const char* prefix);
 
 #define addCommand(tcl_name, proc)	\
-	Tcl_CreateObjCommand(interp, NAMESPACE tcl_name, proc, NULL, NULL)
+	if (NULL == Tcl_CreateObjCommand(interp, NAMESPACE tcl_name, proc, NULL, NULL))	\
+		goto error
 
 int createTclvisaCommands(Tcl_Interp* const interp) {
 	addCommand("open", tclvisa_open);
 	addCommand("open-default-rm", tclvisa_open_default_rm);
 	addCommand("set-attribute", tclvisa_set_attribute);
 	addCommand("get-attribute", tclvisa_get_attribute);
+	addCommand("clear", tclvisa_clear);
 
-	setVisaConstants(interp, NAMESPACE);
+	if (TCL_OK != setVisaConstants(interp, NAMESPACE)) {
+		goto error;
+	}
 
 	return TCL_OK;
+
+error:
+	return TCL_ERROR;
 }
 
 __declspec(dllexport) int Tclvisa_Init(Tcl_Interp* const interp) {

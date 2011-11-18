@@ -18,12 +18,11 @@
 #include "tclvisa_utils.h"
 
 int tclvisa_open(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]) {
-	VisaChannelData* rmSession;
+	VisaChannelData *rmSession, *channel;
 	ViStatus status;
 	ViSession vi;
 	ViAccessMode accessMode = VI_NULL;
 	ViUInt32 timeOut = VI_NULL;
-	Tcl_Channel channel;
 
 	UNREFERENCED_PARAMETER(clientData);	/* avoid "unused parameter" warning */
 
@@ -73,6 +72,6 @@ int tclvisa_open(const ClientData clientData, Tcl_Interp* const interp, const in
 	}
 
 	/* Return channel string representation as a procedure result */
-	Tcl_AppendResult(interp, Tcl_GetChannelName(channel), NULL);
+	Tcl_AppendResult(interp, Tcl_GetChannelName(channel->channel), NULL);
 	return TCL_OK;
 }

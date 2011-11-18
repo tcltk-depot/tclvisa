@@ -19,11 +19,11 @@
 
 typedef struct _VisaChannelData {
 	ViSession session;
-	short blocking;
+	short blocking, isRMSession;
 	Tcl_Channel channel;
 } VisaChannelData;
 
-Tcl_Channel createVisaChannel(Tcl_Interp* const interp, ViSession session);
+VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session);
 VisaChannelData* getVisaChannelFromObj(Tcl_Interp* const interp, Tcl_Obj* objPtr);
 
 #endif /* VISA_CHANNEL_H_23874237846253613 */
