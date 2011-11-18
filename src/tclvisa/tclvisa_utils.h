@@ -1,0 +1,15 @@
+/*
+ * tclvisa_utils.h
+ *
+ *  Created on: 15.11.2011
+ *      Author: andrey
+ */
+
+#ifndef TCLVISA_UTILS_H_34237856365464
+#define TCLVISA_UTILS_H_34237856365464
+
+#ifndef UNREFERENCED_PARAMETER
+#define	UNREFERENCED_PARAMETER(x) x
+#endif	//	UNREFERENCED_PARAMETER
+
+#endif /* TCLVISA_UTILS_H_34237856365464 */
