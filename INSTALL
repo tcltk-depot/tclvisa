@@ -1,0 +1,41 @@
+tclvisa INSTALLATION NOTES
+
+Contents
+--------
+  1. Introduction
+  2. Compiling tclvisa
+  3. Installing tclvisa
+
+1. Introduction
+---------------
+
+tclvisa is a dynamic library written in C. Theoretically it can be complied
+and used on every platform which is supported by Tcl, VISA and has C compiler.
+tclvisa is linked dynamically into a Tcl shell or any application with 
+integrated Tcl interpreter. Basically one can issue "load" command to load 
+library into the Tcl, but preferred way is to use "package require" command. 
+Please refer to the TEA documentation for details about Tcl extensions and 
+their usage:
+  http://www.tcl.tk/doc/tea/
+
+2. Compiling tclvisa
+--------------------
+
+In order to compile tclvisa, you need the following:
+
+  - Tcl 8.5+ library and include files
+  - VISA library and include files  
+  - C compiler
+
+All source files are placed in "src/tclvisa" subdirectory. Entry point of the
+library is Tclvisa_Init function from "tclvisa.c" file. Tcl looks for and calls
+this function when library is loaded.
+
+tclvisa must be complied into dymanically linked library file (with .dll 
+extension on Windows, .so on Linux etc).
+
+3. Installing tclvisa
+---------------------
+
+Place the compiled library to the system library directory.
+

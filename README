@@ -1,0 +1,46 @@
+README: tclvisa
+
+Contents
+--------
+  1. Introduction
+  2. Documentation
+  3. Compiling and installing tclvisa
+  4. Tracking Development
+
+1. Introduction
+---------------
+
+tclvisa is a Tcl binding to VISA (Virtual Instrument Software Architecture) API.
+
+VISA is a widely used I/O API in the test and measurement (T&M) industry for 
+communicating with instruments from a PC. VISA is an industry standard 
+implemented by several T&M companies. Please refer to VISA documents and 
+specifications published on IVI Foundation home site:
+  http://www.ivifoundation.org/specifications/default.aspx
+
+tclvisa is a Tcl extension which follow Tcl Extension Architecture (TEA) 
+conventions. Information about TEA can be found at
+  http://www.tcl.tk/doc/tea/
+
+The home site of tclvisa is
+  http://tclvisa.sourceforge.net/
+Please post your questions or suggestions in the project forum.
+
+2. Documentation
+----------------
+
+Documentation is in progress. Please refer to demo scripts in "demo" 
+subdirectory for examples.
+
+3. Compiling and installing tclvisa
+-----------------------------------
+
+There are brief notes in the INSTALL about compiling and installation on 
+different platforms.
+
+4. Tracking Development
+-----------------------
+
+tclvisa is developed in public.  To keep an eye on how Tcl is changing, see
+  http://tclvisa.sourceforge.net/
+
