@@ -42,8 +42,15 @@ int tclvisa_get_attribute(const ClientData clientData, Tcl_Interp* const interp,
 		return TCL_ERROR;
 	}
 
-	/* Attempt to get attribute */
-	status = viGetAttribute(session->session, (ViAttr) attr, &value);
+	/* In non-blocking mode timeouts are set automatically */
+	if (VI_ATTR_TMO_VALUE == attr && !session->blocking) {
+		/* Returns saved value rather than actual device timeout */
+		value = session->timeout;
+		status = VI_SUCCESS;
+	} else {
+		/* Attempt to get attribute */
+		status = viGetAttribute(session->session, (ViAttr) attr, &value);
+	}
 
 	/* Check status returned */
 	if (VI_SUCCESS != status) {

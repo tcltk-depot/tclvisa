@@ -21,6 +21,7 @@ typedef struct _VisaChannelData {
 	ViSession session;
 	short blocking, isRMSession, eof;
 	Tcl_Channel channel;
+	ViUInt32 timeout;
 } VisaChannelData;
 
 VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session);

@@ -22,9 +22,6 @@
 
 #define TCLVISA_NAME_PREFIX "visa_session"
 
-#define VISA_BLOCKING	1
-#define VISA_NON_BLOCKING	0
-
 #define VISA_MAX_BUF_SIZE	((unsigned int) 0xFFFFFFFF)
 
 #define TCLVISA_OPTION_MODE "mode"
@@ -69,7 +66,7 @@ VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) 
 
 	/* Create and fill internal channel data */
 	data->session = session;
-	data->blocking = VISA_BLOCKING;
+	data->blocking = 1;
 	data->isRMSession = 0;
 	data->eof = 0;
 
@@ -148,29 +145,53 @@ static int closeProc(ClientData instanceData, Tcl_Interp *interp) {
 }
 
 static int blockModeProc(ClientData instanceData, int mode) {
+	ViStatus status;
 	VisaChannelData* data = validateData(instanceData, NULL);
 
-printf("blockModeProc enter session=%u blocking=%i\n", data->session, (mode == TCL_MODE_BLOCKING));
-	switch (mode) {
-	case TCL_MODE_BLOCKING:
-		data->blocking = VISA_BLOCKING;
-		break;
-
-	case TCL_MODE_NONBLOCKING:
-		data->blocking = VISA_NON_BLOCKING;
-		break;
-
-	default:
-printf("blockModeProc leave error\n");
+	if (!data || data->isRMSession) {
 		return -1;
 	}
 
-printf("blockModeProc leave\n");
+	switch (mode) {
+	case TCL_MODE_BLOCKING:
+		if (!data->blocking) {
+			/* Restore saved timeout */
+			status = viSetAttribute(data->session, VI_ATTR_TMO_VALUE, (ViAttrState) data->timeout);
+			if (status < 0) {
+				return -1;
+			}
+
+			data->blocking = 1;
+		}
+		break;
+
+	case TCL_MODE_NONBLOCKING:
+		if (data->blocking) {
+			/* Save current timeout */
+			status = viGetAttribute(data->session, VI_ATTR_TMO_VALUE, &data->timeout);
+			if (status < 0) {
+				return -1;
+			}
+			/* Set zero timeout to avoid IO pending */
+			status = viSetAttribute(data->session, VI_ATTR_TMO_VALUE, (ViAttrState) VI_TMO_IMMEDIATE);
+			if (status < 0) {
+				return -1;
+			}
+
+			data->blocking = 0;
+		}
+		break;
+
+	default:
+		return -1;
+	}
+
 	return TCL_OK;
 }
 
 static int inputProc(ClientData instanceData, char *buf, int bufSize, int *errorCodePtr) {
 	ViStatus status;
+	ViUInt32 retCount;
 	int result;
 	VisaChannelData* data = validateData(instanceData, NULL);
 
@@ -188,16 +209,14 @@ static int inputProc(ClientData instanceData, char *buf, int bufSize, int *error
 		bufSize = VISA_MAX_BUF_SIZE;
 	}
 
-/* !!!	if (0 && VISA_NON_BLOCKING == data->blocking) {
-		status = viReadAsync(data->session, (ViPBuf) buf, (ViUInt32) bufSize, NULL);
-		result = EAGAIN;
-	} else */ {
-		ViUInt32 retCount;
-		status = viRead(data->session, (ViPBuf) buf, (ViUInt32) bufSize, &retCount);
-		result = (int) retCount;
-	}
+	status = viRead(data->session, (ViPBuf) buf, (ViUInt32) bufSize, &retCount);
+	result = (int) retCount;
 
-	if (status < 0) {
+	if (VI_ERROR_TMO == status && !data->blocking) {
+		if (0 == result) {
+			*errorCodePtr = EAGAIN;
+		}
+	} else if (status < 0) {
 		if (errorCodePtr) {
 			*errorCodePtr = (int) status;
 		}
@@ -213,6 +232,7 @@ static int inputProc(ClientData instanceData, char *buf, int bufSize, int *error
 
 static int outputProc(ClientData instanceData, const char *buf, int toWrite, int *errorCodePtr) {
 	ViStatus status;
+	ViUInt32 retCount;
 	int result;
 	VisaChannelData* data = validateData(instanceData, NULL);
 
@@ -225,16 +245,14 @@ static int outputProc(ClientData instanceData, const char *buf, int toWrite, int
 		toWrite = VISA_MAX_BUF_SIZE;
 	}
 
-	/* !!! if (0 && VISA_NON_BLOCKING == data->blocking) {
-		status = viWriteAsync(data->session, (ViBuf) buf, (ViUInt32) toWrite, NULL);
-		result = EAGAIN;
-	} else */ {
-		ViUInt32 retCount;
-		status = viWrite(data->session, (ViBuf) buf, (ViUInt32) toWrite, &retCount);
-		result = (int) retCount;
-	}
+	status = viWrite(data->session, (ViBuf) buf, (ViUInt32) toWrite, &retCount);
+	result = (int) retCount;
 
-	if (status < 0) {
+	if (VI_ERROR_TMO == status && !data->blocking) {
+		if (0 == result) {
+			*errorCodePtr = EAGAIN;
+		}
+	} else if (status < 0) {
 		if (errorCodePtr) {
 			*errorCodePtr = (int) status;
 		}
@@ -279,8 +297,8 @@ printf("getOptionProc leave\n");
 static void	watchProc(ClientData instanceData, int mask) {
 	VisaChannelData* data = (VisaChannelData*) instanceData;
 
-printf("watchProc enter\n");
-printf("watchProc leave\n");
+/*printf("watchProc enter\n");
+printf("watchProc leave\n"); */
 }
 
 static int getHandleProc(ClientData instanceData, int direction, ClientData *handlePtr) {
