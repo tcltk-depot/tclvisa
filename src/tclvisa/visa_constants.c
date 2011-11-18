@@ -1,3 +1,15 @@
+/*
+ * visa_constants.c --
+ *
+ * This file is part of tclvisa library.
+ *
+ * Copyright (c) 2011 Andrey V. Nakin <andrey.nakin@gmail.com>
+ *
+ * See the file "COPYING" for information on usage and redistribution
+ * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ *
+ */
+
 #include <tcl.h>
 #include <visa.h>
 #include <stdio.h>

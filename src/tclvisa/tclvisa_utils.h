@@ -1,8 +1,13 @@
 /*
- * tclvisa_utils.h
+ * tclvisa_utils.h --
  *
- *  Created on: 15.11.2011
- *      Author: andrey
+ * This file is part of tclvisa library.
+ *
+ * Copyright (c) 2011 Andrey V. Nakin <andrey.nakin@gmail.com>
+ *
+ * See the file "COPYING" for information on usage and redistribution
+ * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ *
  */
 
 #ifndef TCLVISA_UTILS_H_34237856365464

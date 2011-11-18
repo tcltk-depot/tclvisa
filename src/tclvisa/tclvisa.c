@@ -1,8 +1,13 @@
 /*
- * tclvisa.c
+ * tclvisa.c --
  *
- *  Created on: 15.11.2011
- *      Author: andrey
+ * This file is part of tclvisa library.
+ *
+ * Copyright (c) 2011 Andrey V. Nakin <andrey.nakin@gmail.com>
+ *
+ * See the file "COPYING" for information on usage and redistribution
+ * of this file, and for a DISCLAIMER OF ALL WARRANTIES.
+ *
  */
 
 #ifndef PACKAGE_NAME
@@ -15,6 +20,7 @@
 
 #include <tcl.h>
 #include <windows.h>
+#include "tclvisa_utils.h"
 
 #define NAMESPACE "visa::"
 
@@ -61,5 +67,11 @@ __declspec(dllexport) int Tclvisa_Init(Tcl_Interp* const interp) {
 
 // DLL entry function (called on load, unload, ...)
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, LPVOID lpReserved) {
+
+	/* avoid "unused parameter" warning */
+	UNREFERENCED_PARAMETER(hModule);	
+	UNREFERENCED_PARAMETER(dwReason);	
+	UNREFERENCED_PARAMETER(lpReserved);	
+
     return TRUE;
 }
