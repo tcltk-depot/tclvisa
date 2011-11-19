@@ -21,7 +21,7 @@ int tclvisa_get_attribute(const ClientData clientData, Tcl_Interp* const interp,
 	VisaChannelData* session;
 	ViStatus status;
 	int attr;
-	ViInt64 value;
+	ViInt64 value = 0;
 
 	UNREFERENCED_PARAMETER(clientData);	/* avoid "unused parameter" warning */
 
@@ -42,15 +42,18 @@ int tclvisa_get_attribute(const ClientData clientData, Tcl_Interp* const interp,
 		return TCL_ERROR;
 	}
 
-	/* In non-blocking mode timeouts are set automatically */
-	if (VI_ATTR_TMO_VALUE == attr && !session->blocking) {
-		/* Returns saved value rather than actual device timeout */
-		value = session->timeout;
-		status = VI_SUCCESS;
-	} else {
-		/* Attempt to get attribute */
-		status = viGetAttribute(session->session, (ViAttr) attr, &value);
+	/* This attribute is processed specially */
+	if (VI_ATTR_TMO_VALUE == attr) {
+		ViUInt32 timeout;
+		int res = getVisaTimeout(interp, session, &timeout);
+		if (TCL_OK == res) {
+			Tcl_SetObjResult(interp, Tcl_NewLongObj(timeout));
+		}
+		return res;
 	}
+
+	/* Attempt to get attribute */
+	status = viGetAttribute(session->session, (ViAttr) attr, &value);
 
 	/* Check status returned */
 	if (VI_SUCCESS != status) {

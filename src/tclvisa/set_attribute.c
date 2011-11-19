@@ -46,15 +46,13 @@ int tclvisa_set_attribute(const ClientData clientData, Tcl_Interp* const interp,
 		return TCL_ERROR;
 	}
 
-	/* In non-blocking mode timeouts are set automatically */
-	if (VI_ATTR_TMO_VALUE == attr && !session->blocking) {
-		/* Save specified specified value for later use */
-		session->timeout = (ViUInt32) value;
-		status = VI_SUCCESS;
-	} else {
-		/* Attempt to set attribute */
-		status = viSetAttribute(session->session, (ViAttr) attr, (ViAttrState) value);
-	}
+	/* This attribute is processed specially */
+	if (VI_ATTR_TMO_VALUE == attr) {
+		return setVisaTimeout(interp, session, (ViUInt32) value);
+	} 
+
+	/* Attempt to set attribute */
+	status = viSetAttribute(session->session, (ViAttr) attr, (ViAttrState) value);
 
 	/* Check status returned */
 	if (VI_SUCCESS != status) {
