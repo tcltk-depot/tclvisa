@@ -35,7 +35,7 @@ int tclvisa_unlock(const ClientData clientData, Tcl_Interp* const interp, const 
 		return TCL_ERROR;
 	}
 
-	/* Attempt to clear instrument */
+	/* Attempt to unlock instrument */
 	status = viUnlock(session->session);
 
 	/* Check status returned */

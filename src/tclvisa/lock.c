@@ -73,7 +73,7 @@ int tclvisa_lock(const ClientData clientData, Tcl_Interp* const interp, const in
 		accesskey = buf;
 	}
 
-	/* Attempt to clear instrument */
+	/* Attempt to lock instrument */
 	status = viLock(session->session, lockType, timeout, requestedKey, accesskey);
 
 	/* Check status returned */

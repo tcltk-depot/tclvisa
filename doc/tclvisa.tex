@@ -1,0 +1,298 @@
+\documentclass[12pt, a4paper]{book}
+\usepackage[utf8]{inputenc}
+\usepackage{hyperref}
+
+\makeindex
+
+\newcommand{\tclvisa}{{\tt tclvisa }}
+\newcommand{\indexentry}[2]{\item #1 #2}
+\newcommand{\VISA}{\mbox{VISA }}
+
+\newcommand{\COMMANDREF}[1]{{\tt \hyperref[#1]{#1}}}
+\newcommand{\VISACOMMANDREF}[1]{{\tt \mbox{#1}}\index{#1}}
+\newcommand{\TCLCOMMANDREF}[1]{{\tt \mbox{#1}}\index{#1}}
+
+\newcommand{\SEEALSO}{\subsubsection{See Also}}
+\newcommand{\EXAMPLE}{\subsection{Example}}
+\newcommand{\PURPOSE}{\subsection{Purpose}}
+\newcommand{\SYNTAX}[1]{\subsection{Syntax}{\tt #1}}
+\newcommand{\NOTES}{\subsection{Notes}}
+\newcommand{\ARGUMENTS}{\subsubsection{Arguments}}
+\newcommand{\RETURN}{\subsubsection{Return Value}}
+\newcommand{\NORETURN}{\subsubsection{Return Value} None}
+\newcommand{\COMMAND}[1]{\section{#1}\label{#1}}
+\newcommand{\BEGINARGUMENTS}{\ARGUMENTS\begin{itemize}}
+\newcommand{\ENDARGUMENTS}{\end{itemize}}
+\newcommand{\NOARGUMENTS}{\ARGUMENTS None}
+\newcommand{\ARGUMENT}[1]{\item {\tt \mbox{#1}}~---}
+
+\newcommand{\ARGCHANNEL}{\ARGUMENT{session} channel containing reference to a \VISA resource session opened by \COMMANDREF{visa::open}.}
+
+\title{\tclvisa Programmer Reference Manual}
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+%\chapter{Table of Correspondence of \VISA functions and \tclvisa commands}
+
+
+\chapter{\tclvisa Command Reference}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::clear}
+
+\PURPOSE
+
+Clears a device. This command is a front-end for \VISACOMMANDREF{viClear} \VISA API function.
+
+\SYNTAX{visa::clear session}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ENDARGUMENTS
+
+\NORETURN
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open instrument with default access mode and timeout
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# set device to known state
+visa::clear $vi
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::open}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::get-attribute}
+
+\PURPOSE
+
+Retrieves the state of an attribute. This command is a front-end for \VISACOMMANDREF{viGetAttribute} \VISA API function.
+
+\SYNTAX{visa::get-attribute session attribute}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{attribute} Integer value with ID of the \VISA attribute to retrieve. Use one of the predefned {\tt visa::ATTR\_XXX} constants.
+\ENDARGUMENTS
+
+\RETURN
+
+Attribute value.
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open instrument with default access mode and timeout
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# retrieve current baud rate of a serial bus
+set baud [visa::get-attribute $vi $visa::ATTR_ASRL_BAUD]
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::set-attribute}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::lock}
+
+\PURPOSE
+
+Establishes an access mode to the specified resource. This command is a front-end for \VISACOMMANDREF{viLock} \VISA API function.
+
+\SYNTAX{visa::lock session ?lockType? ?timeout? ?requestedKey?}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{lockType} integer value determining type of locking. May be either {\tt visa::EXCLUSIVE\_LOCK} or {\tt visa::SHARED\_LOCK}. If argument is omitted, {\tt visa::EXCLUSIVE\_LOCK} is assumed.
+\ARGUMENT{timeout} timeout of getting lock. If argument is omitted, infinite timeout is assumed.
+\ARGUMENT{requestedKey} name of the shared lock to acquire. If exclusive locking is requested, this argument is ignored.
+\ENDARGUMENTS
+
+\RETURN
+
+\begin{itemize}
+\item If an exclusive lock is requiested and acquired, procedure returns nothing.
+\item If an shared lock is requiested and acquired, procedure returns name of the lock.
+\end{itemize}
+
+\EXAMPLE
+
+\begin{verbatim} 
+# get exclusive lock and wait forever
+visa::lock $vi
+
+# get exclusive lock and wait 5 seconds
+visa::lock $vi $visa::EXCLUSIVE_LOCK 5000
+
+# get shared lock and wait 5 seconds
+set key [visa::lock $vi $visa::SHARED_LOCK 5000 "MYLOCK"]
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::open}, \COMMANDREF{visa::unlock}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::open}
+
+\PURPOSE
+
+Opens a session to the specified resource. This command is a front-end for \VISACOMMANDREF{viOpen} \VISA API function.
+
+\SYNTAX{visa::open RMsession rsrcName ?accessMode? ?openTimeout?}
+
+\BEGINARGUMENTS
+\ARGUMENT{RMsession} channel containing reference to open Resource Manager session.
+\ARGUMENT{rsrcName} name of the VISA resource to connect to.
+\ARGUMENT{accessMode} integer parameter determining access mode. May be bitwise OR combination of the following constants:
+	\begin{itemize}
+	\item {\tt visa::EXCLUSIVE\_LOCK}~--- acquire exclusive lock to a resource;
+	\item {\tt visa::LOAD\_CONFIG}~--- use external configuration;
+	\end{itemize}
+	Refer to \VISA documentation for more details about access mode. If parameter is omitted, default zero value is used.
+\ARGUMENT{openTimeout} operation timeout. If parameter is omitted, default timeout value is used.
+\ENDARGUMENTS
+
+\RETURN
+
+Tcl channel with reference to opened VISA session. This channel can be used in standard Tcl IO procedures, like \TCLCOMMANDREF{puts}.
+
+\NOTES
+
+There is no a Tcl wrapper for \VISACOMMANDREF{viClose} \VISA API function. In order to close a \VISA session one should use standard Tcl \TCLCOMMANDREF{close} command instead, which calls \VISACOMMANDREF{viClose} internally.
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open resource manager session
+set rm [visa::open-default-rm]
+
+# open instrument with default access mode and timeout
+set vi1 [visa::open $rm "ASRL1::INSTR"]
+
+# open instrument exclusively
+set vi2 [visa::open $rm "ASRL2::INSTR" $visa::EXCLUSIVE_LOCK]
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::open-default-rm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::open-default-rm}
+
+\PURPOSE
+
+Returns a session to the Default Resource Manager resource. This command is a front-end for \VISACOMMANDREF{viOpenDefaultRM} \VISA API function.
+
+\SYNTAX{visa::open-default-rm}
+
+\NOARGUMENTS
+
+\RETURN
+
+Tcl channel with reference to opened resource manager session. This channel can be used in subsequent \tclvisa procedure calls.
+
+\NOTES
+
+There is no a Tcl wrapper for \VISACOMMANDREF{viClose} \VISA API function. In order to close a \VISA session one should use standard Tcl \TCLCOMMANDREF{close} command instead, which calls \VISACOMMANDREF{viClose} internally.
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open resource manager session
+set rm [visa::open-default-rm]
+
+# use session reference
+...
+
+# close session
+close $rm
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::open}
+
+\COMMAND{visa::set-attribute}
+
+\PURPOSE
+
+Sets the state of an attribute. This command is a front-end for \VISACOMMANDREF{viSetAttribute} \VISA API function.
+
+\SYNTAX{visa::set-attribute session attribute attrState}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{attribute} Integer value with ID of the \VISA attribute to set. Use one of the predefned {\tt visa::ATTR\_XXX} constants.
+\ARGUMENT{attrState} Integer value with desired attribute state.
+\ENDARGUMENTS
+
+\NORETURN
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open instrument with default access mode and timeout
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# set new baud rate of a serial bus
+visa::set-attribute $vi $visa::ATTR_ASRL_BAUD 19200
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::get-attribute}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::unlock}
+
+\PURPOSE
+
+Relinquishes a lock for the specified resource. This command is a front-end for \VISACOMMANDREF{viUnlock} \VISA API function.
+
+\SYNTAX{visa::unlock session}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ENDARGUMENTS
+
+\NORETURN
+
+\EXAMPLE
+
+\begin{verbatim} 
+# get exclusive lock and wait forever
+visa::lock $vi
+
+# release the lock
+visa::unlock $vi
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::open}, \COMMANDREF{visa::lock}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%\begin{theindex}
+%\input tclvisa.idx
+%\end{theindex}
+
+\end{document}
