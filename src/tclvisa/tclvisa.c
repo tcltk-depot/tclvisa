@@ -33,6 +33,8 @@ int tclvisa_open_default_rm(const ClientData clientData, Tcl_Interp * const inte
 int tclvisa_set_attribute(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int tclvisa_get_attribute(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int tclvisa_clear(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_lock(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_unlock(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 
 int setVisaConstants(Tcl_Interp* const interp, const char* prefix);
 
@@ -46,6 +48,8 @@ int createTclvisaCommands(Tcl_Interp* const interp) {
 	addCommand("set-attribute", tclvisa_set_attribute);
 	addCommand("get-attribute", tclvisa_get_attribute);
 	addCommand("clear", tclvisa_clear);
+	addCommand("lock", tclvisa_lock);
+	addCommand("unlock", tclvisa_unlock);
 
 	if (TCL_OK != setVisaConstants(interp, NAMESPACE)) {
 		goto error;
