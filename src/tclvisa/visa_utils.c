@@ -37,6 +37,8 @@ const char* visaErrorMessage(ViStatus status) {
 		return "[VI_ERROR_INTF_NUM_NCONFIG] The interface type is valid, but the specified interface number is not configured.";
 	case VI_ERROR_INV_ACC_MODE:
 		return "[VI_ERROR_INV_ACC_MODE] Invalid access mode.";
+	case VI_ERROR_INV_EXPR:
+		return "[VI_ERROR_INV_EXPR] Invalid expression specified for search.";
 	case VI_ERROR_INV_MASK:
 		return "[VI_ERROR_INV_MASK] The specified mask does not specify a valid flush operation on read/write resource.";
 	case VI_ERROR_INV_OBJECT:

@@ -12,7 +12,7 @@
 \newcommand{\VISACOMMANDREF}[1]{{\tt \mbox{#1}}\index{#1}}
 \newcommand{\TCLCOMMANDREF}[1]{{\tt \mbox{#1}}\index{#1}}
 
-\newcommand{\SEEALSO}{\subsubsection{See Also}}
+\newcommand{\SEEALSO}{\subsection{See Also}}
 \newcommand{\EXAMPLE}{\subsection{Example}}
 \newcommand{\PURPOSE}{\subsection{Purpose}}
 \newcommand{\SYNTAX}[1]{\subsection{Syntax}{\tt #1}}
@@ -27,6 +27,7 @@
 \newcommand{\ARGUMENT}[1]{\item {\tt \mbox{#1}}~---}
 
 \newcommand{\ARGCHANNEL}{\ARGUMENT{session} channel containing reference to a \VISA resource session opened by \COMMANDREF{visa::open}.}
+\newcommand{\ARGRM}{\ARGUMENT{RMsession} channel containing reference to open Resource Manager session opened by \COMMANDREF{visa::open-default-rm}.}
 
 \title{\tclvisa Programmer Reference Manual}
 
@@ -70,6 +71,41 @@ visa::clear $vi
 \SEEALSO
 
 \COMMANDREF{visa::open}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::find}
+
+\PURPOSE
+
+Queries a VISA system to locate the resources associated with a specified interface. This command is a front-end for \VISACOMMANDREF{viFindRsrc} and \VISACOMMANDREF{viFindNext} \VISA API functions.
+
+\SYNTAX{visa::open RMsession expr}
+
+\BEGINARGUMENTS
+\ARGRM
+\ARGUMENT{expr} regular expression followed by an optional logical expression. Refer to \VISA API documentation for detailed discussion.
+\ENDARGUMENTS
+
+\RETURN
+
+Tcl list with addresses of all resources found. If no resources found that match the given expression, empty list is returned.
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open resource manager session
+set rm [visa::open-default-rm]
+
+# get addresses of all serial instruments
+foreach addr [visa::find $rm "ASRL?*INSTR"] {
+  # address is in $addr variable
+}
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::open-default-rm}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -156,7 +192,7 @@ Opens a session to the specified resource. This command is a front-end for \VISA
 \SYNTAX{visa::open RMsession rsrcName ?accessMode? ?openTimeout?}
 
 \BEGINARGUMENTS
-\ARGUMENT{RMsession} channel containing reference to open Resource Manager session.
+\ARGRM
 \ARGUMENT{rsrcName} name of the VISA resource to connect to.
 \ARGUMENT{accessMode} integer parameter determining access mode. May be bitwise OR combination of the following constants:
 	\begin{itemize}
