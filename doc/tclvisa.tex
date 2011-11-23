@@ -37,8 +37,24 @@
 
 \tableofcontents
 
-%\chapter{Table of Correspondence of \VISA functions and \tclvisa commands}
+\chapter{Correspondence Between \VISA Functions and Tcl Commands}
 
+\begin{tabular}{ll}
+\VISACOMMANDREF{viClear} & \COMMANDREF{visa::clear}	\\
+\VISACOMMANDREF{viClose} & \TCLCOMMANDREF{close}	\\
+\VISACOMMANDREF{viFindNext}, \VISACOMMANDREF{viFindRsrc} & \COMMANDREF{visa::find}	\\
+\VISACOMMANDREF{viGetAttribute} & \COMMANDREF{visa::get-attribute}	\\
+\VISACOMMANDREF{viLock} & \COMMANDREF{visa::lock}	\\
+\VISACOMMANDREF{viOpen} & \COMMANDREF{visa::open}	\\
+\VISACOMMANDREF{viOpenDefaultRM} & \COMMANDREF{visa::open-default-rm}	\\
+\VISACOMMANDREF{viPrintf} & \TCLCOMMANDREF{format}, \TCLCOMMANDREF{puts}	\\
+\VISACOMMANDREF{viQueryf} & \TCLCOMMANDREF{format}, \TCLCOMMANDREF{puts}, \TCLCOMMANDREF{gets}, \TCLCOMMANDREF{scan}	\\
+\VISACOMMANDREF{viRead} & \TCLCOMMANDREF{read}	\\
+\VISACOMMANDREF{viScanf} & \TCLCOMMANDREF{gets}, \TCLCOMMANDREF{scan}	\\
+\VISACOMMANDREF{viSetAttribute} & \COMMANDREF{visa::set-attribute}	\\
+\VISACOMMANDREF{viUnlock} & \COMMANDREF{visa::unlock}	\\
+\VISACOMMANDREF{viWrite} & \TCLCOMMANDREF{puts}	\\
+\end{tabular}
 
 \chapter{\tclvisa Command Reference}
 
