@@ -91,7 +91,6 @@ VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) 
 	data->session = session;
 	data->blocking = 1;
 	data->isRMSession = 0;
-	data->eof = 0;
 
 	/* Attempt to create Tcl channel */
 	sprintf(channelName, "%s%u", TCLVISA_NAME_PREFIX, session);
@@ -210,17 +209,12 @@ static int blockModeProc(ClientData instanceData, int mode) {
 
 static int inputProc(ClientData instanceData, char *buf, int bufSize, int *errorCodePtr) {
 	ViStatus status;
-	ViUInt32 retCount;
+	ViUInt32 retCount = 0;
 	int result;
 	VisaChannelData* data = validateData(instanceData, NULL);
 
 	if (!data || data->isRMSession) {
 		return -1;
-	}
-
-	if (data->eof) {
-		data->eof = 0;
-		return 0;
 	}
 
 	if ((ViInt64) bufSize > (ViInt64) VISA_MAX_BUF_SIZE) {
@@ -231,8 +225,8 @@ static int inputProc(ClientData instanceData, char *buf, int bufSize, int *error
 	status = viRead(data->session, (ViPBuf) buf, (ViUInt32) bufSize, &retCount);
 	result = (int) retCount;
 
-	if (VI_ERROR_TMO == status && !data->blocking) {
-		if (0 == result) {
+	if (VI_ERROR_TMO == status) {
+		if (!data->blocking && 0 == result) {
 			*errorCodePtr = EAGAIN;
 		}
 	} else if (status < 0) {
@@ -240,10 +234,6 @@ static int inputProc(ClientData instanceData, char *buf, int bufSize, int *error
 			*errorCodePtr = (int) status;
 		}
 		result = -1;
-	} else {
-		if (VI_SUCCESS_MAX_CNT != status) {
-			data->eof = 1;
-		}
 	}
 
 	return result;
@@ -251,7 +241,7 @@ static int inputProc(ClientData instanceData, char *buf, int bufSize, int *error
 
 static int outputProc(ClientData instanceData, const char *buf, int toWrite, int *errorCodePtr) {
 	ViStatus status;
-	ViUInt32 retCount;
+	ViUInt32 retCount = 0;
 	int result;
 	VisaChannelData* data = validateData(instanceData, NULL);
 
