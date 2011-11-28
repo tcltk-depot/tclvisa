@@ -14,13 +14,13 @@
 #include "tcl_utils.h"
 
 int Tcl_GetUIntFromObj(Tcl_Interp *interp, Tcl_Obj *objPtr, unsigned int *uintPtr) {
-	long l;
+	int i;
 
-	if (Tcl_GetLongFromObj(interp, objPtr, &l)) {
+	if (Tcl_GetIntFromObj(interp, objPtr, &i)) {
 		return TCL_ERROR;
 	}
 
-	if (l < 0) {
+	if (i < 0) {
 		if (interp) {
 			Tcl_AppendResult(interp, "expected unsigned integer but got negative value", NULL);
 		}
@@ -28,7 +28,7 @@ int Tcl_GetUIntFromObj(Tcl_Interp *interp, Tcl_Obj *objPtr, unsigned int *uintPt
 	}
 
 	if (uintPtr) {
-		*uintPtr = (unsigned int) l;
+		*uintPtr = (unsigned int) i;
 	}
 
 	return TCL_OK;

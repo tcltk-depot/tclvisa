@@ -50,10 +50,12 @@
 \VISACOMMANDREF{viPrintf} & \TCLCOMMANDREF{format}, \TCLCOMMANDREF{puts}	\\
 \VISACOMMANDREF{viQueryf} & \TCLCOMMANDREF{format}, \TCLCOMMANDREF{puts}, \TCLCOMMANDREF{gets}, \TCLCOMMANDREF{scan}	\\
 \VISACOMMANDREF{viRead} & \TCLCOMMANDREF{read}	\\
+\VISACOMMANDREF{viReadToFile} & \COMMANDREF{visa::read-to-file}	\\
 \VISACOMMANDREF{viScanf} & \TCLCOMMANDREF{gets}, \TCLCOMMANDREF{scan}	\\
 \VISACOMMANDREF{viSetAttribute} & \COMMANDREF{visa::set-attribute}	\\
 \VISACOMMANDREF{viUnlock} & \COMMANDREF{visa::unlock}	\\
 \VISACOMMANDREF{viWrite} & \TCLCOMMANDREF{puts}	\\
+\VISACOMMANDREF{viWriteFromFile} & \COMMANDREF{visa::write-from-file}	\\
 \end{tabular}
 
 \chapter{\tclvisa Command Reference}
@@ -313,6 +315,41 @@ visa::set-attribute $vi $visa::ATTR_ASRL_BAUD 19200
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\COMMAND{visa::read-to-file}
+
+\PURPOSE
+
+Read data synchronously, and store the transferred data in a file. This command is a front-end for \VISACOMMANDREF{viReadToFile} \VISA API function.
+
+\SYNTAX{visa::read-to-file session fileName count}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{fileName} name of file to which data will be written.
+\ARGUMENT{count} number of bytes to be read.
+\ENDARGUMENTS
+
+\RETURN
+
+Number of bytes actually transferred.
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open instrument with default access mode and timeout
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# read up to 1024 bytes of data 
+# or until term char is received
+visa::read-to-file $vi "raw.dat" 1024
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::write-from-file}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \COMMAND{visa::unlock}
 
 \PURPOSE
@@ -340,6 +377,41 @@ visa::unlock $vi
 \SEEALSO
 
 \COMMANDREF{visa::open}, \COMMANDREF{visa::lock}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::write-from-file}
+
+\PURPOSE
+
+Take data from a file and write it out synchronously.
+This command is a front-end for \VISACOMMANDREF{viWriteFromFile} \VISA API function.
+
+\SYNTAX{visa::write-from-file session fileName ?count?}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{fileName} name of file from which data will be read.
+\ARGUMENT{count} number of bytes to be written. If omitted, entire file is written.
+\ENDARGUMENTS
+
+\RETURN
+
+Number of bytes actually transferred.
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open instrument with default access mode and timeout
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# write entire file content to device
+visa::write-from-file $vi "raw.dat"
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::read-to-file}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

@@ -31,6 +31,10 @@ const char* visaErrorMessage(ViStatus status) {
 		return "[VI_ERROR_CLOSING_FAILED] Unable to deallocate the previously allocated data structures corresponding to this session or object reference.";
 	case VI_ERROR_CONN_LOST:
 		return "[VI_ERROR_CONN_LOST] The I/O connection for the given session has been lost.";
+	case VI_ERROR_FILE_ACCESS:
+		return "An error occurred while trying to open the specified file. Possible reasons include an invalid path or lack of access rights.";
+	case VI_ERROR_FILE_IO:
+		return "An error occurred while accessing the specified file.";
 	case VI_ERROR_INP_PROT_VIOL:
 		return "[VI_ERROR_INP_PROT_VIOL] Device reported an input protocol error during transfer.";
 	case VI_ERROR_INTF_NUM_NCONFIG:
