@@ -37,9 +37,55 @@
 
 \tableofcontents
 
-\chapter{Correspondence Between \VISA Functions and Tcl Commands}
+\chapter{Getting Started}
+
+\section{Introduction}
+
+\tclvisa is a standard Tcl extension providing a binding to Virtual Instrument Software Architecture (\VISA) API. It allows to use \VISA functionality from regular Tcl scripts via set of commands. Most of the commands have similar names and are intuitive to use for the one who knows \VISA API. For example, Tcl command \COMMANDREF{visa::open} is a front-end for \VISACOMMANDREF{viOpen} \VISA function. The specifications of \VISA can be found here: 
+
+\href{http://www.ivifoundation.org/specifications/default.aspx}{http://www.ivifoundation.org/specifications/default.aspx}.
+
+As an extention \tclvisa follows conventions of Tcl Extension Architecture (TEA). It is loaded dynamically into Tcl shell or Tcl-based application on demand. Please refer to TEA documentations for details: 
+
+\href{http://www.tcl.tk/doc/tea/}{http://www.tcl.tk/doc/tea/}.
+
+\section{Installation}
+
+Prior to usage of \tclvisa one need \VISA implementation installed. There are several known implementations (e.g. National Instruments VISA, or Agilent IO Library Suite). \VISA libraries should be installed in proper directories and be available for linking.
+
+\tclvisa itself should be installed as a typical Tcl extension. Partcular details of installation, such as target directory, are platform-dependent. Please refer to the documentation of your Tcl version.
+
+If you have no access to system directories to install \tclvisa into, you can install into arbitrary directory. In order to make Tcl known about this directory, you should add path to it to \mbox{\tt TCLLIBPATH} environment variable.
+
+\section{Use in Tcl}
+
+In order to start using \tclvisa within Tcl one should issue following command:
+
+\begin{verbatim} 
+package require tclvisa
+\end{verbatim} 
+
+If the library is properly installed, this command returns version of \tclvisa loaded. Library is ready to use. All commands and predefined variables are placed in {\tt visa::} namespace.
+
+\section{\VISA Constants}
+
+\VISA defines a lot of predefined contants with codes of attributes, errors etc. Most of these constants are available in Tcl within {\tt visa} namespace and without {\tt VI\_} prefix.
+
+For example, {\tt VI\_EXCLUSIVE\_LOCK} constant is represented by \\{\tt visa::EXCLUSIVE\_LOCK} variable in Tcl. When using these predefined variables in expressions, do not forget adding {\tt \$} prefix prior to variable name.
+
+Following example demonstrates usage of predefined constant:
+
+\begin{verbatim} 
+# open instrument exclusively
+set vi [visa::open $rm "ASRL2::INSTR" $visa::EXCLUSIVE_LOCK]
+\end{verbatim} 
+
+\section{Correspondence Between \VISA Functions and Tcl Commands}
+
+Following table contains list of \VISA API functions supported by \tclvisa and corresponding commands to use in Tcl.
 
 \begin{tabular}{ll}
+\VISA API function & Tcl Command \\
 \VISACOMMANDREF{viClear} & \COMMANDREF{visa::clear}	\\
 \VISACOMMANDREF{viClose} & \TCLCOMMANDREF{close}	\\
 \VISACOMMANDREF{viFindNext}, \VISACOMMANDREF{viFindRsrc} & \COMMANDREF{visa::find}	\\
