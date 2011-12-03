@@ -12,14 +12,14 @@
 \newcommand{\VISACOMMANDREF}[1]{{\tt \mbox{#1}}\index{#1}}
 \newcommand{\TCLCOMMANDREF}[1]{{\tt \mbox{#1}}\index{#1}}
 
-\newcommand{\SEEALSO}{\subsection{See Also}}
-\newcommand{\EXAMPLE}{\subsection{Example}}
-\newcommand{\PURPOSE}{\subsection{Purpose}}
-\newcommand{\SYNTAX}[1]{\subsection{Syntax}{\tt #1}}
-\newcommand{\NOTES}{\subsection{Notes}}
-\newcommand{\ARGUMENTS}{\subsubsection{Arguments}}
-\newcommand{\RETURN}{\subsubsection{Return Value}}
-\newcommand{\NORETURN}{\subsubsection{Return Value} None}
+\newcommand{\SEEALSO}{\subsection*{See Also}}
+\newcommand{\EXAMPLE}{\subsection*{Example}}
+\newcommand{\PURPOSE}{\subsection*{Purpose}}
+\newcommand{\SYNTAX}[1]{\subsection*{Syntax}{\tt #1}}
+\newcommand{\NOTES}{\subsection*{Notes}}
+\newcommand{\ARGUMENTS}{\subsubsection*{Arguments}}
+\newcommand{\RETURN}{\subsubsection*{Return Value}}
+\newcommand{\NORETURN}{\subsubsection*{Return Value} None}
 \newcommand{\COMMAND}[1]{\section{#1}\label{#1}}
 \newcommand{\BEGINARGUMENTS}{\ARGUMENTS\begin{itemize}}
 \newcommand{\ENDARGUMENTS}{\end{itemize}}
@@ -103,6 +103,33 @@ Following table contains list of \VISA API functions supported by \tclvisa and c
 \VISACOMMANDREF{viWrite} & \TCLCOMMANDREF{puts}	\\
 \VISACOMMANDREF{viWriteFromFile} & \COMMANDREF{visa::write-from-file}	\\
 \end{tabular}
+
+\chapter{Programming with \tclvisa}
+
+\section{Channels}
+
+Most of \VISA functions operate with \emph{sessions} which are represented in C~language by {\tt viSession} type. In Tcl these sessions are stored in standard channels. E.~g. \COMMANDREF{visa::open} returns name of Tcl channel to be used in subsequent operations. This approach has following benefits:
+
+\begin{itemize}
+\item Standard IO procedures are used in \VISA IO: \TCLCOMMANDREF{puts}, \TCLCOMMANDREF{gets} etc.
+\item \VISA sessions may be transparently passed to any procedure which accepts Tcl channel. If some third-party library works with regular Tcl channels, it automatically can read/write from/to \VISA device.
+\item Tcl automatically closes all opened channels when interpeter terminates.
+\end{itemize}
+
+\tclvisa provides a procedure to open \VISA sessions: \COMMANDREF{visa::open}, which is a front-end of \VISACOMMANDREF{viOpen} \VISA function. But \tclvisa does not provide front-ends for \VISACOMMANDREF{viClose} or \VISACOMMANDREF{viWrite} \VISA functions. Instead one should use standard Tcl commands, such as \TCLCOMMANDREF{close} or \TCLCOMMANDREF{puts}. Tcl detects type of the channel and calls proper \VISA function internally. For example, when \TCLCOMMANDREF{close} is issued on \VISA channel, opened by \COMMANDREF{visa::open}, \VISACOMMANDREF{viClose} function is actually called within Tcl internals.
+
+Following example demonstrates usage of \VISA channel:
+
+\begin{verbatim} 
+# open instrument
+set vi [visa::open $rm "ASRL2::INSTR"]
+
+# send "reset" command to instrument
+puts $vi "*RST"
+
+# close VISA session
+close $vi
+\end{verbatim} 
 
 \chapter{\tclvisa Command Reference}
 
