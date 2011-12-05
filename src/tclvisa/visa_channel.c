@@ -98,6 +98,13 @@ VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) 
 	if (NULL != channel) {
 		/* Channel created successgully, register it for later use in Tcl IO procedures */
 		Tcl_RegisterChannel(interp, channel);
+
+		/* Configure channel  */
+		Tcl_SetChannelOption(interp, channel, "-buffering", "line");
+		Tcl_SetChannelOption(interp, channel, "-encoding", "binary");
+		Tcl_SetChannelOption(interp, channel, "-translation", "binary");
+
+		/* Store channel pointer */
 		data->channel = channel;
 	} else {
 		/* Cannot create channel: free allocated resources */

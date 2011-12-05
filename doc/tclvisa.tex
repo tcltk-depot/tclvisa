@@ -67,6 +67,45 @@ package require tclvisa
 
 If the library is properly installed, this command returns version of \tclvisa loaded. Library is ready to use. All commands and predefined variables are placed in {\tt visa::} namespace.
 
+\chapter{Programming with \tclvisa}
+
+\section{Channels}
+
+Most of \VISA functions operate with \emph{sessions} which are represented in C~language by {\tt viSession} type. In Tcl these sessions are stored in standard channels. E.~g. \COMMANDREF{visa::open} returns name of Tcl channel to be used in subsequent operations. This approach has following benefits:
+
+\begin{itemize}
+\item Standard IO procedures are used in \VISA IO: \TCLCOMMANDREF{puts}, \TCLCOMMANDREF{gets} etc.
+\item \VISA sessions may be transparently passed to any procedure which accepts Tcl channel. If some third-party library works with regular Tcl channels, it therefore can read/write from/to \VISA device.
+\item Tcl automatically closes all opened channels when interpeter terminates.
+\end{itemize}
+
+\tclvisa provides a procedure to open \VISA sessions: \COMMANDREF{visa::open}, which is a front-end of \VISACOMMANDREF{viOpen} \VISA function. But \tclvisa does not provide front-ends for \VISACOMMANDREF{viClose} or \VISACOMMANDREF{viWrite} \VISA functions. Instead one should use standard Tcl commands, such as \TCLCOMMANDREF{close} or \TCLCOMMANDREF{puts}. Tcl detects type of the channel and calls proper \VISA function internally. For example, when \TCLCOMMANDREF{close} is issued on \VISA channel, opened by \COMMANDREF{visa::open}, then \VISACOMMANDREF{viClose} function is actually called within Tcl internals.
+
+Following example demonstrates usage of \VISA channel:
+
+\begin{verbatim} 
+# open instrument
+set vi [visa::open $rm "ASRL2::INSTR"]
+
+# send "reset" command to instrument
+puts $vi "*RST"
+
+# close VISA session
+close $vi
+\end{verbatim} 
+
+See also \hyperref[sec_correspondence]{table of correspondence} between supported \VISA functions and Tcl commands.
+
+\subsection{Buffering}
+
+\VISA IO functions, such as \VISACOMMANDREF{viWrite} or \VISACOMMANDREF{viRead}, by default work with \emph{messages}, where message is a sequence of bytes of arbitrary length followed by special ``end-of-message'' character. For example, \href{http://www.ivifoundation.org/scpi/default.aspx}{SCPI} messages end with ``new line'' character (ASCII code is {\tt 0Ah}). When I send a message terminated by ``end-of-message'' via \VISACOMMANDREF{viWrite}, I can be sure that it is actually sent to the device rather than kept in intermediate buffer. When I call \VISACOMMANDREF{viRead}, it returns immediately after receiving of ``end-of-message'' character regardless of the length of input buffer.
+
+Tcl channels by default work with continuous streams of bytes. IO functions typically block until IO buffer is full or ``end-of-data'' is detected. For example, \TCLCOMMANDREF{read} command called without a buffer length specified on file channel blocks until entire file is read. It's evident that this approach does not work with message-based protocols like SCPI.
+
+Fortunately Tcl offers different buffering options, which can be set or red by \TCLCOMMANDREF{fconfigure} command. One of them is ``{\tt -buffering line}'' which tells Tcl finish current IO operation when ``end-of-line'' character is received or sent. When buffering type is ``{\tt line}'', \TCLCOMMANDREF{read} blocks until ``end-of-line'' is received, and \TCLCOMMANDREF{puts} actually sends data right after ``end-of-line'' is found in outcoming data. In the terms or SCPI commands, \TCLCOMMANDREF{read} blocks until complete response is received from a device.
+
+When \VISA channel is created by \COMMANDREF{visa::open}, buffering type is automatically set to ``{\tt line}''. If one needs to switch channel mode, then \TCLCOMMANDREF{fconfigure} command with proper {\tt -buffering} option should be issued.
+
 \section{\VISA Constants}
 
 \VISA defines a lot of predefined contants with codes of attributes, errors etc. Most of these constants are available in Tcl within {\tt visa} namespace and without {\tt VI\_} prefix.
@@ -81,6 +120,7 @@ set vi [visa::open $rm "ASRL2::INSTR" $visa::EXCLUSIVE_LOCK]
 \end{verbatim} 
 
 \section{Correspondence Between \VISA Functions and Tcl Commands}
+\label{sec_correspondence}
 
 Following table contains list of \VISA API functions supported by \tclvisa and corresponding commands to use in Tcl.
 
@@ -103,33 +143,6 @@ Following table contains list of \VISA API functions supported by \tclvisa and c
 \VISACOMMANDREF{viWrite} & \TCLCOMMANDREF{puts}	\\
 \VISACOMMANDREF{viWriteFromFile} & \COMMANDREF{visa::write-from-file}	\\
 \end{tabular}
-
-\chapter{Programming with \tclvisa}
-
-\section{Channels}
-
-Most of \VISA functions operate with \emph{sessions} which are represented in C~language by {\tt viSession} type. In Tcl these sessions are stored in standard channels. E.~g. \COMMANDREF{visa::open} returns name of Tcl channel to be used in subsequent operations. This approach has following benefits:
-
-\begin{itemize}
-\item Standard IO procedures are used in \VISA IO: \TCLCOMMANDREF{puts}, \TCLCOMMANDREF{gets} etc.
-\item \VISA sessions may be transparently passed to any procedure which accepts Tcl channel. If some third-party library works with regular Tcl channels, it automatically can read/write from/to \VISA device.
-\item Tcl automatically closes all opened channels when interpeter terminates.
-\end{itemize}
-
-\tclvisa provides a procedure to open \VISA sessions: \COMMANDREF{visa::open}, which is a front-end of \VISACOMMANDREF{viOpen} \VISA function. But \tclvisa does not provide front-ends for \VISACOMMANDREF{viClose} or \VISACOMMANDREF{viWrite} \VISA functions. Instead one should use standard Tcl commands, such as \TCLCOMMANDREF{close} or \TCLCOMMANDREF{puts}. Tcl detects type of the channel and calls proper \VISA function internally. For example, when \TCLCOMMANDREF{close} is issued on \VISA channel, opened by \COMMANDREF{visa::open}, \VISACOMMANDREF{viClose} function is actually called within Tcl internals.
-
-Following example demonstrates usage of \VISA channel:
-
-\begin{verbatim} 
-# open instrument
-set vi [visa::open $rm "ASRL2::INSTR"]
-
-# send "reset" command to instrument
-puts $vi "*RST"
-
-# close VISA session
-close $vi
-\end{verbatim} 
 
 \chapter{\tclvisa Command Reference}
 
