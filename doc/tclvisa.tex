@@ -133,6 +133,7 @@ Following table contains list of \VISA API functions supported by \tclvisa and c
 \VISACOMMANDREF{viLock} & \COMMANDREF{visa::lock}	\\
 \VISACOMMANDREF{viOpen} & \COMMANDREF{visa::open}	\\
 \VISACOMMANDREF{viOpenDefaultRM} & \COMMANDREF{visa::open-default-rm}	\\
+\VISACOMMANDREF{viParseRsrc} & \COMMANDREF{visa::parse-rsrc}	\\
 \VISACOMMANDREF{viPrintf} & \TCLCOMMANDREF{format}, \TCLCOMMANDREF{puts}	\\
 \VISACOMMANDREF{viQueryf} & \TCLCOMMANDREF{format}, \TCLCOMMANDREF{puts}, \TCLCOMMANDREF{gets}, \TCLCOMMANDREF{scan}	\\
 \VISACOMMANDREF{viRead} & \TCLCOMMANDREF{read}	\\
@@ -398,6 +399,48 @@ visa::set-attribute $vi $visa::ATTR_ASRL_BAUD 19200
 \SEEALSO
 
 \COMMANDREF{visa::get-attribute}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::parse-rsrc}
+
+\PURPOSE
+
+Parse a resource string to get the interface information. This command is a front-end for \VISACOMMANDREF{viParseRsrc} \VISA API function.
+
+\SYNTAX{visa::parse-rsrc RMsession rsrcName}
+
+\BEGINARGUMENTS
+\ARGRM
+\ARGUMENT{rsrcName} Unique symbolic name of a resource.
+\ENDARGUMENTS
+
+\RETURN
+
+\begin{itemize}
+\item On success returns Tcl list of two integers: interface type code and interface number.
+\item If address given is not valid or device does not exists, returns empty value.
+\end{itemize}
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open resource manager session
+set rm [visa::open-default-rm]
+
+# parse instrument address
+lassign [visa::parse-rsrc $rm "ASRL1::INSTR"] intfType intfNum
+
+if { $intfType == $visa::INTF_ASRL } {
+  puts "Have serial interface device with interface number $intfNum"
+}
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::open-default-rm}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

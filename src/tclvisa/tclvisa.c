@@ -38,6 +38,7 @@ int tclvisa_unlock(const ClientData clientData, Tcl_Interp* const interp, const 
 int tclvisa_find(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int write_from_file(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int read_to_file(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_parse_rsrc(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 
 int setVisaConstants(Tcl_Interp* const interp, const char* prefix);
 
@@ -56,6 +57,7 @@ int createTclvisaCommands(Tcl_Interp* const interp) {
 	addCommand("find", tclvisa_find);
 	addCommand("write-from-file", write_from_file);
 	addCommand("read-to-file", read_to_file);
+	addCommand("parse-rsrc", tclvisa_parse_rsrc);
 
 	if (TCL_OK != setVisaConstants(interp, NAMESPACE)) {
 		goto error;

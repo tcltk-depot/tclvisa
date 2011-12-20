@@ -159,7 +159,7 @@ static int closeProc(ClientData instanceData, Tcl_Interp *interp) {
 	}
 
 	if (!data->isRMSession) {
-		viFlush(data->session, VI_WRITE_BUF | VI_IO_OUT_BUF | VI_READ_BUF_DISCARD | VI_IO_IN_BUF_DISCARD);
+		viFlush(data->session, VI_WRITE_BUF | VI_IO_OUT_BUF);
 	}
 	status = viClose(data->session);
 	if (status < 0) {

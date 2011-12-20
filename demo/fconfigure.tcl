@@ -75,6 +75,13 @@ if { [catch { set vi [visa::open $rm $visaAddr] } rc] } {
   exit
 }
 
+# check interface type of the instrument opened
+# serial options only allowed for "serial" interface type
+if { [visa::get-attribute $vi $visa::ATTR_INTF_TYPE] != $visa::INTF_ASRL } {
+	puts "Instrument has non-serial interface type"
+	exit
+}
+
 ##########################################################
 # get/set serial mode
 ##########################################################
