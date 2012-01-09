@@ -20,7 +20,9 @@
 #endif
 
 #include <tcl.h>
+#ifdef _WINDOWS
 #include <windows.h>
+#endif
 #include "tclvisa_utils.h"
 
 #define NAMESPACE "visa::"
@@ -69,7 +71,10 @@ error:
 	return TCL_ERROR;
 }
 
-__declspec(dllexport) int Tclvisa_Init(Tcl_Interp* const interp) {
+#ifdef _WINDOWS
+__declspec(dllexport)
+#endif
+int Tclvisa_Init(Tcl_Interp* const interp) {
     /*
      * This may work with 8.0, but we are using strictly stubs here,
      * which requires 8.1.
@@ -86,6 +91,8 @@ __declspec(dllexport) int Tclvisa_Init(Tcl_Interp* const interp) {
 	return createTclvisaCommands(interp);
 }
 
+#ifdef _WINDOWS
+
 // DLL entry function (called on load, unload, ...)
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, LPVOID lpReserved) {
 
@@ -96,3 +103,5 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, LPVOID lpReserved) {
 
     return TRUE;
 }
+
+#endif

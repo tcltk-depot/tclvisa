@@ -21,6 +21,11 @@
 #include "tcl_utils.h"
 #include "tclvisa_utils.h"
 
+#ifndef _WINDOWS
+#include <strings.h>
+#define _strcmpi strcasecmp
+#endif
+
 #define TCLVISA_NAME_PREFIX "visa_session"
 #define TCLVISA_GET_OPTIONS "handshake mode queue timeout ttystatus xchar"
 #define TCLVISA_SET_OPTIONS "handshake mode timeout ttycontrol xchar"
@@ -93,7 +98,7 @@ VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) 
 	data->isRMSession = 0;
 
 	/* Attempt to create Tcl channel */
-	sprintf(channelName, "%s%u", TCLVISA_NAME_PREFIX, session);
+	sprintf(channelName, "%s%u", TCLVISA_NAME_PREFIX, (unsigned) session);
 	channel = Tcl_CreateChannel(&visaChannelType, channelName, (ClientData) data, TCL_READABLE | TCL_WRITABLE);
 	if (NULL != channel) {
 		/* Channel created successgully, register it for later use in Tcl IO procedures */
@@ -282,7 +287,7 @@ static int setOptionProc(ClientData instanceData, Tcl_Interp *interp, const char
     size_t len, vlen;
 	ViStatus status;
 	int argc;
-	char** argv;
+	const char** argv;
 	VisaChannelData* data = (VisaChannelData*) instanceData;
 
 	if (!data || data->isRMSession) {
@@ -567,7 +572,7 @@ static int getOptionProc(ClientData instanceData, Tcl_Interp *interp, const char
 		inBuffered = Tcl_InputBuffered(data->channel);
 		outBuffered = Tcl_OutputBuffered(data->channel);
 
-		sprintf(buf, "%d", inBuffered+inQueue);
+		sprintf(buf, "%d", (int) (inBuffered + inQueue));
 		Tcl_DStringAppendElement(dsPtr, buf);
 		sprintf(buf, "%d", outBuffered);
 		Tcl_DStringAppendElement(dsPtr, buf);
