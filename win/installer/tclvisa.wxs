@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+
+	<?include tclvisa.wxi ?>
+
+  <Product
+		Id="$(var.ProductCode)" 
+		Name="$(var.ProductName)" 
+		Language="1033"
+		Version="$(var.ProductVersion)" 
+		Manufacturer="$(var.Manufacturer)" 
+		UpgradeCode="$(var.UpgradeCode)">
+
+    <Package 
+			InstallerVersion="200" 
+			Compressed="yes" 
+			Platform="x86"
+	/>
+    <Media Id="1" Cabinet="tclvisa.cab" EmbedCab="yes" />
+
+	<Directory Id="TARGETDIR" Name="SourceDir">
+		<Directory Id="TCLDIR">
+			<Directory Id="TclLib" Name="lib">
+				<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)$(var.ProductVersion)">
+					<Component Id="MainComponent" Guid="452ffcde-310d-626d-9479-91490000976e">
+						<File Id="Module" DiskId="1" Source="../tclvisa.dll"/>
+						<File Id="Index" DiskId="1" Source="../pkgIndex.tcl"/>
+					</Component>
+					<Directory Id="DocDir" Name="doc">
+						<Component Id="Manual" Guid="fbd1f3fa-7140-86b0-be38-ba5700009826">
+							<File Id="Manual" DiskId="1" Source="../../doc/tclvisa.pdf" />
+						</Component>
+					</Directory>
+				</Directory>
+			</Directory>
+		</Directory>
+	</Directory>
+
+    <Feature Id="Complete" Title="$(var.ProductName)" Level="1">
+      <ComponentRef Id="MainComponent" />
+      <ComponentRef Id="Manual" />
+    </Feature>
+
+	<!--
+		Script detects Tcl installation on target machine
+	-->
+	<Binary
+		Id="TclDetectionScript"
+		SourceFile="detectTcl.js"
+	/>
+
+	<!--
+		Action runs a script to detect Tcl installation on target machine
+	-->
+	<CustomAction
+		Id="TclDetection"
+		BinaryKey="TclDetectionScript"
+		JScriptCall="findTcl"
+		Execute="immediate"
+		Return="check"
+		Impersonate="yes"
+	/>
+
+	<Property Id="ACTIVETCLVERSIONHKCU">
+		<RegistrySearch
+			Id="RS.ActiveTclVersionHKCU"
+			Root="HKCU"			
+			Key="Software\ActiveState\ActiveTcl"
+			Name="CurrentVersion"
+			Type="raw"
+		/>
+	</Property>
+	<Property Id="ACTIVETCLVERSIONHKLM">
+		<RegistrySearch
+			Id="RS.ActiveTclVersionHKLM"
+			Root="HKLM"			
+			Key="Software\ActiveState\ActiveTcl"
+			Name="CurrentVersion"
+			Type="raw"
+		/>
+	</Property>
+	<Property Id="ACTIVETCLDIRHKCU">
+		<RegistrySearch
+			Id="RS.ActiveTclDirHKCU"
+			Root="HKCU"			
+			Key="Software\ActiveState\ActiveTcl\[ACTIVETCLVERSIONHKCU]"
+			Type="directory"
+		/>
+	</Property>
+	<Property Id="ACTIVETCLDIRHKLM">
+		<RegistrySearch
+			Id="RS.ActiveTclDirHKLM"
+			Root="HKLM"			
+			Key="Software\ActiveState\ActiveTcl\[ACTIVETCLVERSIONHKLM]"
+			Type="directory"
+		/>
+	</Property>
+	
+	<Property Id="TCLDIR" Value="C:\" />
+
+	<CustomAction
+		Id="CA.Set_TCLDIR_From_ACTIVETCLDIRHKCU"
+		Property="TCLDIR"
+		Value="[ACTIVETCLDIRHKCU]" />
+	<CustomAction
+		Id="CA.Set_TCLDIR_From_ACTIVETCLDIRHKLM"
+		Property="TCLDIR"
+		Value="[ACTIVETCLDIRHKLM]" />
+
+    <Property Id="WixUI_InstallDir" Value="INSTALLLOCATION" ></Property>
+    <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.rtf"/>
+
+<!--	<Condition Message="This library requires ActiveTcl. Please install the ActiveTcl then run this installer again. You can download ActiveTcl installator here: http://www.activestate.com/activetcl/downloads">
+	    <![CDATA[Installed OR TCLDIR]]>
+	</Condition>	-->
+
+	<InstallExecuteSequence>
+		<Custom Action="CA.Set_TCLDIR_From_ACTIVETCLDIRHKCU" Before="CostInitialize">ACTIVETCLDIRHKCU</Custom>
+		<Custom Action="CA.Set_TCLDIR_From_ACTIVETCLDIRHKLM" Before="CostInitialize">ACTIVETCLDIRHKLM</Custom>
+<!--		<Custom Action="TclDetection" After="InstallInitialize" />	-->
+	</InstallExecuteSequence>
+
+	<Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION"/>
+	<UIRef Id="WixUI_InstallDir" />	
+
+  </Product>
+</Wix>
