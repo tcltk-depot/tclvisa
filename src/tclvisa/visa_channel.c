@@ -452,7 +452,7 @@ visa_result:
 }
 
 static int getOptionProc(ClientData instanceData, Tcl_Interp *interp, const char *optionName, Tcl_DString *dsPtr) {
-    unsigned int len;
+    size_t len;
     char buf[3*TCL_INTEGER_SPACE + 16];
     int valid = 0;		/* Flag if valid option parsed. */
 	VisaChannelData* data = (VisaChannelData*) instanceData;

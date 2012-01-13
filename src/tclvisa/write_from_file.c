@@ -69,7 +69,7 @@ int write_from_file(const ClientData clientData, Tcl_Interp* const interp, const
 }
 
 static long getFileSize(const char *fileName) {
-	long size;
+	long size = 0;
 
 	FILE *f = fopen(fileName, "rb");
 	if (f) {

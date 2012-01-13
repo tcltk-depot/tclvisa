@@ -1,0 +1,95 @@
+#
+# MS Visual C Makefile for tclvisa
+#
+# At the command prompt, type
+# nmake /f Makefile.vc
+#
+# NOTE: To use this, you must have MSVC installed and properly
+# configured for command line use (you might need to run VCVARS32.BAT
+# included with your copy of MSVC).
+#
+# Most probably following variables should be modified on your machine:
+#   INCLUDES, LIBS
+
+# Set proper executables
+MAKE=nmake /nologo
+CC=@cl /nologo
+AR=@link /nologo
+MT=@mt
+
+# Direct to Tcl and VISA installed
+INCLUDES=/I "C:/Tcl/include" /I "C:/Program Files/IVI Foundation/VISA/WinNT/include"
+LIBS=/LIBPATH:"C:/Tcl/lib" /LIBPATH:"C:/Program Files/IVI Foundation/VISA/WinNT/lib/msc"
+
+# Extension name and version
+PACKAGE_NAME=@PACKAGE_NAME@
+PACKAGE_VERSION=@PACKAGE_VERSION@
+PACKAGE_DLL_VERSION=@PACKAGE_DLL_VERSION@
+
+DEFINES=/D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "TCLVISA_EXPORTS" /D "_CRT_SECURE_NO_WARNINGS" /D "USE_TCL_STUBS" /D "_WINDLL" /D "PACKAGE_NAME=\"$(PACKAGE_NAME)\"" /D "PACKAGE_VERSION=\"$(PACKAGE_VERSION)\""
+CLIBS=visa32.lib tclstub85.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
+CFLAGS=$(INCLUDES) $(DEFINES) /c /O2 /Oi /GL /FD /MD /Gy /W4 /c /Zi /TC
+LDFLAGS=/INCREMENTAL:NO /DLL /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /DYNAMICBASE /NXCOMPAT /MACHINE:X86
+
+SRCDIR=../src/tclvisa
+OBJDIR=.
+OUTDIR=.
+
+SRCS=\
+$(SRCDIR)\find.c \
+$(SRCDIR)\visa_constants.c \
+$(SRCDIR)\open_default_rm.c \
+$(SRCDIR)\clear.c \
+$(SRCDIR)\visa_channel.c \
+$(SRCDIR)\set_attribute.c \
+$(SRCDIR)\unlock.c \
+$(SRCDIR)\visa_utils.c \
+$(SRCDIR)\lock.c \
+$(SRCDIR)\read_to_file.c \
+$(SRCDIR)\open.c \
+$(SRCDIR)\write_from_file.c \
+$(SRCDIR)\get_attribute.c \
+$(SRCDIR)\parse_rsrc.c \
+$(SRCDIR)\tcl_utils.c \
+$(SRCDIR)\tclvisa.c
+
+OBJS=\
+$(OBJDIR)\find.obj \
+$(OBJDIR)\visa_constants.obj \
+$(OBJDIR)\open_default_rm.obj \
+$(OBJDIR)\clear.obj \
+$(OBJDIR)\visa_channel.obj \
+$(OBJDIR)\set_attribute.obj \
+$(OBJDIR)\unlock.obj \
+$(OBJDIR)\visa_utils.obj \
+$(OBJDIR)\lock.obj \
+$(OBJDIR)\read_to_file.obj \
+$(OBJDIR)\open.obj \
+$(OBJDIR)\write_from_file.obj \
+$(OBJDIR)\get_attribute.obj \
+$(OBJDIR)\parse_rsrc.obj \
+$(OBJDIR)\tcl_utils.obj \
+$(OBJDIR)\tclvisa.obj
+
+DESTNAME=$(OUTDIR)\$(PACKAGE_NAME)$(PACKAGE_DLL_VERSION)
+DEST=$(DESTNAME).dll
+
+all: $(DEST)
+
+$(DEST): $(OBJS)
+	$(AR) /OUT:"$(DEST)" $(LDFLAGS) $(LIBS) $(CLIBS) $(OBJS)
+	$(MT) -manifest "$(DEST).manifest" -outputresource:"$(DEST);2"
+
+.SUFFIXES: .c .obj
+
+{$(SRCDIR)}.c{$(OBJDIR)}.obj:
+	$(CC) $(CFLAGS) $< /Fo"$(OBJDIR)/"
+
+$(OBJDIR):
+
+clean:
+	@del $(OBJS) "$(DESTNAME).exp" "$(DESTNAME).lib" "$(DESTNAME).dll.manifest" "$(OUTDIR)\vc*.idb" "$(OUTDIR)\vc*.pdb"
+
+cleanall: clean
+	@del "$(DEST)"
+

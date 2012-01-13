@@ -63,11 +63,7 @@ int tclvisa_lock(const ClientData clientData, Tcl_Interp* const interp, const in
 
 		if (objc > 4) {
 			/* Requested key */
-			long l;
-			if (Tcl_GetLongFromObj(interp, objv[4], &l)) {
-				return TCL_ERROR;
-			}
-			requestedKey = (ViKeyId) l;
+			requestedKey = TclGetString(objv[4]);
 		}
 
 		accesskey = buf;

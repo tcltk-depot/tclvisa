@@ -42,7 +42,7 @@ int write_from_file(const ClientData clientData, Tcl_Interp* const interp, const
 int read_to_file(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int tclvisa_parse_rsrc(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 
-int setVisaConstants(Tcl_Interp* const interp, const char* prefix);
+int setVisaConstants(Tcl_Interp* const interp, const char* prefix, const char *version);
 
 #define addCommand(tcl_name, proc)	\
 	if (NULL == Tcl_CreateObjCommand(interp, NAMESPACE tcl_name, proc, NULL, NULL))	\
@@ -61,7 +61,7 @@ int createTclvisaCommands(Tcl_Interp* const interp) {
 	addCommand("read-to-file", read_to_file);
 	addCommand("parse-rsrc", tclvisa_parse_rsrc);
 
-	if (TCL_OK != setVisaConstants(interp, NAMESPACE)) {
+	if (TCL_OK != setVisaConstants(interp, NAMESPACE, PACKAGE_VERSION)) {
 		goto error;
 	}
 
@@ -79,10 +79,13 @@ int Tclvisa_Init(Tcl_Interp* const interp) {
      * This may work with 8.0, but we are using strictly stubs here,
      * which requires 8.1.
      */
-/*	if (Tcl_InitStubs(interp, "8.1", 0) == NULL) {
-		return TCL_ERROR;
-	} */
-	if (Tcl_PkgRequire(interp, "Tcl", "8.1", 0) == NULL) {
+	if (
+#ifdef USE_TCL_STUBS
+		Tcl_InitStubs(interp, "8.1", 0)
+#else
+		Tcl_PkgRequire(interp, "Tcl", "8.1", 0)
+#endif
+			== NULL) {
 		return TCL_ERROR;
     }
 	if (Tcl_PkgProvide(interp, PACKAGE_NAME, PACKAGE_VERSION) != TCL_OK) {
@@ -91,7 +94,7 @@ int Tclvisa_Init(Tcl_Interp* const interp) {
 	return createTclvisaCommands(interp);
 }
 
-#ifdef _WINDOWS
+#ifdef _WINDLL
 
 // DLL entry function (called on load, unload, ...)
 BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, LPVOID lpReserved) {
@@ -104,4 +107,4 @@ BOOL APIENTRY DllMain(HANDLE hModule, DWORD dwReason, LPVOID lpReserved) {
     return TRUE;
 }
 
-#endif
+#endif	//	_WINDLL

@@ -168,9 +168,17 @@ TEA_PROG_TCLSH
 #TEA_PROG_WISH
 
 #--------------------------------------------------------------------
+# Add a special substitution variable PACKAGE_DLL_VERSION 
+# which contains version number without dots.
+# This variable is used to form Windows DLL file name.
+#--------------------------------------------------------------------
+AC_SUBST(PACKAGE_DLL_VERSION)
+eval PACKAGE_DLL_VERSION=${TCL_TRIM_DOTS}
+
+#--------------------------------------------------------------------
 # Finally, substitute all of the various values into the Makefile.
 # You may alternatively have a special pkgIndex.tcl.in or other files
 # which require substituting th AC variables in.  Include these here.
 #--------------------------------------------------------------------
 
-AC_OUTPUT([Makefile pkgIndex.tcl])
+AC_OUTPUT([Makefile pkgIndex.tcl win/pkgIndex.tcl win/Makefile.vc win/installer/tclvisa.wxi win/installer/build.cmd])

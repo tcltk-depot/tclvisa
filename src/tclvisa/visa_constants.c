@@ -23,12 +23,25 @@ static int addIntegerVar(Tcl_Interp* const interp, const char* prefix, const cha
 		? TCL_ERROR : TCL_OK;
 }
 
-#define addIntVar(name)	\
-	if (TCL_OK != addIntegerVar(interp, prefix, #name, 3, name) || TCL_OK != addIntegerVar(interp, "", #name, 0, name)) goto error
+static int addStringVar(Tcl_Interp* const interp, const char* prefix, const char* name, size_t nameOffset, const char* value) {
+	char qualifiedName[64];
+	Tcl_Obj* v = Tcl_NewStringObj(value, 0);
 
-int setVisaConstants(Tcl_Interp* const interp, const char* prefix) {
+	sprintf(qualifiedName, "%s%s", prefix, name + nameOffset);
+	return NULL == Tcl_SetVar2Ex(interp, qualifiedName, NULL, v, TCL_LEAVE_ERR_MSG)
+		? TCL_ERROR : TCL_OK;
+}
+
+#define addIntVar(name)	\
+	if (TCL_OK != addIntegerVar(interp, prefix, #name, 3, name)/* || TCL_OK != addIntegerVar(interp, "", #name, 0, name)*/) goto error
+
+int setVisaConstants(Tcl_Interp* const interp, const char* prefix, const char *version) {
 
 #include "visa_constants.inc"
+
+	if (TCL_OK != addStringVar(interp, "", "TCLVISAVERSION", 0, version)) {
+		goto error;
+	}
 
 	return TCL_OK;
 

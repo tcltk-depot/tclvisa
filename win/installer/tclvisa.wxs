@@ -23,12 +23,21 @@
 			<Directory Id="TclLib" Name="lib">
 				<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)$(var.ProductVersion)">
 					<Component Id="MainComponent" Guid="452ffcde-310d-626d-9479-91490000976e">
-						<File Id="Module" DiskId="1" Source="../tclvisa.dll"/>
+						<File Id="Module" DiskId="1" Source="../$(var.ExecutableName)"/>
 						<File Id="Index" DiskId="1" Source="../pkgIndex.tcl"/>
+						<File Id="License" DiskId="1" Source="License.rtf"/>
+						<File Id="ScripticsLicense" DiskId="1" Source="../../license.terms"/>
 					</Component>
 					<Directory Id="DocDir" Name="doc">
 						<Component Id="Manual" Guid="fbd1f3fa-7140-86b0-be38-ba5700009826">
 							<File Id="Manual" DiskId="1" Source="../../doc/tclvisa.pdf" />
+						</Component>
+					</Directory>
+					<Directory Id="DemoDir" Name="demo">
+						<Component Id="DemoScripts" Guid="e2dcb4c2-83ac-ff23-7685-b7cc00001756">
+							<File DiskId="1" Source="../../demo/exclusive-lock.tcl" />
+							<File DiskId="1" Source="../../demo/fconfigure.tcl" />
+							<File DiskId="1" Source="../../demo/identify.tcl" />
 						</Component>
 					</Directory>
 				</Directory>
@@ -36,31 +45,13 @@
 		</Directory>
 	</Directory>
 
-    <Feature Id="Complete" Title="$(var.ProductName)" Level="1">
+    <Feature Id="Complete" Title="Binaries &amp; Documentation" Level="1" Absent="disallow" AllowAdvertise="no">
       <ComponentRef Id="MainComponent" />
       <ComponentRef Id="Manual" />
+      <ComponentRef Id="DemoScripts" />
     </Feature>
 
-	<!--
-		Script detects Tcl installation on target machine
-	-->
-	<Binary
-		Id="TclDetectionScript"
-		SourceFile="detectTcl.js"
-	/>
-
-	<!--
-		Action runs a script to detect Tcl installation on target machine
-	-->
-	<CustomAction
-		Id="TclDetection"
-		BinaryKey="TclDetectionScript"
-		JScriptCall="findTcl"
-		Execute="immediate"
-		Return="check"
-		Impersonate="yes"
-	/>
-
+	<!-- Current ActiveTcl version stored in HKCU registry branch -->
 	<Property Id="ACTIVETCLVERSIONHKCU">
 		<RegistrySearch
 			Id="RS.ActiveTclVersionHKCU"
@@ -70,6 +61,7 @@
 			Type="raw"
 		/>
 	</Property>
+	<!-- Current ActiveTcl version stored in HKLM registry branch -->
 	<Property Id="ACTIVETCLVERSIONHKLM">
 		<RegistrySearch
 			Id="RS.ActiveTclVersionHKLM"
@@ -79,6 +71,7 @@
 			Type="raw"
 		/>
 	</Property>
+	<!-- Path to ActiveTcl stored in HKCU registry branch -->
 	<Property Id="ACTIVETCLDIRHKCU">
 		<RegistrySearch
 			Id="RS.ActiveTclDirHKCU"
@@ -87,6 +80,7 @@
 			Type="directory"
 		/>
 	</Property>
+	<!-- Path to ActiveTcl stored in HKLM registry branch -->
 	<Property Id="ACTIVETCLDIRHKLM">
 		<RegistrySearch
 			Id="RS.ActiveTclDirHKLM"
@@ -95,33 +89,70 @@
 			Type="directory"
 		/>
 	</Property>
+	<!-- Path to Cygwin stored in HKCU registry branch -->
+	<Property Id="CYGWINDIRHKCU">
+		<RegistrySearch
+			Id="RS.CygwinDirHKCU"
+			Root="HKCU"			
+			Key="SOFTWARE\Cygwin\setup"
+			Name="rootdir"
+			Type="directory"
+		/>
+	</Property>
+	<!-- Path to Cygwin stored in HKLM registry branch -->
+	<Property Id="CYGWINDIRHKLM">
+		<RegistrySearch
+			Id="RS.CygwinDirHKLM"
+			Root="HKLM"			
+			Key="SOFTWARE\Cygwin\setup"
+			Name="rootdir"
+			Type="directory"
+		/>
+	</Property>
 	
-	<Property Id="TCLDIR" Value="C:\" />
+	<Property Id="TCLDIR">
+		<!-- Should always return "not found" -->
+		<RegistrySearch
+			Id="RS.AlwaysFalse"
+			Root="HKLM"			
+			Key="_ABSENT_REGISTRY_BRANCH_"
+			Type="directory"
+		/>
+	</Property>
 
+	<!-- Actions set Tcl directory to proper Property's value -->
 	<CustomAction
 		Id="CA.Set_TCLDIR_From_ACTIVETCLDIRHKCU"
-		Property="TCLDIR"
+		Directory="TCLDIR"
 		Value="[ACTIVETCLDIRHKCU]" />
 	<CustomAction
 		Id="CA.Set_TCLDIR_From_ACTIVETCLDIRHKLM"
-		Property="TCLDIR"
+		Directory="TCLDIR"
 		Value="[ACTIVETCLDIRHKLM]" />
+	<CustomAction
+		Id="CA.Set_TCLDIR_From_CYGWINDIRHKCU"
+		Directory="TCLDIR"
+		Value="[CYGWINDIRHKCU]" />
+	<CustomAction
+		Id="CA.Set_TCLDIR_From_CYGWINDIRHKLM"
+		Directory="TCLDIR"
+		Value="[CYGWINDIRHKLM]" />
+
+	<InstallUISequence>
+		<Custom Action="CA.Set_TCLDIR_From_ACTIVETCLDIRHKCU" After="CostFinalize">NOT Installed AND ACTIVETCLDIRHKCU AND (NOT TCLDIR OR TCLDIR=TARGETDIR)</Custom>
+		<Custom Action="CA.Set_TCLDIR_From_ACTIVETCLDIRHKLM" After="CostFinalize">NOT Installed AND ACTIVETCLDIRHKLM AND (NOT TCLDIR OR TCLDIR=TARGETDIR)</Custom>
+		<Custom Action="CA.Set_TCLDIR_From_CYGWINDIRHKCU" After="CostFinalize">NOT Installed AND CYGWINDIRHKCU AND (NOT TCLDIR OR TCLDIR=TARGETDIR)</Custom>
+		<Custom Action="CA.Set_TCLDIR_From_CYGWINDIRHKLM" After="CostFinalize">NOT Installed AND CYGWINDIRHKLM AND (NOT TCLDIR OR TCLDIR=TARGETDIR)</Custom>
+	</InstallUISequence>
+
+	<InstallExecuteSequence>
+	</InstallExecuteSequence>
 
     <Property Id="WixUI_InstallDir" Value="INSTALLLOCATION" ></Property>
     <WixVariable Id="WixUILicenseRtf" Overridable="yes" Value="License.rtf"/>
 
-<!--	<Condition Message="This library requires ActiveTcl. Please install the ActiveTcl then run this installer again. You can download ActiveTcl installator here: http://www.activestate.com/activetcl/downloads">
-	    <![CDATA[Installed OR TCLDIR]]>
-	</Condition>	-->
-
-	<InstallExecuteSequence>
-		<Custom Action="CA.Set_TCLDIR_From_ACTIVETCLDIRHKCU" Before="CostInitialize">ACTIVETCLDIRHKCU</Custom>
-		<Custom Action="CA.Set_TCLDIR_From_ACTIVETCLDIRHKLM" Before="CostInitialize">ACTIVETCLDIRHKLM</Custom>
-<!--		<Custom Action="TclDetection" After="InstallInitialize" />	-->
-	</InstallExecuteSequence>
-
 	<Property Id="WIXUI_INSTALLDIR" Value="INSTALLLOCATION"/>
-	<UIRef Id="WixUI_InstallDir" />	
+	<UIRef Id="WixUI_InstallDir" />
 
   </Product>
 </Wix>

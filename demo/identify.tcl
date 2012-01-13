@@ -53,18 +53,6 @@ if { [catch { set vi [visa::open $rm $visaAddr] } rc] } {
   exit
 }
 
-# We should set this type of buffering in order to use message-based protocols
-#   rather than stream-based ones.
-# By default Tcl waits until IO buffer is full before actual IO operations.
-# "line" buffering invokes IO operations when "terminator" character is 
-#   received/sent.
-# Default "terminator" character is new line (0x0a) that is compatible 
-#   with SCPI.
-fconfigure $vi -buffering line
-
-# Turn on binary encoding to avoid "line line" character transformations
-fconfigure $vi -encoding binary -translation binary
-
 # Send command to instrument. New line is added automatically by `puts`.
 puts $vi "*CLS"
 
