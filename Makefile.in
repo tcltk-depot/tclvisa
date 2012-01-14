@@ -205,10 +205,6 @@ libraries:
 
 $(DOC_FILE_NAME): doc/tclvisa.tex doc/title.tex
 	pdflatex -output-directory doc doc/tclvisa > doc/pdflatex.out
-#	@echo "If you have documentation to create, place the commands to"
-#	@echo "build the docs in the 'doc:' target.  For example:"
-#	@echo "        xml2nroff sample.xml > sample.n"
-#	@echo "        xml2html sample.xml > sample.html"
 
 install: all install-binaries install-libraries install-doc
 
@@ -305,7 +301,7 @@ VPATH = $(srcdir)/src/tclvisa
 #========================================================================
 
 #COMPRESS	= tar cvf $(PKG_DIR).tar $(PKG_DIR); compress $(PKG_DIR).tar
-COMPRESS	= gtar zcvf $(PKG_DIR).tar.gz $(PKG_DIR)
+COMPRESS	= tar zcvf $(PKG_DIR).tar.gz $(PKG_DIR)
 DIST_ROOT	= /tmp/dist
 DIST_DIR	= $(DIST_ROOT)/$(PKG_DIR)
 
@@ -314,7 +310,7 @@ dist-clean:
 
 dist: dist-clean
 	mkdir -p $(DIST_DIR)
-	cp -p $(srcdir)/ChangeLog $(srcdir)/README* $(srcdir)/license* \
+	cp -p $(srcdir)/ChangeLog $(srcdir)/README* $(srcdir)/license* $(srcdir)/COPYING \
 		$(srcdir)/aclocal.m4 $(srcdir)/configure $(srcdir)/*.in \
 		$(DIST_DIR)/
 	chmod 664 $(DIST_DIR)/Makefile.in $(DIST_DIR)/aclocal.m4
@@ -332,13 +328,29 @@ dist: dist-clean
 	chmod 664 $(DIST_DIR)/tclconfig/tcl.m4
 	chmod +x $(DIST_DIR)/tclconfig/install-sh
 
-	list='demos doc generic library mac tests unix win'; \
+	list='demo src src/tclvisa'; \
 	for p in $$list; do \
 	    if test -d $(srcdir)/$$p ; then \
 		mkdir $(DIST_DIR)/$$p; \
-		cp -p $(srcdir)/$$p/*.* $(DIST_DIR)/$$p/; \
+		cp -fp $(srcdir)/$$p/*.* $(DIST_DIR)/$$p/; \
 	    fi; \
 	done
+
+	mkdir $(DIST_DIR)/doc;
+	cp doc/*.tex $(DIST_DIR)/doc/ 
+	cp doc/*.pdf $(DIST_DIR)/doc/ 
+
+	mkdir $(DIST_DIR)/win;
+	cp win/*.vc $(DIST_DIR)/win/ 
+	cp win/*.tcl $(DIST_DIR)/win/ 
+	cp win/README* $(DIST_DIR)/win/ 
+
+	mkdir $(DIST_DIR)/win/installer;
+	cp win/installer/*.wxi $(DIST_DIR)/win/installer/ 
+	cp win/installer/*.wxs $(DIST_DIR)/win/installer/ 
+	cp win/installer/*.rtf $(DIST_DIR)/win/installer/ 
+	cp win/installer/*.cmd $(DIST_DIR)/win/installer/ 
+	cp win/installer/README* $(DIST_DIR)/win/installer/ 
 
 	(cd $(DIST_ROOT); $(COMPRESS);)
 

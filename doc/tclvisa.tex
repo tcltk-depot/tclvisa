@@ -57,6 +57,12 @@ Prior to usage of \tclvisa one need \VISA implementation installed. There are se
 
 If you have no access to system directories to install \tclvisa into, you can install into arbitrary directory. In order to make Tcl known about this directory, you should add path to it to \mbox{\tt TCLLIBPATH} environment variable.
 
+\subsection{Installation in Microsoft Windows}
+
+Binary instalation package for Microsoft Windows can be downloaded from \tclvisa site. This package contains DLL with compiled library code, documentation and demo scripts. All downloads can be found here: 
+
+\href{http://sourceforge.net/projects/tclvisa/files/}{http://sourceforge.net/projects/tclvisa/files/}.
+
 \section{Use in Tcl}
 
 In order to start using \tclvisa within Tcl one should issue following command:
@@ -68,6 +74,19 @@ package require tclvisa
 If the library is properly installed, this command returns version of \tclvisa loaded. Library is ready to use. All commands and predefined variables are placed in {\tt visa::} namespace.
 
 \chapter{Programming with \tclvisa}
+
+\section{\VISA Constants}
+
+\VISA defines a lot of predefined contants with codes of attributes, errors etc. Most of these constants are available in Tcl within {\tt visa} namespace and without {\tt VI\_} prefix.
+
+For example, {\tt VI\_EXCLUSIVE\_LOCK} constant is represented by \\{\tt visa::EXCLUSIVE\_LOCK} variable in Tcl. When using these predefined variables in expressions, do not forget adding {\tt \$} prefix prior to variable name.
+
+Following example demonstrates usage of predefined constant:
+
+\begin{verbatim} 
+# open instrument exclusively
+set vi [visa::open $rm "ASRL2::INSTR" $visa::EXCLUSIVE_LOCK]
+\end{verbatim} 
 
 \section{Channels}
 
@@ -106,26 +125,142 @@ Fortunately Tcl offers different buffering options, which can be set or red by \
 
 When \VISA channel is created by \COMMANDREF{visa::open}, buffering type is automatically set to ``{\tt line}''. If one needs to switch channel mode, then \TCLCOMMANDREF{fconfigure} command with proper {\tt -buffering} option should be issued.
 
-\section{\VISA Constants}
+\subsection{IO Timeouts}
 
-\VISA defines a lot of predefined contants with codes of attributes, errors etc. Most of these constants are available in Tcl within {\tt visa} namespace and without {\tt VI\_} prefix.
+In \VISA API IO message communication timeouts can be specified or read by \VISACOMMANDREF{viSetAttribute} and \VISACOMMANDREF{viGetAttribute} functions where \mbox{{\tt attribute}} parameter is set to \mbox{{\tt VI\_ATTR\_TMO\_VALUE}}.
 
-For example, {\tt VI\_EXCLUSIVE\_LOCK} constant is represented by \\{\tt visa::EXCLUSIVE\_LOCK} variable in Tcl. When using these predefined variables in expressions, do not forget adding {\tt \$} prefix prior to variable name.
-
-Following example demonstrates usage of predefined constant:
+In \tclvisa timeout can be controlled in similar way via \COMMANDREF{visa::set-attribute} and \COMMANDREF{visa::get-attribute} commands. But preferred and more laconic approach is to use \TCLCOMMANDREF{fconfigure} Tcl command with standard \mbox{\tt -timeout} option. Look at the example below:
 
 \begin{verbatim} 
-# open instrument exclusively
-set vi [visa::open $rm "ASRL2::INSTR" $visa::EXCLUSIVE_LOCK]
+# open an instrument
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# read current timeout value
+set tm [fconfigure $vi -timeout]
+
+# set new timeout value
+fconfigure $vi -timeout [expr 2 * $tm]
 \end{verbatim} 
+
+In this example we read current timeout value, then set a new value that is twice the original one.
+
+Inside the \tclvisa these invocations of \TCLCOMMANDREF{fconfigure} are converted to corresponding calls of \VISACOMMANDREF{viGetAttribute} and \VISACOMMANDREF{viSetAttribute} \VISA API functions.
+
+\subsection{Non-blocking IO}
+
+Standard Tcl channels have a {\tt -blocking} option which ``determines whether I/O operations on the channel can cause the process to block indefinitely'' (quote from the {\tt fconfigure} manual).
+
+\VISA API does not support non-blocking IO natively, probably because it offers asynchronous operations for that. In \tclvisa non-blocking IO is \emph{emulated} by setting IO timeout to zero.
+
+I.~e. when user sets a \VISA channel to non-blocking mode by {\tt fconfigure} command with {\tt -blocking 0} option, \tclvisa internally sets IO timeout for this channel to zero. When channel is reverted back to the blocking mode (that is the default state for all \VISA channels), timeout is restored to the previous value.
+
+See also ``\hyperref[secSuppressedErrors]{Suppressed Errors}'' section on page~\pageref{secSuppressedErrors}.
+
+\subsection{Anynchronous IO}
+
+Tcl \TCLCOMMANDREF{fileevent} command cannot be called upon \VISA channel. This functionality is not implemented yet.
+
+Support of \VISACOMMANDREF{viWriteAsync} and \VISACOMMANDREF{viReadAsync} \VISA API functions is not implemented too.
+
+\subsection{Serial-Specific Options}
+
+When a standard Tcl channel is backed by a serial port, it has a set of specific options that control baud speed, parity etc.
+
+\VISA instruments which are connected to the serial port (their addresses start with {\tt ASRL} prefix) have full set of corresponding attributes, such as {\tt VI\_ATTR\_ASRL\_BAUD}, {\tt VI\_ATTR\_ASRL\_PARITY} and similar. In order to configure, for instance, baud rate one can use \COMMANDREF{visa::set-attribute} command with {\tt \$visa::ATTR\_ASRL\_BAUD} passed as an attribute name. But preferred way is to use \TCLCOMMANDREF{fconfigure} Tcl command and standard options. See example:
+
+\begin{verbatim} 
+# open an instrument
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# set baud rate, parity, word length and stop bits
+fconfigure $vi -mode 9600,n,8,1
+\end{verbatim}
+
+From the Tcl code's point of view channel `{\tt vi}' behaves like a regular serial port. For example, this channel can be transparently passed to third-party library that implements some serial-based protocol.
+
+All serial-specific options supported and corresponding \VISA attributes are listed in fig.~\ref{tabSerialOptions}. Format of each option is described in the {\tt fconfigure} command manual.
+
+\begin{figure}
+\caption{Serial-specific channel options and \VISA equivalents.}
+\label{tabSerialOptions}
+\medskip
+\begin{tabular}{ll}
+Tcl option & \VISA Attribute(s) \\
+\hline
+handshake & {\tt VI\_ATTR\_ASRL\_FLOW\_CNTRL} \\
+mode & {\tt VI\_ATTR\_ASRL\_BAUD}, {\tt VI\_ATTR\_ASRL\_PARITY}, \\
+& {\tt VI\_ATTR\_ASRL\_DATA\_BITS}, {\tt VI\_ATTR\_ASRL\_STOP\_BITS} \\
+queue & {\tt VI\_ATTR\_ASRL\_AVAIL\_NUM} \\
+ttycontrol & {\tt VI\_ATTR\_ASRL\_DTR\_STATE}, {\tt VI\_ATTR\_ASRL\_RTS\_STATE}, \\
+& {\tt VI\_ATTR\_ASRL\_BREAK\_STATE} \\
+ttystatus & {\tt VI\_ATTR\_ASRL\_CTS\_STATE}, {\tt VI\_ATTR\_ASRL\_DSR\_STATE}, \\
+& {\tt VI\_ATTR\_ASRL\_RI\_STATE}, {\tt VI\_ATTR\_ASRL\_DCD\_STATE} \\
+xchar & {\tt VI\_ATTR\_ASRL\_XON\_CHAR}, {\tt VI\_ATTR\_ASRL\_XOFF\_CHAR} \\
+\end{tabular}
+\end{figure}
+
+See also {\tt demo/fconfigure.tcl} script that demonstrates usage of channel options.
+
+\section{Error Handling}
+
+All \VISA API functions returns {\tt viStatus} value with error code. Zero code means successfull completion, positive value means that operation returns some warning which may be ignored in the most of cases. Negative code means error that should be handled by application.
+
+In scripting language like Tcl the API developer should follow ``KISS'' principle and make things as simple as possible. This is why \tclvisa commands do not explicitly return error code to the calling script. Instead they return either actual result of operation (say, instance of the new channel created by \COMMANDREF{visa::open} command) or nothing, when operation has no any meaningful result (e.~g. \COMMANDREF{visa::set-attribute}). 
+
+When underlying \VISA API function returns error, and \tclvisa cannot handle this error itself, it throws an exception which can be handled by \TCLCOMMANDREF{catch} command in the calling script. This is a standard and expected behaviour for Tcl command. For example, standard \TCLCOMMANDREF{open} command throws exception when it cannot open a file. Exception handler receives a string with error code and description in the following format:
+
+\begin{verbatim} 
+[CODE] Text description
+\end{verbatim} 
+
+where {\tt CODE} is the name of the predefined \VISA error constant.
+
+In the following example we're trying to open an instrument that does not actually exist:
+
+\begin{verbatim} 
+# this attempt should return VI_ERROR_RSRC_NFOUND error
+if { [catch { set vi [visa::open $rm ASRL99::INSTR] } rc] } {
+  puts "Error: $rc"
+}
+\end{verbatim} 
+
+This code produces following output:
+
+\begin{verbatim} 
+Error: [VI_ERROR_RSRC_NFOUND] Insufficient location information
+ or resource not present in the system.
+\end{verbatim} 
+
+Calling side then can parse the error string to retrieve \VISA error code which is placed between square brackets.
+
+\subsection{Suppressed Errors}
+\label{secSuppressedErrors}
+
+Some errors returned from \VISA functions are suppressed by \tclvisa, i.~e. do not cause Tcl exceptions:
+
+\begin{itemize}
+
+\item Timeout error ({\tt VI\_ERROR\_TMO}) is suppressed by IO operations on VISA channels. For example, when read attempt expires, the \TCLCOMMANDREF{read} command simply returns empty string.
+
+\item {\tt VI\_ERROR\_RSRC\_NFOUND} error returned by \VISACOMMANDREF{viFindRsrc} or \VISACOMMANDREF{viFindNext} is suppressed by \COMMANDREF{visa::find} command. For example, when search criteria do not produce any result, this command simply returns an empty list.
+
+\item {\tt VI\_ERROR\_INV\_RSRC\_NAME} and {\tt VI\_ERROR\_RSRC\_NFOUND} errors returned by \VISACOMMANDREF{viParseRsrc} are suppressed by 
+\COMMANDREF{visa::parse-rsrc} command.
+
+\end{itemize}
 
 \section{Correspondence Between \VISA Functions and Tcl Commands}
 \label{sec_correspondence}
 
-Following table contains list of \VISA API functions supported by \tclvisa and corresponding commands to use in Tcl.
+Table on the figure~\ref{tabCorrespondence} contains list of \VISA API functions supported by \tclvisa and corresponding commands to use in Tcl.
 
+\begin{figure}
+\caption{\VISA functions and Tcl equivalents.}
+\label{tabCorrespondence}
+\medskip
 \begin{tabular}{ll}
 \VISA API function & Tcl Command \\
+\hline
 \VISACOMMANDREF{viClear} & \COMMANDREF{visa::clear}	\\
 \VISACOMMANDREF{viClose} & \TCLCOMMANDREF{close}	\\
 \VISACOMMANDREF{viFindNext}, \VISACOMMANDREF{viFindRsrc} & \COMMANDREF{visa::find}	\\
@@ -144,6 +279,7 @@ Following table contains list of \VISA API functions supported by \tclvisa and c
 \VISACOMMANDREF{viWrite} & \TCLCOMMANDREF{puts}	\\
 \VISACOMMANDREF{viWriteFromFile} & \COMMANDREF{visa::write-from-file}	\\
 \end{tabular}
+\end{figure}
 
 \chapter{\tclvisa Command Reference}
 

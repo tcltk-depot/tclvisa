@@ -1,0 +1,20 @@
+2012-01-14  Andrey Nakin  <andrey.nakin@gmail.com>
+
+	* Tclvisa 0.2.0 released
+	
+	Library supports following VISA commands:
+		viClear
+		viClose
+		viFindNext, viFindRsrc
+		viGetAttribute
+		viLock
+		viOpen
+		viOpenDefaultRM
+		viParseRsrc
+		viRead
+		viReadToFile
+		viSetAttribute
+		viUnlock
+		viWrite
+		viWriteFromFile
+

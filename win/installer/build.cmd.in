@@ -1,3 +1,3 @@
 @erase tclvisa.wixobj
 @candle tclvisa.wxs -ext WixUIExtension
-@light tclvisa.wixobj -ext WixUIExtension -out @PACKAGE_NAME@-@PACKAGE_VERSION@-x86.msi
+@light tclvisa.wixobj -ext WixUIExtension -out @PACKAGE_NAME@-@PACKAGE_VERSION@-win-x86.msi
