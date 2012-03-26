@@ -14,7 +14,8 @@
     <Package 
 			InstallerVersion="200" 
 			Compressed="yes" 
-			Platform="x86"
+			Platform="$(env.TCLVISA_PLATFORM)"
+			InstallPrivileges="elevated"
 	/>
     <Media Id="1" Cabinet="tclvisa.cab" EmbedCab="yes" />
 
@@ -23,14 +24,14 @@
 			<Directory Id="TclLib" Name="lib">
 				<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)$(var.ProductVersion)">
 					<Component Id="MainComponent" Guid="452ffcde-310d-626d-9479-91490000976e">
-						<File Id="Module" DiskId="1" Source="../$(var.ExecutableName)"/>
-						<File Id="Index" DiskId="1" Source="../pkgIndex.tcl"/>
-						<File Id="License" DiskId="1" Source="License.rtf"/>
-						<File Id="ScripticsLicense" DiskId="1" Source="../../license.terms"/>
+						<File DiskId="1" Source="../$(var.ExecutableName)"/>
+						<File DiskId="1" Source="../pkgIndex.tcl"/>
+						<File DiskId="1" Source="License.rtf"/>
+						<File DiskId="1" Source="../../license.terms"/>
 					</Component>
 					<Directory Id="DocDir" Name="doc">
 						<Component Id="Manual" Guid="fbd1f3fa-7140-86b0-be38-ba5700009826">
-							<File Id="Manual" DiskId="1" Source="../../doc/tclvisa.pdf" />
+							<File DiskId="1" Source="$(var.ManualName)" />
 						</Component>
 					</Directory>
 					<Directory Id="DemoDir" Name="demo">
@@ -38,6 +39,7 @@
 							<File DiskId="1" Source="../../demo/exclusive-lock.tcl" />
 							<File DiskId="1" Source="../../demo/fconfigure.tcl" />
 							<File DiskId="1" Source="../../demo/identify.tcl" />
+							<File DiskId="1" Source="../../demo/last-error.tcl" />
 						</Component>
 					</Directory>
 				</Directory>
@@ -51,6 +53,12 @@
       <ComponentRef Id="DemoScripts" />
     </Feature>
 
+	<?if $(env.TCLVISA_PLATFORM) = x64 ?>
+		<?define Win64Registry = "yes" ?>
+	<?else?>
+		<?define Win64Registry = "no" ?>
+	<?endif?>
+
 	<!-- Current ActiveTcl version stored in HKCU registry branch -->
 	<Property Id="ACTIVETCLVERSIONHKCU">
 		<RegistrySearch
@@ -59,6 +67,7 @@
 			Key="Software\ActiveState\ActiveTcl"
 			Name="CurrentVersion"
 			Type="raw"
+			Win64="$(var.Win64Registry)"
 		/>
 	</Property>
 	<!-- Current ActiveTcl version stored in HKLM registry branch -->
@@ -66,9 +75,10 @@
 		<RegistrySearch
 			Id="RS.ActiveTclVersionHKLM"
 			Root="HKLM"			
-			Key="Software\ActiveState\ActiveTcl"
+			Key="SOFTWARE\ActiveState\ActiveTcl"
 			Name="CurrentVersion"
 			Type="raw"
+			Win64="$(var.Win64Registry)"
 		/>
 	</Property>
 	<!-- Path to ActiveTcl stored in HKCU registry branch -->
@@ -78,6 +88,7 @@
 			Root="HKCU"			
 			Key="Software\ActiveState\ActiveTcl\[ACTIVETCLVERSIONHKCU]"
 			Type="directory"
+			Win64="$(var.Win64Registry)"
 		/>
 	</Property>
 	<!-- Path to ActiveTcl stored in HKLM registry branch -->
@@ -87,6 +98,7 @@
 			Root="HKLM"			
 			Key="Software\ActiveState\ActiveTcl\[ACTIVETCLVERSIONHKLM]"
 			Type="directory"
+			Win64="$(var.Win64Registry)"
 		/>
 	</Property>
 	<!-- Path to Cygwin stored in HKCU registry branch -->
@@ -97,6 +109,7 @@
 			Key="SOFTWARE\Cygwin\setup"
 			Name="rootdir"
 			Type="directory"
+			Win64="$(var.Win64Registry)"
 		/>
 	</Property>
 	<!-- Path to Cygwin stored in HKLM registry branch -->
@@ -107,6 +120,7 @@
 			Key="SOFTWARE\Cygwin\setup"
 			Name="rootdir"
 			Type="directory"
+			Win64="$(var.Win64Registry)"
 		/>
 	</Property>
 	

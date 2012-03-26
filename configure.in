@@ -13,7 +13,7 @@ dnl	to configure the system for the local environment.
 # this case) so that we create the export library with the dll.
 #-----------------------------------------------------------------------
 
-AC_INIT([tclvisa], [0.2.0])
+AC_INIT([tclvisa], [0.3.0])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -64,7 +64,7 @@ TEA_SETUP_COMPILER
 # and PKG_TCL_SOURCES.
 #-----------------------------------------------------------------------
 
-TEA_ADD_SOURCES([./src/tclvisa/find.c ./src/tclvisa/visa_constants.c ./src/tclvisa/open_default_rm.c ./src/tclvisa/clear.c ./src/tclvisa/visa_channel.c ./src/tclvisa/set_attribute.c ./src/tclvisa/unlock.c ./src/tclvisa/visa_utils.c ./src/tclvisa/lock.c ./src/tclvisa/read_to_file.c ./src/tclvisa/open.c ./src/tclvisa/write_from_file.c ./src/tclvisa/get_attribute.c ./src/tclvisa/parse_rsrc.c ./src/tclvisa/tcl_utils.c ./src/tclvisa/tclvisa.c])
+TEA_ADD_SOURCES([./src/tclvisa/find.c ./src/tclvisa/visa_constants.c ./src/tclvisa/open_default_rm.c ./src/tclvisa/clear.c ./src/tclvisa/visa_channel.c ./src/tclvisa/set_attribute.c ./src/tclvisa/unlock.c ./src/tclvisa/visa_utils.c ./src/tclvisa/lock.c ./src/tclvisa/read_to_file.c ./src/tclvisa/open.c ./src/tclvisa/write_from_file.c ./src/tclvisa/get_attribute.c ./src/tclvisa/parse_rsrc.c ./src/tclvisa/tcl_utils.c ./src/tclvisa/tclvisa.c ./src/tclvisa/get_last_error.c])
 TEA_ADD_HEADERS([])
 TEA_ADD_INCLUDES([])
 TEA_ADD_LIBS([-lvisa])

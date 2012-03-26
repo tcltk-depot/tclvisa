@@ -37,13 +37,8 @@ int tclvisa_clear(const ClientData clientData, Tcl_Interp* const interp, const i
 
 	/* Attempt to clear instrument */
 	status = viClear(session->session);
-
 	/* Check status returned */
-	if (status < 0) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
-	} else {
-		Tcl_ResetResult(interp);
-	}
+	storeLastError(session, status, interp);
 
 	return status < 0 ? TCL_ERROR : TCL_OK;
 }

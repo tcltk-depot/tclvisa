@@ -58,10 +58,10 @@ int tclvisa_open(const ClientData clientData, Tcl_Interp* const interp, const in
 
 	/* Attempt to open instrument session */
 	status = viOpen(rmSession->session, TclGetString(objv[2]), accessMode, timeOut, &vi);
+	storeLastError(rmSession, status, interp);
 
 	/* Check status returned */
 	if (status < 0) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
 		return TCL_ERROR;
 	}
 

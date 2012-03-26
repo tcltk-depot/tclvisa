@@ -42,15 +42,15 @@ int tclvisa_parse_rsrc(const ClientData clientData, Tcl_Interp* const interp, co
 
 	/* Check status returned */
 	if (status == VI_ERROR_INV_RSRC_NAME || status == VI_ERROR_RSRC_NFOUND) {
-		Tcl_ResetResult(interp);
-		status = VI_SUCCESS;
+		storeLastError(rmSession, status = VI_SUCCESS, interp);
 	} else if (status < 0) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
+		storeLastError(rmSession, status, interp);
 	} else {
 		Tcl_Obj *res = Tcl_NewListObj(0, NULL);
 		Tcl_ListObjAppendElement(interp, res, Tcl_NewIntObj(intfType));
 		Tcl_ListObjAppendElement(interp, res, Tcl_NewIntObj(intfNum));
 		Tcl_SetObjResult(interp, res);
+		storeLastError(rmSession, status, NULL);
 	}
 
 	return status < 0 ? TCL_ERROR : TCL_OK;

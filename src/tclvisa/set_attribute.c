@@ -53,13 +53,7 @@ int tclvisa_set_attribute(const ClientData clientData, Tcl_Interp* const interp,
 
 	/* Attempt to set attribute */
 	status = viSetAttribute(session->session, (ViAttr) attr, (ViAttrState) value);
-
-	/* Check status returned */
-	if (VI_SUCCESS != status) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
-	} else {
-		Tcl_ResetResult(interp);
-	}
+	storeLastError(session, status, interp);
 	
 	return status < 0 ? TCL_ERROR : TCL_OK;
 }

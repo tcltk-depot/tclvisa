@@ -51,6 +51,7 @@ $(SRCDIR)\write_from_file.c \
 $(SRCDIR)\get_attribute.c \
 $(SRCDIR)\parse_rsrc.c \
 $(SRCDIR)\tcl_utils.c \
+$(SRCDIR)\get_last_error.c \
 $(SRCDIR)\tclvisa.c
 
 OBJS=\
@@ -69,6 +70,7 @@ $(OBJDIR)\write_from_file.obj \
 $(OBJDIR)\get_attribute.obj \
 $(OBJDIR)\parse_rsrc.obj \
 $(OBJDIR)\tcl_utils.obj \
+$(OBJDIR)\get_last_error.obj \
 $(OBJDIR)\tclvisa.obj
 
 DESTNAME=$(OUTDIR)\$(PACKAGE_NAME)$(PACKAGE_DLL_VERSION)

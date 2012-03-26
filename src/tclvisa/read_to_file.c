@@ -50,9 +50,10 @@ int read_to_file(const ClientData clientData, Tcl_Interp* const interp, const in
 
 	/* Check status returned */
 	if (status < 0 && VI_ERROR_TMO != status) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
+		storeLastError(session, status, interp);
 		return TCL_ERROR;
 	} else {
+		storeLastError(session, status, NULL);
 		Tcl_SetObjResult(interp, Tcl_NewLongObj((long) retCount));
 		return TCL_OK;
 	}

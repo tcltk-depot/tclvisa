@@ -1,3 +1,10 @@
+2012-03-26  Andrey Nakin  <andrey.nakin@gmail.com>
+
+	* Tclvisa 0.3.0 released
+	
+	Following commands were added:
+		visa::last-error
+
 2012-01-14  Andrey Nakin  <andrey.nakin@gmail.com>
 
 	* Tclvisa 0.2.0 released

@@ -1,3 +1,15 @@
+#ifdef VI_TRUE
+addIntVar( VI_TRUE );
+#endif
+
+#ifdef VI_FALSE
+addIntVar( VI_FALSE );
+#endif
+
+#ifdef VI_SUCCESS
+addIntVar( VI_SUCCESS );
+#endif
+
 #ifdef VI_ATTR_RSRC_CLASS
 addIntVar( VI_ATTR_RSRC_CLASS );
 #endif
@@ -1350,3 +1362,398 @@ addIntVar( VI_PXI_LBUS_STAR_TRIG_BUS_9 );
 addIntVar( VI_PXI_STAR_TRIG_CONTROLLER );
 #endif
 
+#ifdef VI_SUCCESS_EVENT_EN
+addIntVar( VI_SUCCESS_EVENT_EN );
+#endif
+
+#ifdef VI_SUCCESS_EVENT_DIS
+addIntVar( VI_SUCCESS_EVENT_DIS );
+#endif
+
+#ifdef VI_SUCCESS_QUEUE_EMPTY
+addIntVar( VI_SUCCESS_QUEUE_EMPTY );
+#endif
+
+#ifdef VI_SUCCESS_TERM_CHAR
+addIntVar( VI_SUCCESS_TERM_CHAR );
+#endif
+
+#ifdef VI_SUCCESS_MAX_CNT
+addIntVar( VI_SUCCESS_MAX_CNT );
+#endif
+
+#ifdef VI_SUCCESS_DEV_NPRESENT
+addIntVar( VI_SUCCESS_DEV_NPRESENT );
+#endif
+
+#ifdef VI_SUCCESS_TRIG_MAPPED
+addIntVar( VI_SUCCESS_TRIG_MAPPED );
+#endif
+
+#ifdef VI_SUCCESS_QUEUE_NEMPTY
+addIntVar( VI_SUCCESS_QUEUE_NEMPTY );
+#endif
+
+#ifdef VI_SUCCESS_NCHAIN
+addIntVar( VI_SUCCESS_NCHAIN );
+#endif
+
+#ifdef VI_SUCCESS_NESTED_SHARED
+addIntVar( VI_SUCCESS_NESTED_SHARED );
+#endif
+
+#ifdef VI_SUCCESS_NESTED_EXCLUSIVE
+addIntVar( VI_SUCCESS_NESTED_EXCLUSIVE );
+#endif
+
+#ifdef VI_SUCCESS_SYNC
+addIntVar( VI_SUCCESS_SYNC );
+#endif
+
+#ifdef VI_WARN_QUEUE_OVERFLOW
+addIntVar( VI_WARN_QUEUE_OVERFLOW );
+#endif
+
+#ifdef VI_WARN_CONFIG_NLOADED
+addIntVar( VI_WARN_CONFIG_NLOADED );
+#endif
+
+#ifdef VI_WARN_NULL_OBJECT
+addIntVar( VI_WARN_NULL_OBJECT );
+#endif
+
+#ifdef VI_WARN_NSUP_ATTR_STATE
+addIntVar( VI_WARN_NSUP_ATTR_STATE );
+#endif
+
+#ifdef VI_WARN_UNKNOWN_STATUS
+addIntVar( VI_WARN_UNKNOWN_STATUS );
+#endif
+
+#ifdef VI_WARN_NSUP_BUF
+addIntVar( VI_WARN_NSUP_BUF );
+#endif
+
+#ifdef VI_WARN_EXT_FUNC_NIMPL
+addIntVar( VI_WARN_EXT_FUNC_NIMPL );
+#endif
+
+#ifdef VI_ERROR_SYSTEM_ERROR
+addIntVar( VI_ERROR_SYSTEM_ERROR );
+#endif
+
+#ifdef VI_ERROR_INV_OBJECT
+addIntVar( VI_ERROR_INV_OBJECT );
+#endif
+
+#ifdef VI_ERROR_RSRC_LOCKED
+addIntVar( VI_ERROR_RSRC_LOCKED );
+#endif
+
+#ifdef VI_ERROR_INV_EXPR
+addIntVar( VI_ERROR_INV_EXPR );
+#endif
+
+#ifdef VI_ERROR_RSRC_NFOUND
+addIntVar( VI_ERROR_RSRC_NFOUND );
+#endif
+
+#ifdef VI_ERROR_INV_RSRC_NAME
+addIntVar( VI_ERROR_INV_RSRC_NAME );
+#endif
+
+#ifdef VI_ERROR_INV_ACC_MODE
+addIntVar( VI_ERROR_INV_ACC_MODE );
+#endif
+
+#ifdef VI_ERROR_TMO
+addIntVar( VI_ERROR_TMO );
+#endif
+
+#ifdef VI_ERROR_CLOSING_FAILED
+addIntVar( VI_ERROR_CLOSING_FAILED );
+#endif
+
+#ifdef VI_ERROR_INV_DEGREE
+addIntVar( VI_ERROR_INV_DEGREE );
+#endif
+
+#ifdef VI_ERROR_INV_JOB_ID
+addIntVar( VI_ERROR_INV_JOB_ID );
+#endif
+
+#ifdef VI_ERROR_NSUP_ATTR
+addIntVar( VI_ERROR_NSUP_ATTR );
+#endif
+
+#ifdef VI_ERROR_NSUP_ATTR_STATE
+addIntVar( VI_ERROR_NSUP_ATTR_STATE );
+#endif
+
+#ifdef VI_ERROR_ATTR_READONLY
+addIntVar( VI_ERROR_ATTR_READONLY );
+#endif
+
+#ifdef VI_ERROR_INV_LOCK_TYPE
+addIntVar( VI_ERROR_INV_LOCK_TYPE );
+#endif
+
+#ifdef VI_ERROR_INV_ACCESS_KEY
+addIntVar( VI_ERROR_INV_ACCESS_KEY );
+#endif
+
+#ifdef VI_ERROR_INV_EVENT
+addIntVar( VI_ERROR_INV_EVENT );
+#endif
+
+#ifdef VI_ERROR_INV_MECH
+addIntVar( VI_ERROR_INV_MECH );
+#endif
+
+#ifdef VI_ERROR_HNDLR_NINSTALLED
+addIntVar( VI_ERROR_HNDLR_NINSTALLED );
+#endif
+
+#ifdef VI_ERROR_INV_HNDLR_REF
+addIntVar( VI_ERROR_INV_HNDLR_REF );
+#endif
+
+#ifdef VI_ERROR_INV_CONTEXT
+addIntVar( VI_ERROR_INV_CONTEXT );
+#endif
+
+#ifdef VI_ERROR_QUEUE_OVERFLOW
+addIntVar( VI_ERROR_QUEUE_OVERFLOW );
+#endif
+
+#ifdef VI_ERROR_NENABLED
+addIntVar( VI_ERROR_NENABLED );
+#endif
+
+#ifdef VI_ERROR_ABORT
+addIntVar( VI_ERROR_ABORT );
+#endif
+
+#ifdef VI_ERROR_RAW_WR_PROT_VIOL
+addIntVar( VI_ERROR_RAW_WR_PROT_VIOL );
+#endif
+
+#ifdef VI_ERROR_RAW_RD_PROT_VIOL
+addIntVar( VI_ERROR_RAW_RD_PROT_VIOL );
+#endif
+
+#ifdef VI_ERROR_OUTP_PROT_VIOL
+addIntVar( VI_ERROR_OUTP_PROT_VIOL );
+#endif
+
+#ifdef VI_ERROR_INP_PROT_VIOL
+addIntVar( VI_ERROR_INP_PROT_VIOL );
+#endif
+
+#ifdef VI_ERROR_BERR
+addIntVar( VI_ERROR_BERR );
+#endif
+
+#ifdef VI_ERROR_IN_PROGRESS
+addIntVar( VI_ERROR_IN_PROGRESS );
+#endif
+
+#ifdef VI_ERROR_INV_SETUP
+addIntVar( VI_ERROR_INV_SETUP );
+#endif
+
+#ifdef VI_ERROR_QUEUE_ERROR
+addIntVar( VI_ERROR_QUEUE_ERROR );
+#endif
+
+#ifdef VI_ERROR_ALLOC
+addIntVar( VI_ERROR_ALLOC );
+#endif
+
+#ifdef VI_ERROR_INV_MASK
+addIntVar( VI_ERROR_INV_MASK );
+#endif
+
+#ifdef VI_ERROR_IO
+addIntVar( VI_ERROR_IO );
+#endif
+
+#ifdef VI_ERROR_INV_FMT
+addIntVar( VI_ERROR_INV_FMT );
+#endif
+
+#ifdef VI_ERROR_NSUP_FMT
+addIntVar( VI_ERROR_NSUP_FMT );
+#endif
+
+#ifdef VI_ERROR_LINE_IN_USE
+addIntVar( VI_ERROR_LINE_IN_USE );
+#endif
+
+#ifdef VI_ERROR_NSUP_MODE
+addIntVar( VI_ERROR_NSUP_MODE );
+#endif
+
+#ifdef VI_ERROR_SRQ_NOCCURRED
+addIntVar( VI_ERROR_SRQ_NOCCURRED );
+#endif
+
+#ifdef VI_ERROR_INV_SPACE
+addIntVar( VI_ERROR_INV_SPACE );
+#endif
+
+#ifdef VI_ERROR_INV_OFFSET
+addIntVar( VI_ERROR_INV_OFFSET );
+#endif
+
+#ifdef VI_ERROR_INV_WIDTH
+addIntVar( VI_ERROR_INV_WIDTH );
+#endif
+
+#ifdef VI_ERROR_NSUP_OFFSET
+addIntVar( VI_ERROR_NSUP_OFFSET );
+#endif
+
+#ifdef VI_ERROR_NSUP_VAR_WIDTH
+addIntVar( VI_ERROR_NSUP_VAR_WIDTH );
+#endif
+
+#ifdef VI_ERROR_WINDOW_NMAPPED
+addIntVar( VI_ERROR_WINDOW_NMAPPED );
+#endif
+
+#ifdef VI_ERROR_RESP_PENDING
+addIntVar( VI_ERROR_RESP_PENDING );
+#endif
+
+#ifdef VI_ERROR_NLISTENERS
+addIntVar( VI_ERROR_NLISTENERS );
+#endif
+
+#ifdef VI_ERROR_NCIC
+addIntVar( VI_ERROR_NCIC );
+#endif
+
+#ifdef VI_ERROR_NSYS_CNTLR
+addIntVar( VI_ERROR_NSYS_CNTLR );
+#endif
+
+#ifdef VI_ERROR_NSUP_OPER
+addIntVar( VI_ERROR_NSUP_OPER );
+#endif
+
+#ifdef VI_ERROR_INTR_PENDING
+addIntVar( VI_ERROR_INTR_PENDING );
+#endif
+
+#ifdef VI_ERROR_ASRL_PARITY
+addIntVar( VI_ERROR_ASRL_PARITY );
+#endif
+
+#ifdef VI_ERROR_ASRL_FRAMING
+addIntVar( VI_ERROR_ASRL_FRAMING );
+#endif
+
+#ifdef VI_ERROR_ASRL_OVERRUN
+addIntVar( VI_ERROR_ASRL_OVERRUN );
+#endif
+
+#ifdef VI_ERROR_TRIG_NMAPPED
+addIntVar( VI_ERROR_TRIG_NMAPPED );
+#endif
+
+#ifdef VI_ERROR_NSUP_ALIGN_OFFSET
+addIntVar( VI_ERROR_NSUP_ALIGN_OFFSET );
+#endif
+
+#ifdef VI_ERROR_USER_BUF
+addIntVar( VI_ERROR_USER_BUF );
+#endif
+
+#ifdef VI_ERROR_RSRC_BUSY
+addIntVar( VI_ERROR_RSRC_BUSY );
+#endif
+
+#ifdef VI_ERROR_NSUP_WIDTH
+addIntVar( VI_ERROR_NSUP_WIDTH );
+#endif
+
+#ifdef VI_ERROR_INV_PARAMETER
+addIntVar( VI_ERROR_INV_PARAMETER );
+#endif
+
+#ifdef VI_ERROR_INV_PROT
+addIntVar( VI_ERROR_INV_PROT );
+#endif
+
+#ifdef VI_ERROR_INV_SIZE
+addIntVar( VI_ERROR_INV_SIZE );
+#endif
+
+#ifdef VI_ERROR_WINDOW_MAPPED
+addIntVar( VI_ERROR_WINDOW_MAPPED );
+#endif
+
+#ifdef VI_ERROR_NIMPL_OPER
+addIntVar( VI_ERROR_NIMPL_OPER );
+#endif
+
+#ifdef VI_ERROR_INV_LENGTH
+addIntVar( VI_ERROR_INV_LENGTH );
+#endif
+
+#ifdef VI_ERROR_INV_MODE
+addIntVar( VI_ERROR_INV_MODE );
+#endif
+
+#ifdef VI_ERROR_SESN_NLOCKED
+addIntVar( VI_ERROR_SESN_NLOCKED );
+#endif
+
+#ifdef VI_ERROR_MEM_NSHARED
+addIntVar( VI_ERROR_MEM_NSHARED );
+#endif
+
+#ifdef VI_ERROR_LIBRARY_NFOUND
+addIntVar( VI_ERROR_LIBRARY_NFOUND );
+#endif
+
+#ifdef VI_ERROR_NSUP_INTR
+addIntVar( VI_ERROR_NSUP_INTR );
+#endif
+
+#ifdef VI_ERROR_INV_LINE
+addIntVar( VI_ERROR_INV_LINE );
+#endif
+
+#ifdef VI_ERROR_FILE_ACCESS
+addIntVar( VI_ERROR_FILE_ACCESS );
+#endif
+
+#ifdef VI_ERROR_FILE_IO
+addIntVar( VI_ERROR_FILE_IO );
+#endif
+
+#ifdef VI_ERROR_NSUP_LINE
+addIntVar( VI_ERROR_NSUP_LINE );
+#endif
+
+#ifdef VI_ERROR_NSUP_MECH
+addIntVar( VI_ERROR_NSUP_MECH );
+#endif
+
+#ifdef VI_ERROR_INTF_NUM_NCONFIG
+addIntVar( VI_ERROR_INTF_NUM_NCONFIG );
+#endif
+
+#ifdef VI_ERROR_CONN_LOST
+addIntVar( VI_ERROR_CONN_LOST );
+#endif
+
+#ifdef VI_ERROR_MACHINE_NAVAIL
+addIntVar( VI_ERROR_MACHINE_NAVAIL );
+#endif
+
+#ifdef VI_ERROR_NPERMISSION
+addIntVar( VI_ERROR_NPERMISSION );
+#endif

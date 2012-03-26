@@ -37,13 +37,7 @@ int tclvisa_unlock(const ClientData clientData, Tcl_Interp* const interp, const 
 
 	/* Attempt to unlock instrument */
 	status = viUnlock(session->session);
-
-	/* Check status returned */
-	if (status < 0) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
-	} else {
-		Tcl_ResetResult(interp);
-	}
+	storeLastError(session, status, interp);
 
 	return status < 0 ? TCL_ERROR : TCL_OK;
 }

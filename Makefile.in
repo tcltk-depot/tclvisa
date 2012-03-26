@@ -118,7 +118,7 @@ TCL_BIN_DIR	= @TCL_BIN_DIR@
 TCL_SRC_DIR	= @TCL_SRC_DIR@
 #TK_BIN_DIR	= @TK_BIN_DIR@
 #TK_SRC_DIR	= @TK_SRC_DIR@
-DOC_FILE_NAME=doc/tclvisa.pdf
+DOC_FILE_NAME=doc/@PACKAGE_NAME@-@PACKAGE_VERSION@-manual.pdf
 
 # Not used, but retained for reference of what libs Tcl required
 #TCL_LIBS	= @TCL_LIBS@
@@ -205,6 +205,7 @@ libraries:
 
 $(DOC_FILE_NAME): doc/tclvisa.tex doc/title.tex
 	pdflatex -output-directory doc doc/tclvisa > doc/pdflatex.out
+	mv -f doc/tclvisa.pdf $(DOC_FILE_NAME)
 
 install: all install-binaries install-libraries install-doc
 
@@ -228,13 +229,13 @@ install-libraries: libraries
 # directory.
 #========================================================================
 
-install-doc: doc
-	@$(INSTALL_DATA_DIR) $(DESTDIR)$(mandir)/mann
-	@echo "Installing documentation in $(DESTDIR)$(mandir)"
-	@list='$(srcdir)/doc/*.n'; for i in $$list; do \
-	    echo "Installing $$i"; \
-	    $(INSTALL_DATA) $$i $(DESTDIR)$(mandir)/mann ; \
-	done
+#install-doc: doc
+#	@$(INSTALL_DATA_DIR) $(DESTDIR)$(mandir)/mann
+#	@echo "Installing documentation in $(DESTDIR)$(mandir)"
+#	@list='$(srcdir)/doc/*.n'; for i in $$list; do \
+#	    echo "Installing $$i"; \
+#	    $(INSTALL_DATA) $$i $(DESTDIR)$(mandir)/mann ; \
+#	done
 
 test: binaries libraries
 	$(TCLSH) `@CYGPATH@ $(srcdir)/tests/all.tcl` $(TESTFLAGS)
@@ -338,7 +339,6 @@ dist: dist-clean
 
 	mkdir $(DIST_DIR)/doc;
 	cp doc/*.tex $(DIST_DIR)/doc/ 
-	cp doc/*.pdf $(DIST_DIR)/doc/ 
 
 	mkdir $(DIST_DIR)/win;
 	cp win/*.vc $(DIST_DIR)/win/ 

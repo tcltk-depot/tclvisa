@@ -71,15 +71,12 @@ int tclvisa_lock(const ClientData clientData, Tcl_Interp* const interp, const in
 
 	/* Attempt to lock instrument */
 	status = viLock(session->session, lockType, timeout, requestedKey, accesskey);
+	storeLastError(session, status, interp);
 
 	/* Check status returned */
-	if (status < 0) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
-	} else {
+	if (status >= 0) {
 		if (accesskey) {
 			Tcl_SetObjResult(interp, Tcl_NewStringObj(accesskey, -1));
-		} else {
-			Tcl_ResetResult(interp);
 		}
 	}
 

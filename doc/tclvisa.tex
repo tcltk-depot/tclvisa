@@ -249,6 +249,8 @@ Some errors returned from \VISA functions are suppressed by \tclvisa, i.~e. do n
 
 \end{itemize}
 
+One can use \COMMANDREF{visa::last-error} command to determine the exact status of the last \VISA operation. This command returns all errors, including suppressed ones.
+
 \section{Correspondence Between \VISA Functions and Tcl Commands}
 \label{sec_correspondence}
 
@@ -380,6 +382,64 @@ set baud [visa::get-attribute $vi $visa::ATTR_ASRL_BAUD]
 \SEEALSO
 
 \COMMANDREF{visa::set-attribute}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::last-error}
+
+\PURPOSE
+
+Returns last error occured on the channel or Resource Manager session. This command has no \VISA API equivalent.
+
+\SYNTAX{visa::last-error session}
+
+\BEGINARGUMENTS
+\ARGUMENT{session} channel containing reference to an either resource session opened by \COMMANDREF{visa::open} or Resource Manager session opened by \COMMANDREF{visa::open-default-rm}.
+\ENDARGUMENTS
+
+\RETURN
+
+List of three elements:
+
+\begin{itemize}
+\item Numeric value of the last error.
+\item Character code of the last error that refers to a name of the corresponding C language macro. For example, ``{\tt VI\_ERROR\_TMO}''.
+\item Textual description of the last error or empty value if no error.
+\end{itemize}
+
+\NOTES
+
+This command is especially useful when IO operations fail, because exact \VISA error is not translated to client code by standard Tcl IO procedures, such as \TCLCOMMANDREF{puts} or \TCLCOMMANDREF{read}. In other words, when IO procedure (say, \TCLCOMMANDREF{puts}) fails on a \tclvisa channel, only way to know what exactly occured is to call \COMMANDREF{visa::last-error}.
+
+Only result of last operation is stored. All subsequent calls of \tclvisa or IO commands on a channel rewrite error information.
+
+The Resource Manager session holds result of last operation the session is used in, for example \COMMANDREF{visa::open} or \COMMANDREF{visa::find}.
+
+\EXAMPLE
+
+In the following example we're reading from an instrument and checking whether it timed out.
+
+\begin{verbatim} 
+# read from device
+set ans [gets $vi]
+
+if { $ans == "" } {
+  # Either timeout error or empty device response
+  set err [visa::last-error $vi]
+  if { [lindex $err 0] == $visa::ERROR_TMO } {
+    puts stderr "Error [lindex $err 1] reading from a device"
+    puts stderr "[lindex $err 2]"
+  }
+}
+\end{verbatim} 
+
+If the read operation timed out, following message will be displayed:
+
+\begin{verbatim} 
+Error VI_ERROR_TMO reading from a device
+The read/write operation was aborted because timeout expired 
+while operation was in progress.
+\end{verbatim} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

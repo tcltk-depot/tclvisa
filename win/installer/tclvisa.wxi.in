@@ -7,5 +7,6 @@
 <?define UpgradeCode="a5ce5a94-ed48-8a36-9ad6-22ec0000974f"?>
 <?define Manufacturer="Andrey V. Nakin"?>
 <?define ExecutableName="@PACKAGE_NAME@@PACKAGE_DLL_VERSION@.dll" ?>
+<?define ManualName="../../doc/@PACKAGE_NAME@-@PACKAGE_VERSION@-manual.pdf" ?>
 
 </Include>

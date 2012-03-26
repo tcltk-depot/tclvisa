@@ -57,8 +57,9 @@ int tclvisa_get_attribute(const ClientData clientData, Tcl_Interp* const interp,
 
 	/* Check status returned */
 	if (VI_SUCCESS != status) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
+		storeLastError(session, status, interp);
 	} else {
+		storeLastError(session, status, NULL);
 		Tcl_SetObjResult(interp, Tcl_NewLongObj((long) value));
 	}
 

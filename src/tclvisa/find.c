@@ -53,10 +53,11 @@ int tclvisa_find(const ClientData clientData, Tcl_Interp* const interp, const in
 
 	/* Check status returned */
 	if (status < 0 && VI_ERROR_RSRC_NFOUND != status) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
+		storeLastError(session, status, interp);
 		TclFreeObj(res);
 		return TCL_ERROR;
 	} else {
+		storeLastError(session, VI_SUCCESS, NULL);
 		Tcl_SetObjResult(interp, res);
 		return TCL_OK;
 	}

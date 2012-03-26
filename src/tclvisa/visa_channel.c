@@ -93,9 +93,9 @@ VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) 
 	VisaChannelData* data = (VisaChannelData*) malloc(sizeof(VisaChannelData));
 
 	/* Create and fill internal channel data */
+	memset((void*) data, 0, sizeof(*data));
 	data->session = session;
 	data->blocking = 1;
-	data->isRMSession = 0;
 
 	/* Attempt to create Tcl channel */
 	sprintf(channelName, "%s%u", TCLVISA_NAME_PREFIX, (unsigned) session);
@@ -172,6 +172,9 @@ static int closeProc(ClientData instanceData, Tcl_Interp *interp) {
 			Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
 		}
 	} else {
+		if (data->lastErrorMsg) {
+			free((void*) data->lastErrorMsg);
+		}
 		free(data);
 	}
 
@@ -235,6 +238,7 @@ static int inputProc(ClientData instanceData, char *buf, int bufSize, int *error
 	}
 
 	status = viRead(data->session, (ViPBuf) buf, (ViUInt32) bufSize, &retCount);
+	storeLastError(data, status, NULL);
 	result = (int) retCount;
 
 	if (VI_ERROR_TMO == status) {
@@ -267,6 +271,7 @@ static int outputProc(ClientData instanceData, const char *buf, int toWrite, int
 	}
 
 	status = viWrite(data->session, (ViBuf) buf, (ViUInt32) toWrite, &retCount);
+	storeLastError(data, status, NULL);
 	result = (int) retCount;
 
 	if (VI_ERROR_TMO == status && !data->blocking) {
@@ -441,14 +446,8 @@ static int setOptionProc(ClientData instanceData, Tcl_Interp *interp, const char
 
 visa_result:
 	/* Handle VISA return status */
-	if (status < 0) {
-		if (NULL != interp) {
-			Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
-		}
-		return TCL_ERROR;
-	} else {
-		return TCL_OK;
-	}
+	storeLastError(data, status, interp);
+	return status < 0 ? TCL_ERROR : TCL_OK;
 }
 
 static int getOptionProc(ClientData instanceData, Tcl_Interp *interp, const char *optionName, Tcl_DString *dsPtr) {
@@ -497,12 +496,10 @@ static int getOptionProc(ClientData instanceData, Tcl_Interp *interp, const char
 	if (len > 2 && strncmp(optionName, TCLVISA_OPTION_FLOW, len) == 0) {
 		ViUInt16 flow;
 		ViStatus status = viGetAttribute(data->session, VI_ATTR_ASRL_FLOW_CNTRL, &flow);
+		storeLastError(data, status, interp);
 
 		if (status < 0) {
-			if (interp) {
-				Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
-				return TCL_ERROR;
-			}
+			return TCL_ERROR;
 		} else {
 			valid = 1;
 			sprintf(buf, "%s", fromVisaFlow(flow));
@@ -518,6 +515,7 @@ static int getOptionProc(ClientData instanceData, Tcl_Interp *interp, const char
 		ViUInt8 xon, xoff;
 		ViStatus status1 = viGetAttribute(data->session, VI_ATTR_ASRL_XON_CHAR, &xon);
 		ViStatus status2 = viGetAttribute(data->session, VI_ATTR_ASRL_XOFF_CHAR, &xoff);
+		storeLastError(data, status1 < 0 ? status1 : status2, interp);
 
 		if (status1 >= 0 && status2 >= 0) {
 			char s[2] = {0, 0};
@@ -535,9 +533,6 @@ static int getOptionProc(ClientData instanceData, Tcl_Interp *interp, const char
 
 			valid = 1;
 		} else{
-			if (interp) {
-				Tcl_AppendResult(interp, visaErrorMessage(status1 < 0 ? status1 : status2), NULL);
-			}
 			return TCL_ERROR;
 		}
     }
@@ -561,11 +556,9 @@ static int getOptionProc(ClientData instanceData, Tcl_Interp *interp, const char
 		int inBuffered, outBuffered;
 		ViUInt32 inQueue;
 		ViStatus status = viGetAttribute(data->session, VI_ATTR_ASRL_AVAIL_NUM, &inQueue);
+		storeLastError(data, status, interp);
 
 		if (status < 0) {
-			if (interp) {
-				Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
-			}
 			return TCL_ERROR;
 		}
 
@@ -747,12 +740,11 @@ static int getTtyAttributes(Tcl_Interp *interp, VisaChannelData* data, TtyAttrs*
 	} 
 	tty->stop = fromVisaStopBits((int) v);
 
+	storeLastError(data, VI_SUCCESS, interp);
 	return TCL_OK;
 
 error:
-	if (interp != NULL) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
-	}
+	storeLastError(data, status, interp);
 	return TCL_ERROR;
 }
 
@@ -776,13 +768,11 @@ static int setTtyAttributes(Tcl_Interp *interp, VisaChannelData* data, const Tty
 		goto error;
 	}
 
+	storeLastError(data, status, interp);
 	return TCL_OK;
 
 error:
-	if (NULL != interp) {
-		Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
-	}
-
+	storeLastError(data, status, interp);
 	return TCL_ERROR;
 }
 
@@ -794,8 +784,8 @@ int getVisaTimeout(Tcl_Interp *interp, VisaChannelData* data, ViUInt32* timeout)
 	} else {
 		/* Attempt to get attribute */
 		ViStatus status = viGetAttribute(data->session, (ViAttr) VI_ATTR_TMO_VALUE, timeout);
+		storeLastError(data, status, interp);
 		if (status < 0) {
-			Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
 			return TCL_ERROR;
 		}
 	}
@@ -811,13 +801,36 @@ int setVisaTimeout(Tcl_Interp *interp, VisaChannelData* data, ViUInt32 timeout) 
 	} else {
 		/* Attempt to set attribute */
 		ViStatus status = viSetAttribute(data->session, (ViAttr) VI_ATTR_TMO_VALUE, (ViAttrState) timeout);
+		storeLastError(data, status, interp);
 		if (status < 0) {
-			Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
 			return TCL_ERROR;
 		}
 	}
 
 	return TCL_OK;
+}
+
+void storeLastError(VisaChannelData* session, const ViStatus status, Tcl_Interp* const interp) {
+	session->lastError = status;
+
+	if (status < 0) {
+		const char* msg = visaErrorMessage(status);
+		session->lastErrorMsg = (char*) malloc(strlen(msg) + 1);
+		strcpy(session->lastErrorMsg, msg);
+
+		if (interp) {
+			Tcl_AppendResult(interp, msg, NULL);
+		}
+	} else {
+		if (session->lastErrorMsg) {
+			free((void*) session->lastErrorMsg);
+		}
+		session->lastErrorMsg = NULL;
+
+		if (interp) {
+			Tcl_ResetResult(interp);
+		}
+	}
 }
 
 static int toVisaFlow(Tcl_Interp *interp, const char* value) {
@@ -882,6 +895,8 @@ static void fromVisaModemStatus(VisaChannelData* data, Tcl_DString *dsPtr) {
 		Tcl_DStringAppendElement(dsPtr, "DCD");
 		Tcl_DStringAppendElement(dsPtr, getModemBitStatus(v));
 	}
+
+	storeLastError(data, status, NULL);
 }
 
 static ViUInt16 toVisaModemStatus(int v) {
