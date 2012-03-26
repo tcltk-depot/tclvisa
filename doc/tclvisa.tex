@@ -25,6 +25,7 @@
 \newcommand{\ENDARGUMENTS}{\end{itemize}}
 \newcommand{\NOARGUMENTS}{\ARGUMENTS None}
 \newcommand{\ARGUMENT}[1]{\item {\tt \mbox{#1}}~---}
+\newcommand{\REFERVISADOC}{Please refer to your \VISA documentation for detailed help.}
 
 \newcommand{\ARGCHANNEL}{\ARGUMENT{session} channel containing reference to a \VISA resource session opened by \COMMANDREF{visa::open}.}
 \newcommand{\ARGRM}{\ARGUMENT{RMsession} channel containing reference to open Resource Manager session opened by \COMMANDREF{visa::open-default-rm}.}
@@ -263,6 +264,7 @@ Table on the figure~\ref{tabCorrespondence} contains list of \VISA API functions
 \begin{tabular}{ll}
 \VISA API function & Tcl Command \\
 \hline
+\VISACOMMANDREF{viAssertTrigger} & \COMMANDREF{visa::assert-trigger}	\\
 \VISACOMMANDREF{viClear} & \COMMANDREF{visa::clear}	\\
 \VISACOMMANDREF{viClose} & \TCLCOMMANDREF{close}	\\
 \VISACOMMANDREF{viFindNext}, \VISACOMMANDREF{viFindRsrc} & \COMMANDREF{visa::find}	\\
@@ -284,6 +286,33 @@ Table on the figure~\ref{tabCorrespondence} contains list of \VISA API functions
 \end{figure}
 
 \chapter{\tclvisa Command Reference}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::assert-trigger}
+
+\PURPOSE
+
+Asserts software or hardware trigger. This command is a front-end for \VISACOMMANDREF{viAssertTrigger} \VISA API function.
+
+\SYNTAX{visa::assert-trigger session protocol}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{protocol} Trigger protocol to use during assertion. Valid value is one of the predefined {\tt visa::TRIG\_PROT\_xxx} constants. \REFERVISADOC
+\ENDARGUMENTS
+
+\NORETURN
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open instrument
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# assert trigger
+visa::assert-trigger $vi $visa::TRIG_PROT_DEFAULT
+\end{verbatim} 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 

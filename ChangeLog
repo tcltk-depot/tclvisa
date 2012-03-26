@@ -1,6 +1,9 @@
 2012-03-26  Andrey Nakin  <andrey.nakin@gmail.com>
 
 	* Tclvisa 0.3.0 released
+
+	Added support for the following VISA commands:
+		viAssertTrigger
 	
 	Following commands were added:
 		visa::last-error

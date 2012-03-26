@@ -15,6 +15,7 @@
 #define TCL_UTILS_H_34237856365464
 
 #include <tcl.h>
+#include <visa.h> 
 
 /*
  *----------------------------------------------------------------
@@ -33,5 +34,7 @@
 #endif
 
 int Tcl_GetUIntFromObj(Tcl_Interp *interp, Tcl_Obj *objPtr, unsigned int *uintPtr);
+
+int Tcl_GetUInt16FromObj(Tcl_Interp *interp, Tcl_Obj *objPtr, ViUInt16 *uintPtr);
 
 #endif /* TCL_UTILS_H_34237856365464 */
