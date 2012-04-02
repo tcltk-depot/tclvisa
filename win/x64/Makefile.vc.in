@@ -1,0 +1,35 @@
+#
+# MS Visual C Makefile for tclvisa
+#
+# At the command prompt, type
+# nmake /f Makefile.vc
+#
+# NOTE: To use this, you must have MSVC installed and properly
+# configured for command line use (you might need to run VCVARS32.BAT
+# included with your copy of MSVC).
+#
+# Most probably following variables should be modified on your machine:
+#   INCLUDES, LIBS
+
+# Set proper executables
+MAKE=nmake /nologo
+CC=@cl /nologo
+AR=@link /nologo
+MT=@mt
+
+# Direct to Tcl and VISA installed
+INCLUDES=/I "C:/Tcl/include" /I "C:/Program Files/IVI Foundation/VISA/Win64/include"
+LIBS=/LIBPATH:"C:/Tcl/lib" /LIBPATH:"C:/Program Files/IVI Foundation/VISA/Win64/lib_x64/msc"
+
+# Extension name and version
+PACKAGE_NAME=@PACKAGE_NAME@
+PACKAGE_VERSION=@PACKAGE_VERSION@
+PACKAGE_DLL_VERSION=@PACKAGE_DLL_VERSION@
+
+DEFINES=/D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_USRDLL" /D "TCLVISA_EXPORTS" /D "_CRT_SECURE_NO_WARNINGS" /D "USE_TCL_STUBS" /D "_WINDLL" /D "PACKAGE_NAME=\"$(PACKAGE_NAME)\"" /D "PACKAGE_VERSION=\"$(PACKAGE_VERSION)\""
+CLIBS=visa64.lib tclstub85.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib
+CFLAGS=$(INCLUDES) $(DEFINES) /c /O2 /Oi /GL /FD /MT /Gy /W4 /c /Zi /TC
+LDFLAGS=/INCREMENTAL:NO /DLL /SUBSYSTEM:WINDOWS /OPT:REF /OPT:ICF /LTCG /DYNAMICBASE /NXCOMPAT /MACHINE:X64 /NODEFAULTLIB:libc.lib /NODEFAULTLIB:msvcrt.lib /NODEFAULTLIB:libcd.lib /NODEFAULTLIB:libcmtd.lib /NODEFAULTLIB:msvcrtd.lib
+
+!INCLUDE ../Makefile.inc
+

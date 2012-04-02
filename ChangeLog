@@ -3,7 +3,9 @@
 	* Tclvisa 0.3.0 released
 
 	Added support for the following VISA commands:
+		viAssertIntrSignal
 		viAssertTrigger
+		viAssertUtilSignal
 	
 	Following commands were added:
 		visa::last-error

@@ -26,6 +26,7 @@
 \newcommand{\NOARGUMENTS}{\ARGUMENTS None}
 \newcommand{\ARGUMENT}[1]{\item {\tt \mbox{#1}}~---}
 \newcommand{\REFERVISADOC}{Please refer to your \VISA documentation for detailed help.}
+\newcommand{\BACKEND}[1]{This command is a front-end for \VISACOMMANDREF{#1} \VISA API function.}
 
 \newcommand{\ARGCHANNEL}{\ARGUMENT{session} channel containing reference to a \VISA resource session opened by \COMMANDREF{visa::open}.}
 \newcommand{\ARGRM}{\ARGUMENT{RMsession} channel containing reference to open Resource Manager session opened by \COMMANDREF{visa::open-default-rm}.}
@@ -264,7 +265,9 @@ Table on the figure~\ref{tabCorrespondence} contains list of \VISA API functions
 \begin{tabular}{ll}
 \VISA API function & Tcl Command \\
 \hline
+\VISACOMMANDREF{viAssertIntrSignal} & \COMMANDREF{visa::assert-intr-signal}	\\
 \VISACOMMANDREF{viAssertTrigger} & \COMMANDREF{visa::assert-trigger}	\\
+\VISACOMMANDREF{viAssertUtilSignal} & \COMMANDREF{visa::assert-util-signal}	\\
 \VISACOMMANDREF{viClear} & \COMMANDREF{visa::clear}	\\
 \VISACOMMANDREF{viClose} & \TCLCOMMANDREF{close}	\\
 \VISACOMMANDREF{viFindNext}, \VISACOMMANDREF{viFindRsrc} & \COMMANDREF{visa::find}	\\
@@ -289,11 +292,45 @@ Table on the figure~\ref{tabCorrespondence} contains list of \VISA API functions
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\COMMAND{visa::assert-intr-signal}
+
+\PURPOSE
+
+Asserts the specified interrupt or signal.
+\BACKEND{viAssertIntrSignal}
+
+\SYNTAX{visa::assert-intr-signal session mode ?statusID?}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{mode} This specifies how to assert the interrupt. Valid value is one of the predefined {\tt visa::ASSERT\_xxx} constants. \REFERVISADOC
+\ARGUMENT{statusID} This is the status value to be presented during an interrupt acknowledge cycle. This argument may be omitted on certail bus types.
+\ENDARGUMENTS
+
+\NORETURN
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open instrument
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# assert signal
+visa::assert-intr-signal $vi $visa::ASSERT_USE_ASSIGNED
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::assert-util-signal}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \COMMAND{visa::assert-trigger}
 
 \PURPOSE
 
-Asserts software or hardware trigger. This command is a front-end for \VISACOMMANDREF{viAssertTrigger} \VISA API function.
+Asserts software or hardware trigger.
+\BACKEND{viAssertTrigger}
 
 \SYNTAX{visa::assert-trigger session protocol}
 
@@ -316,11 +353,44 @@ visa::assert-trigger $vi $visa::TRIG_PROT_DEFAULT
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\COMMAND{visa::assert-util-signal}
+
+\PURPOSE
+
+Asserts or deasserts the specified utility bus signal.
+\BACKEND{viAssertUtilSignal}
+
+\SYNTAX{visa::assert-util-signal session line}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{line} Specifies the utility bus signal to assert. Valid value is one of the predefined {\tt visa::UTIL\_xxx} constants. \REFERVISADOC
+\ENDARGUMENTS
+
+\NORETURN
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open instrument
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# assert signal
+visa::assert-util-signal $vi $visa::UTIL_ASSERT_SYSRESET
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::assert-intr-signal}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \COMMAND{visa::clear}
 
 \PURPOSE
 
-Clears a device. This command is a front-end for \VISACOMMANDREF{viClear} \VISA API function.
+Clears a device.
+\BACKEND{viClear}
 
 \SYNTAX{visa::clear session}
 
@@ -385,7 +455,8 @@ foreach addr [visa::find $rm "ASRL?*INSTR"] {
 
 \PURPOSE
 
-Retrieves the state of an attribute. This command is a front-end for \VISACOMMANDREF{viGetAttribute} \VISA API function.
+Retrieves the state of an attribute.
+\BACKEND{viGetAttribute}
 
 \SYNTAX{visa::get-attribute session attribute}
 
@@ -476,7 +547,8 @@ while operation was in progress.
 
 \PURPOSE
 
-Establishes an access mode to the specified resource. This command is a front-end for \VISACOMMANDREF{viLock} \VISA API function.
+Establishes an access mode to the specified resource.
+\BACKEND{viLock}
 
 \SYNTAX{visa::lock session ?lockType? ?timeout? ?requestedKey?}
 
@@ -517,7 +589,8 @@ set key [visa::lock $vi $visa::SHARED_LOCK 5000 "MYLOCK"]
 
 \PURPOSE
 
-Opens a session to the specified resource. This command is a front-end for \VISACOMMANDREF{viOpen} \VISA API function.
+Opens a session to the specified resource.
+\BACKEND{viOpen}
 
 \SYNTAX{visa::open RMsession rsrcName ?accessMode? ?openTimeout?}
 
@@ -564,7 +637,8 @@ set vi2 [visa::open $rm "ASRL2::INSTR" $visa::EXCLUSIVE_LOCK]
 
 \PURPOSE
 
-Returns a session to the Default Resource Manager resource. This command is a front-end for \VISACOMMANDREF{viOpenDefaultRM} \VISA API function.
+Returns a session to the Default Resource Manager resource.
+\BACKEND{viOpenDefaultRM}
 
 \SYNTAX{visa::open-default-rm}
 
@@ -599,7 +673,8 @@ close $rm
 
 \PURPOSE
 
-Sets the state of an attribute. This command is a front-end for \VISACOMMANDREF{viSetAttribute} \VISA API function.
+Sets the state of an attribute.
+\BACKEND{viSetAttribute}
 
 \SYNTAX{visa::set-attribute session attribute attrState}
 
@@ -631,7 +706,8 @@ visa::set-attribute $vi $visa::ATTR_ASRL_BAUD 19200
 
 \PURPOSE
 
-Parse a resource string to get the interface information. This command is a front-end for \VISACOMMANDREF{viParseRsrc} \VISA API function.
+Parse a resource string to get the interface information.
+\BACKEND{viParseRsrc}
 
 \SYNTAX{visa::parse-rsrc RMsession rsrcName}
 
@@ -673,7 +749,8 @@ if { $intfType == $visa::INTF_ASRL } {
 
 \PURPOSE
 
-Read data synchronously, and store the transferred data in a file. This command is a front-end for \VISACOMMANDREF{viReadToFile} \VISA API function.
+Read data synchronously, and store the transferred data in a file.
+\BACKEND{viReadToFile}
 
 \SYNTAX{visa::read-to-file session fileName count}
 
@@ -708,7 +785,8 @@ visa::read-to-file $vi "raw.dat" 1024
 
 \PURPOSE
 
-Relinquishes a lock for the specified resource. This command is a front-end for \VISACOMMANDREF{viUnlock} \VISA API function.
+Relinquishes a lock for the specified resource.
+\BACKEND{viUnlock}
 
 \SYNTAX{visa::unlock session}
 
@@ -739,7 +817,7 @@ visa::unlock $vi
 \PURPOSE
 
 Take data from a file and write it out synchronously.
-This command is a front-end for \VISACOMMANDREF{viWriteFromFile} \VISA API function.
+\BACKEND{viWriteFromFile}
 
 \SYNTAX{visa::write-from-file session fileName ?count?}
 

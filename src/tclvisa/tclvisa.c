@@ -43,6 +43,8 @@ int read_to_file(const ClientData clientData, Tcl_Interp* const interp, const in
 int tclvisa_parse_rsrc(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int tclvisa_get_last_error(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int tclvisa_assert_trigger(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_assert_intr_signal(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_assert_util_signal(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 
 int setVisaConstants(Tcl_Interp* const interp, const char* prefix, const char *version);
 
@@ -64,6 +66,8 @@ int createTclvisaCommands(Tcl_Interp* const interp) {
 	addCommand("parse-rsrc", tclvisa_parse_rsrc);
 	addCommand("last-error", tclvisa_get_last_error);
 	addCommand("assert-trigger", tclvisa_assert_trigger);
+	addCommand("assert-intr-signal", tclvisa_assert_intr_signal);
+	addCommand("assert-util-signal", tclvisa_assert_util_signal);
 
 	if (TCL_OK != setVisaConstants(interp, NAMESPACE, PACKAGE_VERSION)) {
 		goto error;

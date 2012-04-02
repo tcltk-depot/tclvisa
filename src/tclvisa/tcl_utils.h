@@ -37,4 +37,6 @@ int Tcl_GetUIntFromObj(Tcl_Interp *interp, Tcl_Obj *objPtr, unsigned int *uintPt
 
 int Tcl_GetUInt16FromObj(Tcl_Interp *interp, Tcl_Obj *objPtr, ViUInt16 *uintPtr);
 
+int Tcl_GetUInt32FromObj(Tcl_Interp *interp, Tcl_Obj *objPtr, ViUInt32 *uintPtr);
+
 #endif /* TCL_UTILS_H_34237856365464 */

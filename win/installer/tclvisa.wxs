@@ -24,7 +24,7 @@
 			<Directory Id="TclLib" Name="lib">
 				<Directory Id="INSTALLLOCATION" Name="$(var.ProductName)$(var.ProductVersion)">
 					<Component Id="MainComponent" Guid="452ffcde-310d-626d-9479-91490000976e">
-						<File DiskId="1" Source="../$(var.ExecutableName)"/>
+						<File DiskId="1" Source="../$(env.TCLVISA_PLATFORM)/$(var.ExecutableName)"/>
 						<File DiskId="1" Source="../pkgIndex.tcl"/>
 						<File DiskId="1" Source="License.rtf"/>
 						<File DiskId="1" Source="../../license.terms"/>

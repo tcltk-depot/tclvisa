@@ -64,7 +64,14 @@ TEA_SETUP_COMPILER
 # and PKG_TCL_SOURCES.
 #-----------------------------------------------------------------------
 
-TEA_ADD_SOURCES([./src/tclvisa/find.c ./src/tclvisa/visa_constants.c ./src/tclvisa/open_default_rm.c ./src/tclvisa/clear.c ./src/tclvisa/visa_channel.c ./src/tclvisa/set_attribute.c ./src/tclvisa/unlock.c ./src/tclvisa/visa_utils.c ./src/tclvisa/lock.c ./src/tclvisa/read_to_file.c ./src/tclvisa/open.c ./src/tclvisa/write_from_file.c ./src/tclvisa/get_attribute.c ./src/tclvisa/parse_rsrc.c ./src/tclvisa/tcl_utils.c ./src/tclvisa/tclvisa.c ./src/tclvisa/get_last_error.c ./src/tclvisa/assert_trigger.c])
+TEA_ADD_SOURCES([./src/tclvisa/find.c ./src/tclvisa/visa_constants.c \
+./src/tclvisa/open_default_rm.c ./src/tclvisa/clear.c ./src/tclvisa/visa_channel.c \
+./src/tclvisa/set_attribute.c ./src/tclvisa/unlock.c ./src/tclvisa/visa_utils.c \
+./src/tclvisa/lock.c ./src/tclvisa/read_to_file.c ./src/tclvisa/open.c \
+./src/tclvisa/write_from_file.c ./src/tclvisa/get_attribute.c \
+./src/tclvisa/parse_rsrc.c ./src/tclvisa/tcl_utils.c ./src/tclvisa/tclvisa.c \
+./src/tclvisa/get_last_error.c ./src/tclvisa/assert_trigger.c 
+./src/tclvisa/assert_intr_signal.c ./src/tclvisa/assert_util_signal.c])
 TEA_ADD_HEADERS([])
 TEA_ADD_INCLUDES([])
 TEA_ADD_LIBS([-lvisa])
@@ -181,4 +188,4 @@ eval PACKAGE_DLL_VERSION=${TCL_TRIM_DOTS}
 # which require substituting th AC variables in.  Include these here.
 #--------------------------------------------------------------------
 
-AC_OUTPUT([Makefile pkgIndex.tcl win/pkgIndex.tcl win/Makefile.vc win/installer/tclvisa.wxi win/installer/build.cmd doc/title.tex])
+AC_OUTPUT([Makefile pkgIndex.tcl win/pkgIndex.tcl win/x86/Makefile.vc win/x64/Makefile.vc win/installer/tclvisa.wxi win/installer/build.cmd doc/title.tex])
