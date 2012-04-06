@@ -27,6 +27,11 @@ $(SRCDIR)\get_last_error.c \
 $(SRCDIR)\assert_trigger.c \
 $(SRCDIR)\assert_intr_signal.c \
 $(SRCDIR)\assert_util_signal.c \
+$(SRCDIR)\gpib_command.c \
+$(SRCDIR)\gpib_control_atn.c \
+$(SRCDIR)\gpib_control_ren.c \
+$(SRCDIR)\gpib_pass_control.c \
+$(SRCDIR)\gpib_send_ifc.c \
 $(SRCDIR)\tclvisa.c
 
 OBJS=\
@@ -49,6 +54,11 @@ $(OBJDIR)\get_last_error.obj \
 $(OBJDIR)\assert_trigger.obj \
 $(OBJDIR)\assert_intr_signal.obj \
 $(OBJDIR)\assert_util_signal.obj \
+$(OBJDIR)\gpib_command.obj \
+$(OBJDIR)\gpib_control_atn.obj \
+$(OBJDIR)\gpib_control_ren.obj \
+$(OBJDIR)\gpib_pass_control.obj \
+$(OBJDIR)\gpib_send_ifc.obj \
 $(OBJDIR)\tclvisa.obj
 
 DESTNAME=$(OUTDIR)\$(PACKAGE_NAME)$(PACKAGE_DLL_VERSION)

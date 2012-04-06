@@ -6,6 +6,11 @@
 		viAssertIntrSignal
 		viAssertTrigger
 		viAssertUtilSignal
+		viGpibCommand
+		viGpibControlATN
+		viGpibControlREN
+		viGpibPassControl
+		viGpibSendIFC
 	
 	Following commands were added:
 		visa::last-error

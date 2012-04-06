@@ -113,7 +113,7 @@ const char* visaErrorMessage(ViStatus status) {
 #endif
 #ifdef VI_ERROR_NSUP_OPER
 	case VI_ERROR_NSUP_OPER:
-		return "[VI_ERROR_NSUP_OPER] The given session does not support this operation. This operation is supported only by a Resource Manager session.";
+		return "[VI_ERROR_NSUP_OPER] The given session does not support this operation.";
 #endif
 #ifdef VI_ERROR_OUTP_PROT_VIOL
 	case VI_ERROR_OUTP_PROT_VIOL:

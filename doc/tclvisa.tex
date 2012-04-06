@@ -272,6 +272,11 @@ Table on the figure~\ref{tabCorrespondence} contains list of \VISA API functions
 \VISACOMMANDREF{viClose} & \TCLCOMMANDREF{close}	\\
 \VISACOMMANDREF{viFindNext}, \VISACOMMANDREF{viFindRsrc} & \COMMANDREF{visa::find}	\\
 \VISACOMMANDREF{viGetAttribute} & \COMMANDREF{visa::get-attribute}	\\
+\VISACOMMANDREF{viGpibCommand} & \COMMANDREF{visa::gpib-command}	\\
+\VISACOMMANDREF{viGpibControlATN} & \COMMANDREF{visa::gpib-control-atn}	\\
+\VISACOMMANDREF{viGpibControlREN} & \COMMANDREF{visa::gpib-control-ren}	\\
+\VISACOMMANDREF{viGpibPassControl} & \COMMANDREF{visa::gpib-pass-control}	\\
+\VISACOMMANDREF{viGpibSendIFC} & \COMMANDREF{visa::gpib-send-ifc}	\\
 \VISACOMMANDREF{viLock} & \COMMANDREF{visa::lock}	\\
 \VISACOMMANDREF{viOpen} & \COMMANDREF{visa::open}	\\
 \VISACOMMANDREF{viOpenDefaultRM} & \COMMANDREF{visa::open-default-rm}	\\
@@ -484,6 +489,153 @@ set baud [visa::get-attribute $vi $visa::ATTR_ASRL_BAUD]
 \COMMANDREF{visa::set-attribute}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::gpib-command}
+
+\PURPOSE
+
+Write GPIB command bytes on the bus.
+\BACKEND{viGpibCommand}
+
+\SYNTAX{visa::gpib-command session buf ?count?}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{buf} String containing valid GPIB commands.
+\ARGUMENT{count} Number of bytes to be written. If argument is omitted, string length of {\tt buf} is assumed.
+\ENDARGUMENTS
+
+\RETURN
+
+Number of bytes actually transferred.
+
+\EXAMPLE
+
+\begin{verbatim} 
+# send command
+set cmd ... # this variable contains command
+set ret [visa::gpib-command $vi $cmd 10]
+puts "$ret bytes are transmitted"
+\end{verbatim} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::gpib-control-atn}
+
+\PURPOSE
+
+Specifies the state of the ATN line and the local active controller state.
+\BACKEND{viGpibControlATN}
+
+\SYNTAX{visa::gpib-control-atn session mode}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{mode} Specifies the state of the ATN line and optionally the local active controller state. Valid value is one of the {\tt visa::GPIB\_ATN\_xxx} predefined constants. \REFERVISADOC
+\ENDARGUMENTS
+
+\NORETURN
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open a GPIB interface device
+set vi [visa::open ...
+# set "assert" state
+visa::gpib-control-atn $vi $visa::GPIB_ATN_ASSERT
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::gpib-control-ren}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::gpib-control-ren}
+
+\PURPOSE
+
+Controls the state of the GPIB Remote Enable (REN) interface line, and optionally the remote/local state of the device.
+\BACKEND{viGpibControlREN}
+
+\SYNTAX{visa::gpib-control-ren session mode}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{mode} Specifies the state of the REN line and optionally the device remote/local state. Valid value is one of the {\tt visa::GPIB\_REN\_xxx} predefined constants. \REFERVISADOC
+\ENDARGUMENTS
+
+\NORETURN
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open a GPIB interface device
+set vi [visa::open ...
+# set "assert" state
+visa::gpib-control-ren $vi $visa::GPIB_REN_ASSERT
+\end{verbatim} 
+
+\SEEALSO
+
+\COMMANDREF{visa::gpib-control-atn}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::gpib-pass-control}
+
+\PURPOSE
+
+Tell the GPIB device at the specified address to become controller in charge (CIC).
+\BACKEND{viGpibPassControl}
+
+\SYNTAX{visa::gpib-pass-control session primAddr ?secAddr?}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ARGUMENT{primAddr} Primary address of the GPIB device to which you want to pass control.
+\ARGUMENT{secAddr} Secondary address of the targeted GPIB device. If argument is omitted, default {\tt VI\_NO\_SEC\_ADDR} value is assumed.
+\ENDARGUMENTS
+
+\NORETURN
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open a GPIB device
+set vi [visa::open ...
+# affect the device at primary address 1 
+#   and without secondary address
+visa::gpib-pass-control $vi 1
+\end{verbatim} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\COMMAND{visa::gpib-send-ifc}
+
+\PURPOSE
+
+Pulse the interface clear line (IFC) for at least 100 microseconds.
+\BACKEND{viGpibSendIFC}
+
+\SYNTAX{visa::gpib-send-ifc session}
+
+\BEGINARGUMENTS
+\ARGCHANNEL
+\ENDARGUMENTS
+
+\NORETURN
+
+\EXAMPLE
+
+\begin{verbatim} 
+# open a GPIB device
+set vi [visa::open ...
+# send a signal
+visa::gpib-send-ifc $vi
+\end{verbatim} 
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \COMMAND{visa::last-error}
 

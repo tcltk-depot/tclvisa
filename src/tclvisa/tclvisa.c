@@ -45,6 +45,11 @@ int tclvisa_get_last_error(const ClientData clientData, Tcl_Interp* const interp
 int tclvisa_assert_trigger(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int tclvisa_assert_intr_signal(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int tclvisa_assert_util_signal(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_gpib_command(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_gpib_control_atn(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_gpib_control_ren(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_gpib_pass_control(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
+int tclvisa_gpib_send_ifc(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 
 int setVisaConstants(Tcl_Interp* const interp, const char* prefix, const char *version);
 
@@ -68,6 +73,11 @@ int createTclvisaCommands(Tcl_Interp* const interp) {
 	addCommand("assert-trigger", tclvisa_assert_trigger);
 	addCommand("assert-intr-signal", tclvisa_assert_intr_signal);
 	addCommand("assert-util-signal", tclvisa_assert_util_signal);
+	addCommand("gpib-command", tclvisa_gpib_command);
+	addCommand("gpib-control-atn", tclvisa_gpib_control_atn);
+	addCommand("gpib-control-ren", tclvisa_gpib_control_ren);
+	addCommand("gpib-pass-control", tclvisa_gpib_pass_control);
+	addCommand("gpib-send-ifc", tclvisa_gpib_send_ifc);
 
 	if (TCL_OK != setVisaConstants(interp, NAMESPACE, PACKAGE_VERSION)) {
 		goto error;
