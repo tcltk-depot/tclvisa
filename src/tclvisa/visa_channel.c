@@ -69,7 +69,7 @@ static ViUInt16 toVisaModemStatus(int v);
 /* VISA channel definition structure */
 static Tcl_ChannelType visaChannelType = {
 	"visa_session",	/* typeName */
-	TCL_CHANNEL_VERSION_5,	/* version */
+	TCL_CHANNEL_VERSION_4,	/* version */
 	&closeProc,	/* closeProc */
 	&inputProc,	/* inputProc */
     &outputProc,	/* outputProc */
@@ -83,8 +83,7 @@ static Tcl_ChannelType visaChannelType = {
     NULL,	/* flushProc */
     NULL,	/* handlerProc */
     NULL,	/* wideSeekProc */
-    NULL,	/* threadActionProc */
-    NULL	/* truncateProc */
+    NULL	/* threadActionProc */
 };
 
 VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) {

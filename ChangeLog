@@ -1,6 +1,8 @@
-2012-03-26  Andrey Nakin  <andrey.nakin@gmail.com>
+2012-07-23  Andrey Nakin  <andrey.nakin@gmail.com>
 
 	* Tclvisa 0.3.0 released
+
+	tclvisa is now compatible with Tcl8.4
 
 	Added support for the following VISA commands:
 		viAssertIntrSignal
@@ -11,7 +13,7 @@
 		viGpibControlREN
 		viGpibPassControl
 		viGpibSendIFC
-	
+
 	Following commands were added:
 		visa::last-error
 
