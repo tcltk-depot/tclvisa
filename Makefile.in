@@ -323,25 +323,28 @@ dist: dist-clean
 	    fi; \
 	done;
 
-	mkdir $(DIST_DIR)/tclconfig
-	cp $(srcdir)/tclconfig/install-sh $(srcdir)/tclconfig/tcl.m4 \
-		$(DIST_DIR)/tclconfig/
-	chmod 664 $(DIST_DIR)/tclconfig/tcl.m4
-	chmod +x $(DIST_DIR)/tclconfig/install-sh
-
-	list='demo src src/tclvisa'; \
+	list='demo src/tclvisa tclconfig'; \
 	for p in $$list; do \
 	    if test -d $(srcdir)/$$p ; then \
-		mkdir $(DIST_DIR)/$$p; \
-		cp -fp $(srcdir)/$$p/*.* $(DIST_DIR)/$$p/; \
+		mkdir -p $(DIST_DIR)/$$p; \
+		cp -fp $(srcdir)/$$p/* $(DIST_DIR)/$$p/; \
 	    fi; \
 	done
 
+	chmod 664 $(DIST_DIR)/tclconfig/tcl.m4
+	chmod +x $(DIST_DIR)/tclconfig/install-sh
+
 	mkdir $(DIST_DIR)/doc;
 	cp doc/*.tex $(DIST_DIR)/doc/ 
+	cp $(DOC_FILE_NAME) $(DIST_DIR)/doc/ 
 
 	mkdir $(DIST_DIR)/win;
-	cp win/*.vc $(DIST_DIR)/win/ 
+	mkdir $(DIST_DIR)/win/x86;
+	mkdir $(DIST_DIR)/win/x64;
+	cp win/x86/*.vc $(DIST_DIR)/win/x86/
+	cp win/x86/*.txt $(DIST_DIR)/win/x86/
+	cp win/x64/*.vc $(DIST_DIR)/win/x64/
+	cp win/x64/*.txt $(DIST_DIR)/win/x64/
 	cp win/*.tcl $(DIST_DIR)/win/ 
 	cp win/README* $(DIST_DIR)/win/ 
 

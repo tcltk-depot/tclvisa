@@ -1,1 +1,6 @@
 This folder contains source files of Windows installer for tclvisa Tcl extension.
+
+Prior to running build.cmd the library binaries should be built:
+  - ../x86/tclvisaXXX.dll - for Intel-32 architecture
+  - ../x64/tclvisaXXX.dll - for AMD-64 architecture
+
