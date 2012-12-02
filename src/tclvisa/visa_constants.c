@@ -15,14 +15,6 @@
 #include <visa.h>
 #include <stdio.h>
 
-static int addIntegerVar(Tcl_Interp* const interp, const char* prefix, const char* name, size_t nameOffset, int value) {
-	char qualifiedName[64];
-
-	sprintf(qualifiedName, "%s%s", prefix, name + nameOffset);
-	return NULL == Tcl_SetVar2Ex(interp, qualifiedName, NULL, Tcl_NewIntObj(value), TCL_LEAVE_ERR_MSG)
-		? TCL_ERROR : TCL_OK;
-}
-
 static int addStringVar(Tcl_Interp* const interp, const char* prefix, const char* name, size_t nameOffset, const char* value) {
 	char qualifiedName[64];
 	Tcl_Obj* v = Tcl_NewStringObj(value, 0);

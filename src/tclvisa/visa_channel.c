@@ -171,9 +171,7 @@ static int closeProc(ClientData instanceData, Tcl_Interp *interp) {
 			Tcl_AppendResult(interp, visaErrorMessage(status), NULL);
 		}
 	} else {
-		if (data->lastErrorMsg) {
-			free((void*) data->lastErrorMsg);
-		}
+		free((void*) data->lastErrorMsg);
 		free(data);
 	}
 
@@ -821,9 +819,7 @@ void storeLastError(VisaChannelData* session, const ViStatus status, Tcl_Interp*
 			Tcl_AppendResult(interp, msg, NULL);
 		}
 	} else {
-		if (session->lastErrorMsg) {
-			free((void*) session->lastErrorMsg);
-		}
+		free((void*) session->lastErrorMsg);
 		session->lastErrorMsg = NULL;
 
 		if (interp) {

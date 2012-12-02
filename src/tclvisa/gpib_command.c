@@ -12,6 +12,7 @@
  */
 
 #include <tcl.h>
+#include <string.h>
 #include "visa_channel.h"
 #include "visa_utils.h"
 #include "tcl_utils.h"
