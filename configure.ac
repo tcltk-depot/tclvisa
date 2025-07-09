@@ -13,7 +13,7 @@ dnl	to configure the system for the local environment.
 # this case) so that we create the export library with the dll.
 #-----------------------------------------------------------------------
 
-AC_INIT([tclvisa], [0.3.0])
+AC_INIT([tclvisa],[0.3.0])
 
 #--------------------------------------------------------------------
 # Call TEA_INIT as the first TEA_ macro to set up initial vars.
@@ -21,8 +21,8 @@ AC_INIT([tclvisa], [0.3.0])
 # as well as PKG_LIB_FILE and PKG_STUB_LIB_FILE.
 # --------------------------------------------------------------------
 
-TEA_INIT([3.9])
-
+TEA_INIT([3.17])
+CPPFLAGS="$CPPFLAGS -I/usr/include/ni-visa"
 AC_CONFIG_AUX_DIR(tclconfig)
 
 #--------------------------------------------------------------------
@@ -81,6 +81,9 @@ TEA_ADD_LIBS([-lvisa])
 TEA_ADD_CFLAGS([])
 TEA_ADD_STUB_SOURCES([])
 TEA_ADD_TCL_SOURCES([])
+AC_CHECK_HEADER([visa.h], [], [
+  AC_MSG_ERROR([visa.h not found in $CPPFLAGS. Use --with-visa=DIR to specify the path.])
+])
 
 #--------------------------------------------------------------------
 # You can add more files to clean if your extension creates any extra
@@ -191,4 +194,5 @@ eval PACKAGE_DLL_VERSION=${TCL_TRIM_DOTS}
 # which require substituting th AC variables in.  Include these here.
 #--------------------------------------------------------------------
 
-AC_OUTPUT([Makefile pkgIndex.tcl win/pkgIndex.tcl win/x86/Makefile.vc win/x64/Makefile.vc win/installer/tclvisa.wxi win/installer/build.cmd doc/title.tex])
+AC_CONFIG_FILES([Makefile pkgIndex.tcl win/pkgIndex.tcl win/x86/Makefile.vc win/x64/Makefile.vc win/installer/tclvisa.wxi win/installer/build.cmd doc/title.tex])
+AC_OUTPUT

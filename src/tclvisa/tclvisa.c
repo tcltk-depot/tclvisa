@@ -30,8 +30,8 @@
 /*
  * Forward declarations
  */
-int tclvisa_open(const ClientData clientData, Tcl_Interp * const interp, const int objc, Tcl_Obj *CONST objv[]);
-int tclvisa_open_default_rm(const ClientData clientData, Tcl_Interp * const interp, const int objc, Tcl_Obj *CONST objv[]);
+int tclvisa_open(const ClientData clientData, Tcl_Interp * const interp, const int objc, Tcl_Obj *const objv[]);
+int tclvisa_open_default_rm(const ClientData clientData, Tcl_Interp * const interp, const int objc, Tcl_Obj *const objv[]);
 int tclvisa_set_attribute(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int tclvisa_get_attribute(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
 int tclvisa_clear(const ClientData clientData, Tcl_Interp* const interp, const int objc, Tcl_Obj* const objv[]);
@@ -92,16 +92,16 @@ error:
 #ifdef _WINDOWS
 __declspec(dllexport)
 #endif
-int Tclvisa_Init(Tcl_Interp* const interp) {
+int tclvisa_Init(Tcl_Interp* const interp) {
     /*
      * This may work with 8.0, but we are using strictly stubs here,
      * which requires 8.1.
      */
 	if (
 #ifdef USE_TCL_STUBS
-		Tcl_InitStubs(interp, "8.1", 0)
+		Tcl_InitStubs(interp, "9-10", 0)
 #else
-		Tcl_PkgRequire(interp, "Tcl", "8.1", 0)
+		Tcl_PkgRequire(interp, "Tcl", "9-10", 0)
 #endif
 			== NULL) {
 		return TCL_ERROR;

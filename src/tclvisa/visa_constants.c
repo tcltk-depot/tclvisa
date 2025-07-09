@@ -23,6 +23,27 @@ static int addStringVar(Tcl_Interp* const interp, const char* prefix, const char
 	return NULL == Tcl_SetVar2Ex(interp, qualifiedName, NULL, v, TCL_LEAVE_ERR_MSG)
 		? TCL_ERROR : TCL_OK;
 }
+int addIntegerVar(Tcl_Interp *interp, const char *prefix, const char *name, int depth, int value) {
+    char fullName[256];
+
+    // Create fully qualified variable name, e.g., "prefix::name"
+    if (prefix && *prefix) {
+        snprintf(fullName, sizeof(fullName), "%s::%s", prefix, name);
+    } else {
+        snprintf(fullName, sizeof(fullName), "%s", name);
+    }
+
+    Tcl_Obj *val = Tcl_NewIntObj(value);
+    Tcl_IncrRefCount(val);
+
+    if (Tcl_SetVar2Ex(interp, fullName, NULL, val, TCL_GLOBAL_ONLY) == NULL) {
+        Tcl_DecrRefCount(val);
+        return TCL_ERROR;
+    }
+
+    Tcl_DecrRefCount(val);
+    return TCL_OK;
+}
 
 #define addIntVar(name)	\
 	if (TCL_OK != addIntegerVar(interp, prefix, #name, 3, name)/* || TCL_OK != addIntegerVar(interp, "", #name, 0, name)*/) goto error

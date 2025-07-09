@@ -67,23 +67,24 @@ static void fromVisaModemStatus(VisaChannelData* data, Tcl_DString *dsPtr);
 static ViUInt16 toVisaModemStatus(int v);
 
 /* VISA channel definition structure */
-static Tcl_ChannelType visaChannelType = {
-	"visa_session",	/* typeName */
-	TCL_CHANNEL_VERSION_4,	/* version */
-	&closeProc,	/* closeProc */
-	&inputProc,	/* inputProc */
-    &outputProc,	/* outputProc */
-    NULL,	/* seekProc */
-    &setOptionProc,	/* setOptionProc */
-    &getOptionProc,	/* getOptionProc */
-    &watchProc,	/* watchProc */
-    &getHandleProc,	/* getHandleProc */
-    NULL,	/* close2Proc */
-    &blockModeProc,	/* blockModeProc */
-    NULL,	/* flushProc */
-    NULL,	/* handlerProc */
-    NULL,	/* wideSeekProc */
-    NULL	/* threadActionProc */
+static const Tcl_ChannelType visaChannelType = {
+    "visa_session",              /* typeName */
+    TCL_CHANNEL_VERSION_5,       /* version */
+    &closeProc,                  /* closeProc */
+    &inputProc,                  /* inputProc */
+    &outputProc,                 /* outputProc */
+    NULL,                        /* seekProc */
+    &setOptionProc,              /* setOptionProc */
+    &getOptionProc,              /* getOptionProc */
+    &watchProc,                  /* watchProc */
+    &getHandleProc,              /* getHandleProc */
+    NULL,                        /* close2Proc */
+    &blockModeProc,              /* blockModeProc */
+    NULL,                        /* flushProc */
+    NULL,                        /* handlerProc */
+    NULL,                        /* wideSeekProc */
+    NULL,                        /* threadActionProc */
+    NULL                         /* truncateProc — MISSING before */
 };
 
 VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) {
@@ -98,6 +99,9 @@ VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) 
 
 	/* Attempt to create Tcl channel */
 	sprintf(channelName, "%s%u", TCLVISA_NAME_PREFIX, (unsigned) session);
+    fprintf(stderr, "visaChannelType.version = %d\n", visaChannelType.version);
+    fprintf(stderr, "visaChannelType.close2Proc = %p\n", (void*)visaChannelType.close2Proc);
+    fprintf(stderr, "sizeof(visaChannelType) = %zu\n", sizeof(visaChannelType));
 	channel = Tcl_CreateChannel(&visaChannelType, channelName, (ClientData) data, TCL_READABLE | TCL_WRITABLE);
 	if (NULL != channel) {
 		/* Channel created successgully, register it for later use in Tcl IO procedures */
@@ -123,7 +127,7 @@ VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) 
 VisaChannelData* getVisaChannelFromObj(Tcl_Interp* const interp, Tcl_Obj* objPtr) {
 	VisaChannelData* data = NULL;
 	Tcl_Channel channel = NULL;
-	Tcl_ChannelType* type;
+	const Tcl_ChannelType* type;
 	int mode;
 
 	/* Retrieve channel from object passed  */
@@ -288,7 +292,7 @@ static int outputProc(ClientData instanceData, const char *buf, int toWrite, int
 static int setOptionProc(ClientData instanceData, Tcl_Interp *interp, const char *optionName, const char *newValue) {
     size_t len, vlen;
 	ViStatus status;
-	int argc;
+	Tcl_Size argc;
 	const char** argv;
 	VisaChannelData* data = (VisaChannelData*) instanceData;
 
