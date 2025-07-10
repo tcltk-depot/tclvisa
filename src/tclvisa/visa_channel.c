@@ -48,6 +48,7 @@ typedef struct TtyAttrs {
 
 /* forward declaration of channel internal handlers */
 static int closeProc(ClientData instanceData, Tcl_Interp *interp);
+static int close2Proc(ClientData instanceData, Tcl_Interp *interp, int flags);
 static int blockModeProc(ClientData instanceData, int mode);
 static int inputProc(ClientData instanceData, char *buf, int bufSize, int *errorCodePtr);
 static int outputProc(ClientData instanceData, const char *buf, int toWrite, int *errorCodePtr);
@@ -78,7 +79,7 @@ static const Tcl_ChannelType visaChannelType = {
     &getOptionProc,              /* getOptionProc */
     &watchProc,                  /* watchProc */
     &getHandleProc,              /* getHandleProc */
-    NULL,                        /* close2Proc */
+    &close2Proc,                 /* close2Proc */
     &blockModeProc,              /* blockModeProc */
     NULL,                        /* flushProc */
     NULL,                        /* handlerProc */
@@ -99,9 +100,6 @@ VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) 
 
 	/* Attempt to create Tcl channel */
 	sprintf(channelName, "%s%u", TCLVISA_NAME_PREFIX, (unsigned) session);
-    fprintf(stderr, "visaChannelType.version = %d\n", visaChannelType.version);
-    fprintf(stderr, "visaChannelType.close2Proc = %p\n", (void*)visaChannelType.close2Proc);
-    fprintf(stderr, "sizeof(visaChannelType) = %zu\n", sizeof(visaChannelType));
 	channel = Tcl_CreateChannel(&visaChannelType, channelName, (ClientData) data, TCL_READABLE | TCL_WRITABLE);
 	if (NULL != channel) {
 		/* Channel created successgully, register it for later use in Tcl IO procedures */
@@ -109,7 +107,7 @@ VisaChannelData* createVisaChannel(Tcl_Interp* const interp, ViSession session) 
 
 		/* Configure channel  */
 		Tcl_SetChannelOption(interp, channel, "-buffering", "line");
-		Tcl_SetChannelOption(interp, channel, "-encoding", "binary");
+		Tcl_SetChannelOption(interp, channel, "-encoding", "iso8859-1");
 		Tcl_SetChannelOption(interp, channel, "-translation", "binary");
 
 		/* Store channel pointer */
@@ -180,6 +178,10 @@ static int closeProc(ClientData instanceData, Tcl_Interp *interp) {
 	}
 
 	return status;
+}
+
+static int close2Proc(ClientData instanceData, Tcl_Interp *interp, int flags) {
+    return closeProc(instanceData, interp);  // Optional: reuse old logic
 }
 
 static int blockModeProc(ClientData instanceData, int mode) {
