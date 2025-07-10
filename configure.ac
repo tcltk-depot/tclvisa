@@ -22,9 +22,14 @@ AC_INIT([tclvisa],[0.3.0])
 # --------------------------------------------------------------------
 
 TEA_INIT([3.17])
-CPPFLAGS="$CPPFLAGS -I/usr/include/ni-visa"
+
 AC_CONFIG_AUX_DIR(tclconfig)
 
+AC_ARG_WITH([visa],
+    AS_HELP_STRING([--with-visa=PATH], [path to VISA include directory]),
+    [CPPFLAGS="$CPPFLAGS -I$with_visa"],
+    [with_visa="/usr/include/ni-visa"]  # default path
+)
 #--------------------------------------------------------------------
 # Load the tclConfig.sh file
 #--------------------------------------------------------------------

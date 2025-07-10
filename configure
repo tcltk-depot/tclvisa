@@ -763,6 +763,7 @@ SHELL'
 ac_subst_files=''
 ac_user_opts='
 enable_option_checking
+with_visa
 with_tcl
 with_tcl8
 with_tclinclude
@@ -1411,6 +1412,7 @@ Optional Features:
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
   --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
+  --with-visa=PATH        path to VISA include directory
   --with-tcl              directory containing tcl configuration
                           (tclConfig.sh)
   --with-tcl8             Compile for Tcl8 in Tcl9 environment
@@ -2625,8 +2627,18 @@ printf "%s\n" "$tcl_cv_sys_version" >&6; }
 
 
 
-CPPFLAGS="$CPPFLAGS -I/usr/include/ni-visa"
 
+
+
+
+# Check whether --with-visa was given.
+if test ${with_visa+y}
+then :
+  withval=$with_visa; CPPFLAGS="$CPPFLAGS -I$with_visa"
+else $as_nop
+  with_visa="/usr/include/ni-visa"  # default path
+
+fi
 
 #--------------------------------------------------------------------
 # Load the tclConfig.sh file
