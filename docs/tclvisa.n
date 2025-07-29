@@ -1,0 +1,1206 @@
+.TH Getting Started
+.RS
+.IP \(bu 2
+Introduction \[la]#introduction\[ra]
+.IP \(bu 2
+Installation \[la]#installation\[ra]
+.RS
+.IP \(bu 2
+Installation in Microsoft Windows \[la]#installation-in-microsoft-windows\[ra]
+.RE
+.IP \(bu 2
+Use in Tcl \[la]#use-in-tcl\[ra]
+.IP \(bu 2
+VISA Constants \[la]#visa-constants\[ra]
+.IP \(bu 2
+Channels \[la]#channels\[ra]
+.RS
+.IP \(bu 2
+Buffering \[la]#buffering\[ra]
+.IP \(bu 2
+IO Timeouts \[la]#io-timeouts\[ra]
+.IP \(bu 2
+Non\-blocking IO \[la]#non-blocking-io\[ra]
+.IP \(bu 2
+Anynchronous IO \[la]#anynchronous-io\[ra]
+.IP \(bu 2
+Serial\-Specific Options \[la]#serial-specific-options\[ra]
+.RE
+.IP \(bu 2
+Error Handling \[la]#error-handling\[ra]
+.RS
+.IP \(bu 2
+Suppressed Errors \[la]#suppressed-errors\[ra]
+.RE
+.IP \(bu 2
+Correspondence Between VISA Functions and Tcl Commands \[la]#correspondence-between-visa-functions-and-tcl-commands\[ra]
+.IP \(bu 2
+visa::assert\-intr\-signal \[la]#visa::assert-intr-signal\[ra]
+.IP \(bu 2
+visa::assert\-trigger \[la]#visa::assert-trigger\[ra]
+.IP \(bu 2
+visa::assert\-util\-signal \[la]#visa::assert-util-signal\[ra]
+.IP \(bu 2
+visa::clear \[la]#visa::clear\[ra]
+.IP \(bu 2
+visa::find \[la]#visa::find\[ra]
+.IP \(bu 2
+visa::get\-attribute \[la]#visa::get-attribute\[ra]
+.IP \(bu 2
+visa::gpib\-command \[la]#visa::gpib-command\[ra]
+.IP \(bu 2
+visa::gpib\-control\-atn \[la]#visa::gpib-control-atn\[ra]
+.IP \(bu 2
+visa::gpib\-control\-ren \[la]#visa::gpib-control-ren\[ra]
+.IP \(bu 2
+visa::gpib\-pass\-control \[la]#visa::gpib-pass-control\[ra]
+.IP \(bu 2
+visa::gpib\-send\-ifc \[la]#visa::gpib-send-ifc\[ra]
+.IP \(bu 2
+visa::last\-error \[la]#visa::last-error\[ra]
+.IP \(bu 2
+visa::lock \[la]#visa::lock\[ra]
+.IP \(bu 2
+visa::open \[la]#visa::open\[ra]
+.IP \(bu 2
+visa::open\-default\-rm \[la]#visa::open-default-rm\[ra]
+.IP \(bu 2
+visa::set\-attribute \[la]#visa::set-attribute\[ra]
+.IP \(bu 2
+visa::parse\-rsrc \[la]#visa::parse-rsrc\[ra]
+.IP \(bu 2
+visa::read\-to\-file \[la]#visa::read-to-file\[ra]
+.IP \(bu 2
+visa::unlock \[la]#visa::unlock\[ra]
+.IP \(bu 2
+visa::write\-from\-file \[la]#visa::write-from-file\[ra]
+.RE
+.SH Introduction
+.PP
+\fB\fCtclvisa\fRis a standard Tcl extension providing a binding to Virtual Instrument Software Architecture (VISA ) API. It
+allows to use VISA functionality from regular Tcl scripts via set of commands. Most of the commands have similar names
+and are intuitive to use for the one who knows VISA API. For example, Tcl command \fB\fCvisa::open\fR \[la]#visaopen\[ra] is a
+front\-end for \fB\fCviOpen\fR VISA function. The specifications of VISA can be found here:
+.PP
+\[la]http://www.ivifoundation.org/specifications/default.aspx\[ra]\&.
+.PP
+As an extention \fB\fCtclvisa\fRfollows conventions of Tcl Extension Architecture (TEA). It is loaded dynamically into Tcl
+shell or Tcl\-based application on demand. Please refer to TEA documentations for details:
+.PP
+\[la]http://www.tcl.tk/doc/tea/\[ra]\&.
+.SH Installation
+.PP
+Prior to usage of \fB\fCtclvisa\fRone need VISA implementation installed.  There are several known implementations
+(e.g. National Instruments VISA, or Agilent IO Library Suite). VISA libraries should be installed in proper directories
+and be available for linking.
+.PP
+\fB\fCtclvisa\fRitself should be installed as a typical Tcl extension.  Partcular details of installation, such as target
+directory, are platform\-dependent. Please refer to the documentation of your Tcl version.
+.PP
+If you have no access to system directories to install \fB\fCtclvisa\fRinto, you can install into arbitrary directory. In
+order to make Tcl known about this directory, you should add path to it to \fB\fCTCLLIBPATH\fR environment variable.
+.SS Installation in Microsoft Windows
+.PP
+Binary instalation package for Microsoft Windows can be downloaded from \fB\fCtclvisa\fRsite. This package contains DLL with
+compiled library code, documentation and demo scripts. All downloads can be found here:
+.PP
+\[la]http://sourceforge.net/projects/tclvisa/files/\[ra]\&.
+.SH Use in Tcl
+.PP
+In order to start using \fB\fCtclvisa\fRwithin Tcl one should issue following command:
+.PP
+.RS
+.nf
+package require tclvisa
+.fi
+.RE
+.PP
+If the library is properly installed, this command returns version of \fB\fCtclvisa\fRloaded. Library is ready to use. All
+commands and predefined variables are placed in \fB\fCvisa::\fR namespace.
+.SH Programming with \fB\fCtclvisa\fR
+.SH VISA Constants
+.PP
+VISA defines a lot of predefined contants with codes of attributes, errors etc. Most of these constants are available in
+Tcl within \fB\fCvisa\fR namespace and without \fB\fCVI_\fR prefix.
+.PP
+For example, \fB\fCVI_EXCLUSIVE_LOCK\fR constant is represented by \fB\fCvisa::EXCLUSIVE_LOCK\fR variable in Tcl. When using these
+predefined variables in expressions, do not forget adding \fB\fC$\fR prefix prior to variable name.
+.PP
+Following example demonstrates usage of predefined constant:
+.PP
+.RS
+.nf
+# open instrument exclusively
+set vi [visa::open $rm "ASRL2::INSTR" $visa::EXCLUSIVE_LOCK]
+.fi
+.RE
+.SH Channels
+.PP
+Most of VISA functions operate with \fIsessions\fP which are represented in C language by \fB\fCviSession\fR type. In Tcl these
+sessions are stored in standard channels. E.g. \fB\fCvisa::open\fR \[la]#visaopen\[ra] returns name of Tcl channel to be used in
+subsequent operations. This approach has following benefits:
+.RS
+.IP \(bu 2
+Standard IO procedures are used in VISA IO: \fB\fCputs\fR, \fB\fCgets\fR etc.
+.IP \(bu 2
+VISA sessions may be transparently passed to any procedure which accepts Tcl channel. If some third\-party library
+works with regular Tcl channels, it therefore can read/write from/to VISA device.
+.IP \(bu 2
+Tcl automatically closes all opened channels when interpeter terminates.
+.RE
+.PP
+\fB\fCtclvisa\fRprovides a procedure to open VISA sessions: \fB\fCvisa::open\fR \[la]#visaopen\[ra], which is a front\-end of \fB\fCviOpen\fR
+VISA function. But \fB\fCtclvisa\fRdoes not provide front\-ends for \fB\fCviClose\fR or \fB\fCviWrite\fR VISA functions. Instead one should
+use standard Tcl commands, such as \fB\fCclose\fR or \fB\fCputs\fR\&. Tcl detects type of the channel and calls proper VISA function
+internally. For example, when \fB\fCclose\fR is issued on VISA channel, opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra], then \fB\fCviClose\fR
+function is actually called within Tcl internals.
+.PP
+Following example demonstrates usage of VISA channel:
+.PP
+.RS
+.nf
+# open instrument
+set vi [visa::open $rm "ASRL2::INSTR"]
+
+# send "reset" command to instrument
+puts $vi "*RST"
+
+# close VISA session
+close $vi
+.fi
+.RE
+.PP
+See also table of correspondence \[la]#correspondence-between-visa-functions-and-tcl-commands\[ra] between supported VISA
+functions and Tcl commands.
+.SS Buffering
+.PP
+VISA IO functions, such as \fB\fCviWrite\fR or \fB\fCviRead\fR, by default work with \fImessages\fP, where message is a sequence of bytes
+of arbitrary length followed by special "end\-of\-message" character. For example,
+SCPI \[la]http://www.ivifoundation.org/scpi/default.aspx\[ra] messages end with "new line" character (ASCII code is
+\fB\fC0Ah\fR). When I send a message terminated by "end\-of\-message" via \fB\fCviWrite\fR, I can be sure that it is actually sent to
+the device rather than kept in intermediate buffer.  When I call \fB\fCviRead\fR, it returns immediately after receiving of
+"end\-of\-message" character regardless of the length of input buffer.
+.PP
+Tcl channels by default work with continuous streams of bytes. IO functions typically block until IO buffer is full or
+"end\-of\-data" is detected. For example, \fB\fCread\fR command called without a buffer length specified on file channel blocks
+until entire file is read. It's evident that this approach does not work with message\-based protocols like SCPI.
+.PP
+Fortunately Tcl offers different buffering options, which can be set or red by \fB\fCfconfigure\fR command. One of them is
+"\fB\fC\-buffering line\fR" which tells Tcl finish current IO operation when "end\-of\-line" character is received or sent. When
+buffering type is "\fB\fCline\fR", \fB\fCread\fR blocks until "end\-of\-line" is received, and \fB\fCputs\fR actually sends data right after
+"end\-of\-line" is found in outcoming data. In the terms or SCPI commands, \fB\fCread\fR blocks until complete response is
+received from a device.
+.PP
+When VISA channel is created by \fB\fCvisa::open\fR \[la]#visaopen\[ra], buffering type is automatically set to "\fB\fCline\fR". If one
+needs to switch channel mode, then \fB\fCfconfigure\fR command with proper \fB\fC\-buffering\fR option should be issued.
+.SS IO Timeouts
+.PP
+In VISA API IO message communication timeouts can be specified or read by \fB\fCviSetAttribute\fR and \fB\fCviGetAttribute\fR
+functions where \fB\fCattribute\fR parameter is set to \fB\fCVI_ATTR_TMO_VALUE\fR\&.
+.PP
+In \fB\fCtclvisa\fRtimeout can be controlled in similar way via \fB\fCvisa::set\-attribute\fR \[la]#visaset-attribute\[ra] and
+\fB\fCvisa::get\-attribute\fR \[la]#visaget-attribute\[ra] commands. But preferred and more laconic approach is to use \fB\fCfconfigure\fR
+Tcl command with standard \fB\fC\-timeout\fR option. Look at the example below:
+.PP
+.RS
+.nf
+# open an instrument
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# read current timeout value
+set tm [fconfigure $vi \-timeout]
+
+# set new timeout value
+fconfigure $vi \-timeout [expr 2 * $tm]
+.fi
+.RE
+.PP
+In this example we read current timeout value, then set a new value that is twice the original one.
+.PP
+Inside the \fB\fCtclvisa\fRthese invocations of \fB\fCfconfigure\fR are converted to corresponding calls of \fB\fCviGetAttribute\fR and
+\fB\fCviSetAttribute\fR VISA API functions.
+.SS Non\-blocking IO
+.PP
+Standard Tcl channels have a \fB\fC\-blocking\fR option which "determines whether I/O operations on the channel can cause the
+process to block indefinitely" (quote from the \fB\fCfconfigure\fR manual).
+.PP
+VISA API does not support non\-blocking IO natively, probably because it offers asynchronous operations for that. In
+\fB\fCtclvisa\fRnon\-blocking IO is \fIemulated\fP by setting IO timeout to zero.
+.PP
+I.e. when user sets a VISA channel to non\-blocking mode by \fB\fCfconfigure\fR command with \fB\fC\-blocking 0\fR option, \fB\fCtclvisa
+\fRinternally sets IO timeout for this channel to zero. When channel is reverted back to the blocking mode (that is the
+default state for all VISA channels), timeout is restored to the previous value.
+.PP
+See also "Suppressed Errors \[la]#suppressed-errors\[ra]" section.
+.SS Anynchronous IO
+.PP
+Tcl \fB\fCfileevent\fR command cannot be called upon VISA channel. This functionality is not implemented yet.
+.PP
+Support of \fB\fCviWriteAsync\fR and \fB\fCviReadAsync\fR VISA API functions is not implemented too.
+.SS Serial\-Specific Options
+.PP
+When a standard Tcl channel is backed by a serial port, it has a set of specific options that control baud speed, parity
+etc.
+.PP
+VISA instruments which are connected to the serial port (their addresses start with \fB\fCASRL\fR prefix) have full set of
+corresponding attributes, such as \fB\fCVI_ATTR_ASRL_BAUD\fR, \fB\fCVI_ATTR_ASRL_PARITY\fR and similar. In order to configure, for
+instance, baud rate one can use \fB\fCvisa::set\-attribute\fR \[la]#visaset-attribute\[ra] command with \fB\fC$visa::ATTR_ASRL_BAUD\fR
+passed as an attribute name. But preferred way is to use \fB\fCfconfigure\fR Tcl command and standard options. See example:
+.PP
+.RS
+.nf
+# open an instrument
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# set baud rate, parity, word length and stop bits
+fconfigure $vi \-mode 9600,n,8,1
+.fi
+.RE
+.PP
+From the Tcl code's point of view channel '\fB\fCvi\fR\&' behaves like a regular serial port. For example, this channel can be
+transparently passed to third\-party library that implements some serial\-based protocol.
+.PP
+All serial\-specific options supported and corresponding VISA attributes are listed in table below. Format of each option
+is described in the \fB\fCfconfigure\fR command manual.
+.PP
+Serial\-specific channel options and VISA equivalents:
+.TS
+allbox;
+cb cb
+l l
+l l
+l l
+l l
+l l
+l l
+.
+Tcl option	VISA 
+.BR Attribute (s)
+
+handshake	VI\fIATTR\fPASRL\fIFLOW\fPCNTRL
+mode	VI\fIATTR\fPASRL\fIBAUD, VI\fPATTR\fIASRL\fPPARITY, VI\fIATTR\fPASRL\fIDATA\fPBITS, VI\fIATTR\fPASRL\fISTOP\fPBITS
+queue	VI\fIATTR\fPASRL\fIAVAIL\fPNUM
+ttycontrol	VI\fIATTR\fPASRL\fIDTR\fPSTATE, VI\fIATTR\fPASRL\fIRTS\fPSTATE, VI\fIATTR\fPASRL\fIBREAK\fPSTATE
+ttystatus	VI\fIATTR\fPASRL\fICTS\fPSTATE, VI\fIATTR\fPASRL\fIDSR\fPSTATE, VI\fIATTR\fPASRL\fIRI\fPSTATE, VI\fIATTR\fPASRL\fIDCD\fPSTATE
+xchar	VI\fIATTR\fPASRL\fIXON\fPCHAR, VI\fIATTR\fPASRL\fIXOFF\fPCHAR
+.TE
+.PP
+See also \fB\fCdemo/fconfigure.tcl\fR script that demonstrates usage of channel options.
+.SH Error Handling
+.PP
+All VISA API functions returns \fB\fCviStatus\fR value with error code. Zero code means successfull completion, positive value
+means that operation returns some warning which may be ignored in the most of cases. Negative code means error that
+should be handled by application.
+.PP
+In scripting language like Tcl the API developer should follow "KISS" principle and make things as simple as
+possible. This is why \fB\fCtclvisa\fRcommands do not explicitly return error code to the calling script. Instead they return
+either actual result of operation (say, instance of the new channel created by \fB\fCvisa::open\fR \[la]#visaopen\[ra] command) or
+nothing, when operation has no any meaningful result (e.g.  \fB\fCvisa::set\-attribute\fR \[la]#visaset-attribute\[ra]).
+.PP
+When underlying VISA API function returns error, and \fB\fCtclvisa\fRcannot handle this error itself, it throws an exception
+which can be handled by \fB\fCcatch\fR command in the calling script. This is a standard and expected behaviour for Tcl
+command. For example, standard \fB\fCopen\fR command throws exception when it cannot open a file. Exception handler receives a
+string with error code and description in the following format:
+.PP
+.RS
+.nf
+    [CODE] Text description
+.fi
+.RE
+.PP
+where \fB\fCCODE\fR is the name of the predefined VISA error constant.
+.PP
+In the following example we're trying to open an instrument that does not actually exist:
+.PP
+.RS
+.nf
+# this attempt should return VI_ERROR_RSRC_NFOUND error
+if { [catch { set vi [visa::open $rm ASRL99::INSTR] } rc] } {
+  puts "Error: $rc"
+}
+.fi
+.RE
+.PP
+This code produces following output:
+.PP
+.RS
+.nf
+Error: [VI_ERROR_RSRC_NFOUND] Insufficient location information
+ or resource not present in the system.
+.fi
+.RE
+.PP
+Calling side then can parse the error string to retrieve VISA error code which is placed between square brackets.
+.SS Suppressed Errors
+.PP
+Some errors returned from VISA functions are suppressed by \fB\fCtclvisa\fR, i.e. do not cause Tcl exceptions:
+.RS
+.IP \(bu 2
+Timeout error (\fB\fCVI_ERROR_TMO\fR) is suppressed by IO operations on VISA channels. For example, when read attempt
+expires, the \fB\fCread\fR command simply returns empty string.
+.IP \(bu 2
+\fB\fCVI_ERROR_RSRC_NFOUND\fR error returned by \fB\fCviFindRsrc\fR or \fB\fCviFindNext\fR is suppressed by \fB\fCvisa::find\fR \[la]#visafind\[ra]
+command.  For example, when search criteria do not produce any result, this command simply returns an empty list.
+.IP \(bu 2
+\fB\fCVI_ERROR_INV_RSRC_NAME\fR and \fB\fCVI_ERROR_RSRC_NFOUND\fR errors returned by \fB\fCviParseRsrc\fR are suppressed by
+\fB\fCvisa::parse\-rsrc\fR \[la]#visaparse-rsrc\[ra] command.
+.RE
+.PP
+One can use \fB\fCvisa::last\-error\fR \[la]#visalast-error\[ra] command to determine the exact status of the last VISA
+operation. This command returns all errors, including suppressed ones.
+.SH Correspondence Between VISA Functions and Tcl Commands
+.PP
+Table below contains list of VISA API functions supported by \fB\fCtclvisa\fRand corresponding commands to use in Tcl.
+.PP
+VISA functions and Tcl equivalents:
+.TS
+allbox;
+cb cb
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+l l
+.
+VISA API function	Tcl Command
+viAssertIntrSignal	visa::assert\-intr\-signal
+viAssertTrigger	visa::assert\-trigger
+viAssertUtilSignal	visa::assert\-util\-signal
+viClear	visa::clear
+viClose	close
+viFindNext, viFindRsrc	visa::find
+viGetAttribute	visa::get\-attribute
+viGpibCommand	visa::gpib\-command
+viGpibControlATN	visa::gpib\-control\-atn
+viGpibControlREN	visa::gpib\-control\-ren
+viGpibPassControl	visa::gpib\-pass\-control
+viGpibSendIFC	visa::gpib\-send\-ifc
+viLock	visa::lock
+viOpen	visa::open
+viOpenDefaultRM	visa::open\-default\-rm
+viParseRsrc	visa::parse\-rsrc
+viPrintf	format, puts
+viQueryf	format, puts, gets, scan
+viRead	read
+viReadToFile	visa::read\-to\-file
+viScanf	gets, scan
+viSetAttribute	visa::set\-attribute
+viUnlock	visa::unlock
+viWrite	puts
+viWriteFromFile	visa::write\-from\-file
+.TE
+.SH \fB\fCtclvisa\fRCommand Reference
+.SH visa::assert\-intr\-signal
+.SS Purpose
+.PP
+Asserts the specified interrupt or signal. This command is a front\-end for \fB\fCviAssertIntrSignal\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::assert\-intr\-signal session mode ?statusID?`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCmode\fR \- This specifies how to assert the interrupt. Valid value is one of the predefined \fB\fCvisa::ASSERT_xxx\fR
+constants. Please refer to your VISA documentation for detailed help.
+.IP \(bu 2
+\fB\fCstatusID\fR \- This is the status value to be presented during an interrupt acknowledge cycle. This argument may be
+omitted on certail bus types.
+.RE
+.SS Return Value
+.PP
+None
+.SS Example
+.PP
+.RS
+.nf
+# open instrument
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# assert signal
+visa::assert\-intr\-signal $vi $visa::ASSERT_USE_ASSIGNED
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::assert\-util\-signal\fR \[la]#visaassert-util-signal\[ra]
+.SH visa::assert\-trigger
+.SS Purpose
+.PP
+Asserts software or hardware trigger. This command is a front\-end for \fB\fCviAssertTrigger\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::assert\-trigger session protocol`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCprotocol\fR \- Trigger protocol to use during assertion. Valid value is one of the predefined \fB\fCvisa::TRIG_PROT_xxx\fR
+constants. Please refer to your VISA documentation for detailed help.
+.RE
+.SS Return Value
+.PP
+None
+.SS Example
+.PP
+.RS
+.nf
+# open instrument
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# assert trigger
+visa::assert\-trigger $vi $visa::TRIG_PROT_DEFAULT
+.fi
+.RE
+.SH visa::assert\-util\-signal
+.SS Purpose
+.PP
+Asserts or deasserts the specified utility bus signal. This command is a front\-end for \fB\fCviAssertUtilSignal\fR VISA API
+function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::assert\-util\-signal session line`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCline\fR \- Specifies the utility bus signal to assert. Valid value is one of the predefined \fB\fCvisa::UTIL_xxx\fR
+constants. Please refer to your VISA documentation for detailed help.
+.RE
+.SS Return Value
+.PP
+None
+.SS Example
+.PP
+.RS
+.nf
+# open instrument
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# assert signal
+visa::assert\-util\-signal $vi $visa::UTIL_ASSERT_SYSRESET
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::assert\-intr\-signal\fR \[la]#visaassert-intr-signal\[ra]
+.SH visa::clear
+.SS Purpose
+.PP
+Clears a device. This command is a front\-end for \fB\fCviClear\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::clear session`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.RE
+.SS Return Value
+.PP
+None
+.SS Example
+.PP
+.RS
+.nf
+# open instrument with default access mode and timeout
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# set device to known state
+visa::clear $vi
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::open\fR \[la]#visaopen\[ra]
+.SH visa::find
+.SS Purpose
+.PP
+Queries a VISA system to locate the resources associated with a specified interface. This command is a front\-end for
+\fB\fCviFindRsrc\fR and \fB\fCviFindNext\fR VISA API functions.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::open RMsession expr`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCRMsession\fR \- channel containing reference to open Resource Manager session opened by
+\fB\fCvisa::open\-default\-rm\fR \[la]#visaopen-default-rm\[ra]\&.
+.IP \(bu 2
+\fB\fCexpr\fR \- regular expression followed by an optional logical expression. Refer to VISA API documentation for detailed
+discussion.
+.RE
+.SS Return Value
+.PP
+Tcl list with addresses of all resources found. If no resources found that match the given expression, empty list is
+returned.
+.SS Example
+.PP
+.RS
+.nf
+# open resource manager session
+set rm [visa::open\-default\-rm]
+
+# get addresses of all serial instruments
+foreach addr [visa::find $rm "ASRL?*INSTR"] {
+  # address is in $addr variable
+}
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::open\-default\-rm\fR \[la]#visaopen-default-rm\[ra]
+.SH visa::get\-attribute
+.SS Purpose
+.PP
+Retrieves the state of an attribute. This command is a front\-end for \fB\fCviGetAttribute\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::get\-attribute session attribute`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCattribute\fR \- Integer value with ID of the VISA attribute to retrieve. Use one of the predefned \fB\fCvisa::ATTR_XXX\fR
+constants.
+.RE
+.SS Return Value
+.PP
+Attribute value.
+.SS Example
+.PP
+.RS
+.nf
+# open instrument with default access mode and timeout
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# retrieve current baud rate of a serial bus
+set baud [visa::get\-attribute $vi $visa::ATTR_ASRL_BAUD]
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::set\-attribute\fR \[la]#visaset-attribute\[ra]
+.SH visa::gpib\-command
+.SS Purpose
+.PP
+Write GPIB command bytes on the bus. This command is a front\-end for \fB\fCviGpibCommand\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::gpib\-command session buf ?count?`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCbuf\fR \- String containing valid GPIB commands.
+.IP \(bu 2
+\fB\fCcount\fR \- Number of bytes to be written. If argument is omitted, string length of \fB\fCbuf\fR is assumed.
+.RE
+.SS Return Value
+.PP
+Number of bytes actually transferred.
+.SS Example
+.PP
+.RS
+.nf
+# send command
+set cmd ... # this variable contains command
+set ret [visa::gpib\-command $vi $cmd 10]
+puts "$ret bytes are transmitted"
+.fi
+.RE
+.SH visa::gpib\-control\-atn
+.SS Purpose
+.PP
+Specifies the state of the ATN line and the local active controller state. This command is a front\-end for
+\fB\fCviGpibControlATN\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::gpib\-control\-atn session mode`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCmode\fR \- Specifies the state of the ATN line and optionally the local active controller state. Valid value is one of
+the \fB\fCvisa::GPIB_ATN_xxx\fR predefined constants. Please refer to your VISA documentation for detailed help.
+.RE
+.SS Return Value
+.PP
+None
+.SS Example
+.PP
+.RS
+.nf
+# open a GPIB interface device
+set vi [visa::open ...
+# set "assert" state
+visa::gpib\-control\-atn $vi $visa::GPIB_ATN_ASSERT
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::gpib\-control\-ren\fR \[la]#visagpib-control-ren\[ra]
+.SH visa::gpib\-control\-ren
+.SS Purpose
+.PP
+Controls the state of the GPIB Remote Enable (REN) interface line, and optionally the remote/local state of the
+device. This command is a front\-end for \fB\fCviGpibControlREN\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::gpib\-control\-ren session mode`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCmode\fR \- Specifies the state of the REN line and optionally the device remote/local state. Valid value is one of the
+\fB\fCvisa::GPIB_REN_xxx\fR predefined constants. Please refer to your VISA documentation for detailed help.
+.RE
+.SS Return Value
+.PP
+None
+.SS Example
+.PP
+.RS
+.nf
+# open a GPIB interface device
+set vi [visa::open ...
+# set "assert" state
+visa::gpib\-control\-ren $vi $visa::GPIB_REN_ASSERT
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::gpib\-control\-atn\fR \[la]#visagpib-control-atn\[ra]
+.SH visa::gpib\-pass\-control
+.SS Purpose
+.PP
+Tell the GPIB device at the specified address to become controller in charge (CIC). This command is a front\-end for
+\fB\fCviGpibPassControl\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::gpib\-pass\-control session primAddr ?secAddr?`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCprimAddr\fR \- Primary address of the GPIB device to which you want to pass control.
+.IP \(bu 2
+\fB\fCsecAddr\fR \- Secondary address of the targeted GPIB device. If argument is omitted, default \fB\fCVI_NO_SEC_ADDR\fR value is
+assumed.
+.RE
+.SS Return Value
+.PP
+None
+.SS Example
+.PP
+.RS
+.nf
+# open a GPIB device
+set vi [visa::open ...
+# affect the device at primary address 1 
+#   and without secondary address
+visa::gpib\-pass\-control $vi 1
+.fi
+.RE
+.SH visa::gpib\-send\-ifc
+.SS Purpose
+.PP
+Pulse the interface clear line (IFC) for at least 100 microseconds. This command is a front\-end for \fB\fCviGpibSendIFC\fR VISA
+API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::gpib\-send\-ifc session`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.RE
+.SS Return Value
+.PP
+None
+.SS Example
+.PP
+.RS
+.nf
+# open a GPIB device
+set vi [visa::open ...
+# send a signal
+visa::gpib\-send\-ifc $vi
+.fi
+.RE
+.SH visa::last\-error
+.SS Purpose
+.PP
+Returns last error occured on the channel or Resource Manager session.  This command has no VISA API equivalent.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::last\-error session`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to an either resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra] or
+Resource Manager session opened by \fB\fCvisa::open\-default\-rm\fR \[la]#visaopen-default-rm\[ra]\&.
+.RE
+.SS Return Value
+.PP
+List of three elements:
+.RS
+.IP \(bu 2
+Numeric value of the last error.
+.IP \(bu 2
+Character code of the last error that refers to a name of the corresponding C language macro. For example,
+"\fB\fCVI_ERROR_TMO\fR".
+.IP \(bu 2
+Textual description of the last error or empty value if no error.
+.RE
+.SS Notes
+.PP
+This command is especially useful when IO operations fail, because exact VISA error is not translated to client code by
+standard Tcl IO procedures, such as \fB\fCputs\fR or \fB\fCread\fR\&. In other words, when IO procedure (say, \fB\fCputs\fR) fails on a
+\fB\fCtclvisa\fRchannel, only way to know what exactly occured is to call \fB\fCvisa::last\-error\fR \[la]#visalast-error\[ra]\&.
+.PP
+Only result of last operation is stored. All subsequent calls of \fB\fCtclvisa\fRor IO commands on a channel rewrite error
+information.
+.PP
+The Resource Manager session holds result of last operation the session is used in, for example
+\fB\fCvisa::open\fR \[la]#visaopen\[ra] or \fB\fCvisa::find\fR \[la]#visafind\[ra]\&.
+.SS Example
+.PP
+In the following example we're reading from an instrument and checking whether it timed out.
+.PP
+.RS
+.nf
+# read from device
+set ans [gets $vi]
+
+if { $ans == "" } {
+  # Either timeout error or empty device response
+  set err [visa::last\-error $vi]
+  if { [lindex $err 0] == $visa::ERROR_TMO } {
+    puts stderr "Error [lindex $err 1] reading from a device"
+    puts stderr "[lindex $err 2]"
+  }
+}
+.fi
+.RE
+.PP
+If the read operation timed out, following message will be displayed:
+.PP
+.RS
+.nf
+Error VI_ERROR_TMO reading from a device
+The read/write operation was aborted because timeout expired 
+while operation was in progress.
+.fi
+.RE
+.SH visa::lock
+.SS Purpose
+.PP
+Establishes an access mode to the specified resource. This command is a front\-end for \fB\fCviLock\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::lock session ?lockType? ?timeout? ?requestedKey?`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fClockType\fR \- integer value determining type of locking. May be either \fB\fCvisa::EXCLUSIVE_LOCK\fR or
+\fB\fCvisa::SHARED_LOCK\fR\&. If argument is omitted, \fB\fCvisa::EXCLUSIVE_LOCK\fR is assumed.
+.IP \(bu 2
+\fB\fCtimeout\fR \- timeout of getting lock. If argument is omitted, infinite timeout is assumed.
+.IP \(bu 2
+\fB\fCrequestedKey\fR \- name of the shared lock to acquire. If exclusive locking is requested, this argument is ignored.
+.RE
+.SS Return Value
+.RS
+.IP \(bu 2
+If an exclusive lock is requiested and acquired, procedure returns nothing.
+.IP \(bu 2
+If an shared lock is requiested and acquired, procedure returns name of the lock.
+.RE
+.SS Example
+.PP
+.RS
+.nf
+# get exclusive lock and wait forever
+visa::lock $vi
+
+# get exclusive lock and wait 5 seconds
+visa::lock $vi $visa::EXCLUSIVE_LOCK 5000
+
+# get shared lock and wait 5 seconds
+set key [visa::lock $vi $visa::SHARED_LOCK 5000 "MYLOCK"]
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::open\fR \[la]#visaopen\[ra], \fB\fCvisa::unlock\fR \[la]#visaunlock\[ra]
+.SH visa::open
+.SS Purpose
+.PP
+Opens a session to the specified resource. This command is a front\-end for \fB\fCviOpen\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::open RMsession rsrcName ?accessMode? ?openTimeout?`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCRMsession\fR \- channel containing reference to open Resource Manager session opened by
+\fB\fCvisa::open\-default\-rm\fR \[la]#visaopen-default-rm\[ra]\&.
+.IP \(bu 2
+\fB\fCrsrcName\fR \- name of the VISA resource to connect to.
+.IP \(bu 2
+\fB\fCaccessMode\fR \- integer parameter determining access mode. May be bitwise OR combination of the following constants:
+.RS
+.IP \(bu 2
+\fB\fCvisa::EXCLUSIVE_LOCK\fR \- acquire exclusive lock to a resource;
+.IP \(bu 2
+\fB\fCvisa::LOAD_CONFIG\fR \- use external configuration;
+.RE
+.PP
+Refer to VISA documentation for more details about access mode. If parameter is omitted, default zero value is used.
+.IP \(bu 2
+\fB\fCopenTimeout\fR \- operation timeout. If parameter is omitted, default timeout value is used.
+.RE
+.SS Return Value
+.PP
+Tcl channel with reference to opened VISA session. This channel can be used in standard Tcl IO procedures, like \fB\fCputs\fR\&.
+.SS Notes
+.PP
+There is no a Tcl wrapper for \fB\fCviClose\fR VISA API function. In order to close a VISA session one should use standard Tcl
+\fB\fCclose\fR command instead, which calls \fB\fCviClose\fR internally.
+.SS Example
+.PP
+.RS
+.nf
+# open resource manager session
+set rm [visa::open\-default\-rm]
+
+# open instrument with default access mode and timeout
+set vi1 [visa::open $rm "ASRL1::INSTR"]
+
+# open instrument exclusively
+set vi2 [visa::open $rm "ASRL2::INSTR" $visa::EXCLUSIVE_LOCK]
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::open\-default\-rm\fR \[la]#visaopen-default-rm\[ra]
+.SH visa::open\-default\-rm
+.SS Purpose
+.PP
+Returns a session to the Default Resource Manager resource. This command is a front\-end for \fB\fCviOpenDefaultRM\fR VISA API
+function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::open\-default\-rm`
+.fi
+.RE
+.SS Arguments
+.PP
+None
+.SS Return Value
+.PP
+Tcl channel with reference to opened resource manager session. This channel can be used in subsequent \fB\fCtclvisa
+\fRprocedure calls.
+.SS Notes
+.PP
+There is no a Tcl wrapper for \fB\fCviClose\fR VISA API function. In order to close a VISA session one should use standard Tcl
+\fB\fCclose\fR command instead, which calls \fB\fCviClose\fR internally.
+.SS Example
+.PP
+.RS
+.nf
+# open resource manager session
+set rm [visa::open\-default\-rm]
+
+# use session reference
+\&...
+
+# close session
+close $rm
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::open\fR \[la]#visaopen\[ra]
+.SH visa::set\-attribute
+.SS Purpose
+.PP
+Sets the state of an attribute. This command is a front\-end for \fB\fCviSetAttribute\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::set\-attribute session attribute attrState`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCattribute\fR \- Integer value with ID of the VISA attribute to set.  Use one of the predefned \fB\fCvisa::ATTR_XXX\fR
+constants.
+.IP \(bu 2
+\fB\fCattrState\fR \- Integer value with desired attribute state.
+.RE
+.SS Return Value
+.PP
+None
+.SS Example
+.PP
+.RS
+.nf
+# open instrument with default access mode and timeout
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# set new baud rate of a serial bus
+visa::set\-attribute $vi $visa::ATTR_ASRL_BAUD 19200
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::get\-attribute\fR \[la]#visaget-attribute\[ra]
+.SH visa::parse\-rsrc
+.SS Purpose
+.PP
+Parse a resource string to get the interface information. This command is a front\-end for \fB\fCviParseRsrc\fR VISA API
+function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::parse\-rsrc RMsession rsrcName`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCRMsession\fR \- channel containing reference to open Resource Manager session opened by
+\fB\fCvisa::open\-default\-rm\fR \[la]#visaopen-default-rm\[ra]\&.
+.IP \(bu 2
+\fB\fCrsrcName\fR \- Unique symbolic name of a resource.
+.RE
+.SS Return Value
+.RS
+.IP \(bu 2
+On success returns Tcl list of two integers: interface type code and interface number.
+.IP \(bu 2
+If address given is not valid or device does not exists, returns empty value.
+.RE
+.SS Example
+.PP
+.RS
+.nf
+# open resource manager session
+set rm [visa::open\-default\-rm]
+
+# parse instrument address
+lassign [visa::parse\-rsrc $rm "ASRL1::INSTR"] intfType intfNum
+
+if { $intfType == $visa::INTF_ASRL } {
+  puts "Have serial interface device with interface number $intfNum"
+}
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::open\-default\-rm\fR \[la]#visaopen-default-rm\[ra]
+.SH visa::read\-to\-file
+.SS Purpose
+.PP
+Read data synchronously, and store the transferred data in a file. This command is a front\-end for \fB\fCviReadToFile\fR
+VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::read\-to\-file session fileName count`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCfileName\fR \- name of file to which data will be written.
+.IP \(bu 2
+\fB\fCcount\fR \- number of bytes to be read.
+.RE
+.SS Return Value
+.PP
+Number of bytes actually transferred.
+.SS Example
+.PP
+.RS
+.nf
+# open instrument with default access mode and timeout
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# read up to 1024 bytes of data 
+# or until term char is received
+visa::read\-to\-file $vi "raw.dat" 1024
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::write\-from\-file\fR \[la]#visawrite-from-file\[ra]
+.SH visa::unlock
+.SS Purpose
+.PP
+Relinquishes a lock for the specified resource. This command is a front\-end for \fB\fCviUnlock\fR VISA API function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::unlock session`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.RE
+.SS Return Value
+.PP
+None
+.SS Example
+.PP
+.RS
+.nf
+# get exclusive lock and wait forever
+visa::lock $vi
+
+# release the lock
+visa::unlock $vi
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::open\fR \[la]#visaopen\[ra], \fB\fCvisa::lock\fR \[la]#visalock\[ra]
+.SH visa::write\-from\-file
+.SS Purpose
+.PP
+Take data from a file and write it out synchronously. This command is a front\-end for \fB\fCviWriteFromFile\fR VISA API
+function.
+.SS Syntax
+.PP
+.RS
+.nf
+`visa::write\-from\-file session fileName ?count?`
+.fi
+.RE
+.SS Arguments
+.RS
+.IP \(bu 2
+\fB\fCsession\fR \- channel containing reference to a VISA resource session opened by \fB\fCvisa::open\fR \[la]#visaopen\[ra]\&.
+.IP \(bu 2
+\fB\fCfileName\fR \- name of file from which data will be read.
+.IP \(bu 2
+\fB\fCcount\fR \- number of bytes to be written. If omitted, entire file is written.
+.RE
+.SS Return Value
+.PP
+Number of bytes actually transferred.
+.SS Example
+.PP
+.RS
+.nf
+# open instrument with default access mode and timeout
+set vi [visa::open $rm "ASRL1::INSTR"]
+
+# write entire file content to device
+visa::write\-from\-file $vi "raw.dat"
+.fi
+.RE
+.SS See Also
+.PP
+\fB\fCvisa::read\-to\-file\fR \[la]#visaread-to-file\[ra]

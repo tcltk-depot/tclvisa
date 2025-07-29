@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>tclvisa</title>
+  <style>
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width:72em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      background-color: #1a1a1a;
+      border: none;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+    /* CSS for syntax highlighting */
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { color: #008000; } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { color: #008000; font-weight: bold; } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+  </style>
+</head>
+<body>
+<h1 id="getting-started">Getting Started</h1>
+<ul>
+<li><a href="#introduction">Introduction</a></li>
+<li><a href="#installation">Installation</a>
+<ul>
+<li><a href="#installation-in-microsoft-windows">Installation in
+Microsoft Windows</a></li>
+</ul></li>
+<li><a href="#use-in-tcl">Use in Tcl</a></li>
+<li><a href="#visa-constants">VISA Constants</a></li>
+<li><a href="#channels">Channels</a>
+<ul>
+<li><a href="#buffering">Buffering</a></li>
+<li><a href="#io-timeouts">IO Timeouts</a></li>
+<li><a href="#non-blocking-io">Non-blocking IO</a></li>
+<li><a href="#anynchronous-io">Anynchronous IO</a></li>
+<li><a href="#serial-specific-options">Serial-Specific Options</a></li>
+</ul></li>
+<li><a href="#error-handling">Error Handling</a>
+<ul>
+<li><a href="#suppressed-errors">Suppressed Errors</a></li>
+</ul></li>
+<li><a
+href="#correspondence-between-visa-functions-and-tcl-commands">Correspondence
+Between VISA Functions and Tcl Commands</a></li>
+<li><a
+href="#visa::assert-intr-signal">visa::assert-intr-signal</a></li>
+<li><a href="#visa::assert-trigger">visa::assert-trigger</a></li>
+<li><a
+href="#visa::assert-util-signal">visa::assert-util-signal</a></li>
+<li><a href="#visa::clear">visa::clear</a></li>
+<li><a href="#visa::find">visa::find</a></li>
+<li><a href="#visa::get-attribute">visa::get-attribute</a></li>
+<li><a href="#visa::gpib-command">visa::gpib-command</a></li>
+<li><a href="#visa::gpib-control-atn">visa::gpib-control-atn</a></li>
+<li><a href="#visa::gpib-control-ren">visa::gpib-control-ren</a></li>
+<li><a href="#visa::gpib-pass-control">visa::gpib-pass-control</a></li>
+<li><a href="#visa::gpib-send-ifc">visa::gpib-send-ifc</a></li>
+<li><a href="#visa::last-error">visa::last-error</a></li>
+<li><a href="#visa::lock">visa::lock</a></li>
+<li><a href="#visa::open">visa::open</a></li>
+<li><a href="#visa::open-default-rm">visa::open-default-rm</a></li>
+<li><a href="#visa::set-attribute">visa::set-attribute</a></li>
+<li><a href="#visa::parse-rsrc">visa::parse-rsrc</a></li>
+<li><a href="#visa::read-to-file">visa::read-to-file</a></li>
+<li><a href="#visa::unlock">visa::unlock</a></li>
+<li><a href="#visa::write-from-file">visa::write-from-file</a></li>
+</ul>
+<h2 id="introduction">Introduction</h2>
+<p><code>tclvisa</code>is a standard Tcl extension providing a binding
+to Virtual Instrument Software Architecture (VISA ) API. It allows to
+use VISA functionality from regular Tcl scripts via set of commands.
+Most of the commands have similar names and are intuitive to use for the
+one who knows VISA API. For example, Tcl command <a
+href="#visaopen"><code>visa::open</code></a> is a front-end for
+<code>viOpen</code> VISA function. The specifications of VISA can be
+found here:</p>
+<p><a href="http://www.ivifoundation.org/specifications/default.aspx"
+class="uri">http://www.ivifoundation.org/specifications/default.aspx</a>.</p>
+<p>As an extention <code>tclvisa</code>follows conventions of Tcl
+Extension Architecture (TEA). It is loaded dynamically into Tcl shell or
+Tcl-based application on demand. Please refer to TEA documentations for
+details:</p>
+<p><a href="http://www.tcl.tk/doc/tea/"
+class="uri">http://www.tcl.tk/doc/tea/</a>.</p>
+<h2 id="installation">Installation</h2>
+<p>Prior to usage of <code>tclvisa</code>one need VISA implementation
+installed. There are several known implementations (e.g. National
+Instruments VISA, or Agilent IO Library Suite). VISA libraries should be
+installed in proper directories and be available for linking.</p>
+<p><code>tclvisa</code>itself should be installed as a typical Tcl
+extension. Partcular details of installation, such as target directory,
+are platform-dependent. Please refer to the documentation of your Tcl
+version.</p>
+<p>If you have no access to system directories to install
+<code>tclvisa</code>into, you can install into arbitrary directory. In
+order to make Tcl known about this directory, you should add path to it
+to <code>TCLLIBPATH</code> environment variable.</p>
+<h3 id="installation-in-microsoft-windows">Installation in Microsoft
+Windows</h3>
+<p>Binary instalation package for Microsoft Windows can be downloaded
+from <code>tclvisa</code>site. This package contains DLL with compiled
+library code, documentation and demo scripts. All downloads can be found
+here:</p>
+<p><a href="http://sourceforge.net/projects/tclvisa/files/"
+class="uri">http://sourceforge.net/projects/tclvisa/files/</a>.</p>
+<h2 id="use-in-tcl">Use in Tcl</h2>
+<p>In order to start using <code>tclvisa</code>within Tcl one should
+issue following command:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">package</span> <span class="ot">require</span> tclvisa</span></code></pre></div>
+<p>If the library is properly installed, this command returns version of
+<code>tclvisa</code>loaded. Library is ready to use. All commands and
+predefined variables are placed in <code>visa::</code> namespace.</p>
+<h1 id="programming-with-tclvisa">Programming with
+<code>tclvisa</code></h1>
+<h2 id="visa-constants">VISA Constants</h2>
+<p>VISA defines a lot of predefined contants with codes of attributes,
+errors etc. Most of these constants are available in Tcl within
+<code>visa</code> namespace and without <code>VI_</code> prefix.</p>
+<p>For example, <code>VI_EXCLUSIVE_LOCK</code> constant is represented
+by <code>visa::EXCLUSIVE_LOCK</code> variable in Tcl. When using these
+predefined variables in expressions, do not forget adding <code>$</code>
+prefix prior to variable name.</p>
+<p>Following example demonstrates usage of predefined constant:</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument exclusively</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL2::INSTR&quot;</span> <span class="dt">$visa::EXCLUSIVE_LOCK</span><span class="kw">]</span></span></code></pre></div>
+<h2 id="channels">Channels</h2>
+<p>Most of VISA functions operate with <em>sessions</em> which are
+represented in C language by <code>viSession</code> type. In Tcl these
+sessions are stored in standard channels. E.g. <a
+href="#visaopen"><code>visa::open</code></a> returns name of Tcl channel
+to be used in subsequent operations. This approach has following
+benefits:</p>
+<ul>
+<li><p>Standard IO procedures are used in VISA IO: <code>puts</code>,
+<code>gets</code> etc.</p></li>
+<li><p>VISA sessions may be transparently passed to any procedure which
+accepts Tcl channel. If some third-party library works with regular Tcl
+channels, it therefore can read/write from/to VISA device.</p></li>
+<li><p>Tcl automatically closes all opened channels when interpeter
+terminates.</p></li>
+</ul>
+<p><code>tclvisa</code>provides a procedure to open VISA sessions: <a
+href="#visaopen"><code>visa::open</code></a>, which is a front-end of
+<code>viOpen</code> VISA function. But <code>tclvisa</code>does not
+provide front-ends for <code>viClose</code> or <code>viWrite</code> VISA
+functions. Instead one should use standard Tcl commands, such as
+<code>close</code> or <code>puts</code>. Tcl detects type of the channel
+and calls proper VISA function internally. For example, when
+<code>close</code> is issued on VISA channel, opened by <a
+href="#visaopen"><code>visa::open</code></a>, then <code>viClose</code>
+function is actually called within Tcl internals.</p>
+<p>Following example demonstrates usage of VISA channel:</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL2::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># send &quot;reset&quot; command to instrument</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="kw">puts</span> <span class="dt">$vi</span> <span class="st">&quot;*RST&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># close VISA session</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="kw">close</span> <span class="dt">$vi</span></span></code></pre></div>
+<p>See also <a
+href="#correspondence-between-visa-functions-and-tcl-commands">table of
+correspondence</a> between supported VISA functions and Tcl
+commands.</p>
+<h3 id="buffering">Buffering</h3>
+<p>VISA IO functions, such as <code>viWrite</code> or
+<code>viRead</code>, by default work with <em>messages</em>, where
+message is a sequence of bytes of arbitrary length followed by special
+“end-of-message” character. For example, <a
+href="http://www.ivifoundation.org/scpi/default.aspx">SCPI</a> messages
+end with “new line” character (ASCII code is <code>0Ah</code>). When I
+send a message terminated by “end-of-message” via <code>viWrite</code>,
+I can be sure that it is actually sent to the device rather than kept in
+intermediate buffer. When I call <code>viRead</code>, it returns
+immediately after receiving of “end-of-message” character regardless of
+the length of input buffer.</p>
+<p>Tcl channels by default work with continuous streams of bytes. IO
+functions typically block until IO buffer is full or “end-of-data” is
+detected. For example, <code>read</code> command called without a buffer
+length specified on file channel blocks until entire file is read. It’s
+evident that this approach does not work with message-based protocols
+like SCPI.</p>
+<p>Fortunately Tcl offers different buffering options, which can be set
+or red by <code>fconfigure</code> command. One of them is
+“<code>-buffering line</code>” which tells Tcl finish current IO
+operation when “end-of-line” character is received or sent. When
+buffering type is “<code>line</code>”, <code>read</code> blocks until
+“end-of-line” is received, and <code>puts</code> actually sends data
+right after “end-of-line” is found in outcoming data. In the terms or
+SCPI commands, <code>read</code> blocks until complete response is
+received from a device.</p>
+<p>When VISA channel is created by <a
+href="#visaopen"><code>visa::open</code></a>, buffering type is
+automatically set to “<code>line</code>”. If one needs to switch channel
+mode, then <code>fconfigure</code> command with proper
+<code>-buffering</code> option should be issued.</p>
+<h3 id="io-timeouts">IO Timeouts</h3>
+<p>In VISA API IO message communication timeouts can be specified or
+read by <code>viSetAttribute</code> and <code>viGetAttribute</code>
+functions where <code>attribute</code> parameter is set to
+<code>VI_ATTR_TMO_VALUE</code>.</p>
+<p>In <code>tclvisa</code>timeout can be controlled in similar way via
+<a href="#visaset-attribute"><code>visa::set-attribute</code></a> and <a
+href="#visaget-attribute"><code>visa::get-attribute</code></a> commands.
+But preferred and more laconic approach is to use
+<code>fconfigure</code> Tcl command with standard <code>-timeout</code>
+option. Look at the example below:</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open an instrument</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># read current timeout value</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> tm <span class="kw">[fconfigure</span> <span class="dt">$vi</span><span class="ot"> -timeout</span><span class="kw">]</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co"># set new timeout value</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="kw">fconfigure</span> <span class="dt">$vi</span><span class="ot"> -timeout</span> <span class="kw">[expr</span> <span class="dv">2</span> * <span class="dt">$tm</span><span class="kw">]</span></span></code></pre></div>
+<p>In this example we read current timeout value, then set a new value
+that is twice the original one.</p>
+<p>Inside the <code>tclvisa</code>these invocations of
+<code>fconfigure</code> are converted to corresponding calls of
+<code>viGetAttribute</code> and <code>viSetAttribute</code> VISA API
+functions.</p>
+<h3 id="non-blocking-io">Non-blocking IO</h3>
+<p>Standard Tcl channels have a <code>-blocking</code> option which
+“determines whether I/O operations on the channel can cause the process
+to block indefinitely” (quote from the <code>fconfigure</code>
+manual).</p>
+<p>VISA API does not support non-blocking IO natively, probably because
+it offers asynchronous operations for that. In
+<code>tclvisa</code>non-blocking IO is <em>emulated</em> by setting IO
+timeout to zero.</p>
+<p>I.e. when user sets a VISA channel to non-blocking mode by
+<code>fconfigure</code> command with <code>-blocking 0</code> option,
+<code>tclvisa</code>internally sets IO timeout for this channel to zero.
+When channel is reverted back to the blocking mode (that is the default
+state for all VISA channels), timeout is restored to the previous
+value.</p>
+<p>See also “<a href="#suppressed-errors">Suppressed Errors</a>”
+section.</p>
+<h3 id="anynchronous-io">Anynchronous IO</h3>
+<p>Tcl <code>fileevent</code> command cannot be called upon
+VISA channel. This functionality is not implemented yet.</p>
+<p>Support of <code>viWriteAsync</code> and <code>viReadAsync</code>
+VISA API functions is not implemented too.</p>
+<h3 id="serial-specific-options">Serial-Specific Options</h3>
+<p>When a standard Tcl channel is backed by a serial port, it has a set
+of specific options that control baud speed, parity etc.</p>
+<p>VISA instruments which are connected to the serial port (their
+addresses start with <code>ASRL</code> prefix) have full set of
+corresponding attributes, such as <code>VI_ATTR_ASRL_BAUD</code>,
+<code>VI_ATTR_ASRL_PARITY</code> and similar. In order to configure, for
+instance, baud rate one can use <a
+href="#visaset-attribute"><code>visa::set-attribute</code></a> command
+with <code>$visa::ATTR_ASRL_BAUD</code> passed as an attribute name. But
+preferred way is to use <code>fconfigure</code> Tcl command and standard
+options. See example:</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open an instrument</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># set baud rate, parity, word length and stop bits</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">fconfigure</span> <span class="dt">$vi</span><span class="ot"> -mode</span> <span class="dv">9600</span>,n,<span class="dv">8</span>,<span class="dv">1</span></span></code></pre></div>
+<p>From the Tcl code’s point of view channel ‘<code>vi</code>’ behaves
+like a regular serial port. For example, this channel can be
+transparently passed to third-party library that implements some
+serial-based protocol.</p>
+<p>All serial-specific options supported and corresponding
+VISA attributes are listed in table below. Format of each option is
+described in the <code>fconfigure</code> command manual.</p>
+<p>Serial-specific channel options and VISA equivalents:</p>
+<table>
+<colgroup>
+<col style="width: 11%" />
+<col style="width: 88%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Tcl option</th>
+<th style="text-align: left;">VISA Attribute(s)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">handshake</td>
+<td style="text-align: left;">VI_ATTR_ASRL_FLOW_CNTRL</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">mode</td>
+<td style="text-align: left;">VI_ATTR_ASRL_BAUD, VI_ATTR_ASRL_PARITY,
+VI_ATTR_ASRL_DATA_BITS, VI_ATTR_ASRL_STOP_BITS</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">queue</td>
+<td style="text-align: left;">VI_ATTR_ASRL_AVAIL_NUM</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ttycontrol</td>
+<td style="text-align: left;">VI_ATTR_ASRL_DTR_STATE,
+VI_ATTR_ASRL_RTS_STATE, VI_ATTR_ASRL_BREAK_STATE</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ttystatus</td>
+<td style="text-align: left;">VI_ATTR_ASRL_CTS_STATE,
+VI_ATTR_ASRL_DSR_STATE, VI_ATTR_ASRL_RI_STATE,
+VI_ATTR_ASRL_DCD_STATE</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">xchar</td>
+<td style="text-align: left;">VI_ATTR_ASRL_XON_CHAR,
+VI_ATTR_ASRL_XOFF_CHAR</td>
+</tr>
+</tbody>
+</table>
+<p>See also <code>demo/fconfigure.tcl</code> script that demonstrates
+usage of channel options.</p>
+<h2 id="error-handling">Error Handling</h2>
+<p>All VISA API functions returns <code>viStatus</code> value with error
+code. Zero code means successfull completion, positive value means that
+operation returns some warning which may be ignored in the most of
+cases. Negative code means error that should be handled by
+application.</p>
+<p>In scripting language like Tcl the API developer should follow “KISS”
+principle and make things as simple as possible. This is why
+<code>tclvisa</code>commands do not explicitly return error code to the
+calling script. Instead they return either actual result of operation
+(say, instance of the new channel created by <a
+href="#visaopen"><code>visa::open</code></a> command) or nothing, when
+operation has no any meaningful result (e.g. <a
+href="#visaset-attribute"><code>visa::set-attribute</code></a>).</p>
+<p>When underlying VISA API function returns error, and
+<code>tclvisa</code>cannot handle this error itself, it throws an
+exception which can be handled by <code>catch</code> command in the
+calling script. This is a standard and expected behaviour for Tcl
+command. For example, standard <code>open</code> command throws
+exception when it cannot open a file. Exception handler receives a
+string with error code and description in the following format:</p>
+<pre class="text"><code>    [CODE] Text description</code></pre>
+<p>where <code>CODE</code> is the name of the predefined VISA error
+constant.</p>
+<p>In the following example we’re trying to open an instrument that does
+not actually exist:</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># this attempt should return VI_ERROR_RSRC_NFOUND error</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="kw">{</span> <span class="kw">[catch</span> <span class="kw">{</span> <span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> ASRL99::INSTR<span class="kw">]</span> <span class="kw">}</span> rc<span class="kw">]</span> <span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="kw">puts</span> <span class="st">&quot;Error: </span><span class="dt">$</span><span class="st">rc&quot;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<p>This code produces following output:</p>
+<pre class="text"><code>Error: [VI_ERROR_RSRC_NFOUND] Insufficient location information
+ or resource not present in the system.</code></pre>
+<p>Calling side then can parse the error string to retrieve VISA error
+code which is placed between square brackets.</p>
+<h3 id="suppressed-errors">Suppressed Errors</h3>
+<p>Some errors returned from VISA functions are suppressed by
+<code>tclvisa</code>, i.e. do not cause Tcl exceptions:</p>
+<ul>
+<li><p>Timeout error (<code>VI_ERROR_TMO</code>) is suppressed by IO
+operations on VISA channels. For example, when read attempt expires, the
+<code>read</code> command simply returns empty string.</p></li>
+<li><p><code>VI_ERROR_RSRC_NFOUND</code> error returned by
+<code>viFindRsrc</code> or <code>viFindNext</code> is suppressed by <a
+href="#visafind"><code>visa::find</code></a> command. For example, when
+search criteria do not produce any result, this command simply returns
+an empty list.</p></li>
+<li><p><code>VI_ERROR_INV_RSRC_NAME</code> and
+<code>VI_ERROR_RSRC_NFOUND</code> errors returned by
+<code>viParseRsrc</code> are suppressed by <a
+href="#visaparse-rsrc"><code>visa::parse-rsrc</code></a>
+command.</p></li>
+</ul>
+<p>One can use <a
+href="#visalast-error"><code>visa::last-error</code></a> command to
+determine the exact status of the last VISA operation. This command
+returns all errors, including suppressed ones.</p>
+<h2
+id="correspondence-between-visa-functions-and-tcl-commands">Correspondence
+Between VISA Functions and Tcl Commands</h2>
+<p>Table below contains list of VISA API functions supported by
+<code>tclvisa</code>and corresponding commands to use in Tcl.</p>
+<p>VISA functions and Tcl equivalents:</p>
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">VISA API function</th>
+<th style="text-align: left;">Tcl Command</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">viAssertIntrSignal</td>
+<td style="text-align: left;">visa::assert-intr-signal</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viAssertTrigger</td>
+<td style="text-align: left;">visa::assert-trigger</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viAssertUtilSignal</td>
+<td style="text-align: left;">visa::assert-util-signal</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viClear</td>
+<td style="text-align: left;">visa::clear</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viClose</td>
+<td style="text-align: left;">close</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viFindNext, viFindRsrc</td>
+<td style="text-align: left;">visa::find</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viGetAttribute</td>
+<td style="text-align: left;">visa::get-attribute</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viGpibCommand</td>
+<td style="text-align: left;">visa::gpib-command</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viGpibControlATN</td>
+<td style="text-align: left;">visa::gpib-control-atn</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viGpibControlREN</td>
+<td style="text-align: left;">visa::gpib-control-ren</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viGpibPassControl</td>
+<td style="text-align: left;">visa::gpib-pass-control</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viGpibSendIFC</td>
+<td style="text-align: left;">visa::gpib-send-ifc</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viLock</td>
+<td style="text-align: left;">visa::lock</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viOpen</td>
+<td style="text-align: left;">visa::open</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viOpenDefaultRM</td>
+<td style="text-align: left;">visa::open-default-rm</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viParseRsrc</td>
+<td style="text-align: left;">visa::parse-rsrc</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viPrintf</td>
+<td style="text-align: left;">format, puts</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viQueryf</td>
+<td style="text-align: left;">format, puts, gets, scan</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viRead</td>
+<td style="text-align: left;">read</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viReadToFile</td>
+<td style="text-align: left;">visa::read-to-file</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viScanf</td>
+<td style="text-align: left;">gets, scan</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viSetAttribute</td>
+<td style="text-align: left;">visa::set-attribute</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viUnlock</td>
+<td style="text-align: left;">visa::unlock</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">viWrite</td>
+<td style="text-align: left;">puts</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">viWriteFromFile</td>
+<td style="text-align: left;">visa::write-from-file</td>
+</tr>
+</tbody>
+</table>
+<h1 id="tclvisacommand-reference"><code>tclvisa</code>Command
+Reference</h1>
+<h2 id="visaassert-intr-signal">visa::assert-intr-signal</h2>
+<h3 id="purpose">Purpose</h3>
+<p>Asserts the specified interrupt or signal. This command is a
+front-end for <code>viAssertIntrSignal</code> VISA API function.</p>
+<h3 id="syntax">Syntax</h3>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>`visa::assert-intr-signal session mode ?statusID?`</span></code></pre></div>
+<h4 id="arguments">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>mode</code> - This specifies how to assert the interrupt.
+Valid value is one of the predefined <code>visa::ASSERT_xxx</code>
+constants. Please refer to your VISA documentation for detailed
+help.</p></li>
+<li><p><code>statusID</code> - This is the status value to be presented
+during an interrupt acknowledge cycle. This argument may be omitted on
+certail bus types.</p></li>
+</ul>
+<h4 id="return-value">Return Value</h4>
+<p>None</p>
+<h3 id="example">Example</h3>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co"># assert signal</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>visa::assert-intr-signal <span class="dt">$vi</span> <span class="dt">$visa::ASSERT_USE_ASSIGNED</span></span></code></pre></div>
+<h3 id="see-also">See Also</h3>
+<p><a
+href="#visaassert-util-signal"><code>visa::assert-util-signal</code></a></p>
+<h2 id="visaassert-trigger">visa::assert-trigger</h2>
+<h3 id="purpose-1">Purpose</h3>
+<p>Asserts software or hardware trigger. This command is a front-end for
+<code>viAssertTrigger</code> VISA API function.</p>
+<h3 id="syntax-1">Syntax</h3>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>`visa::assert-trigger session protocol`</span></code></pre></div>
+<h4 id="arguments-1">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>protocol</code> - Trigger protocol to use during assertion.
+Valid value is one of the predefined <code>visa::TRIG_PROT_xxx</code>
+constants. Please refer to your VISA documentation for detailed
+help.</p></li>
+</ul>
+<h4 id="return-value-1">Return Value</h4>
+<p>None</p>
+<h3 id="example-1">Example</h3>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="co"># assert trigger</span></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>visa::assert-trigger <span class="dt">$vi</span> <span class="dt">$visa::TRIG_PROT_DEFAULT</span></span></code></pre></div>
+<h2 id="visaassert-util-signal">visa::assert-util-signal</h2>
+<h3 id="purpose-2">Purpose</h3>
+<p>Asserts or deasserts the specified utility bus signal. This command
+is a front-end for <code>viAssertUtilSignal</code> VISA API
+function.</p>
+<h3 id="syntax-2">Syntax</h3>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>`visa::assert-util-signal session line`</span></code></pre></div>
+<h4 id="arguments-2">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>line</code> - Specifies the utility bus signal to assert.
+Valid value is one of the predefined <code>visa::UTIL_xxx</code>
+constants. Please refer to your VISA documentation for detailed
+help.</p></li>
+</ul>
+<h4 id="return-value-2">Return Value</h4>
+<p>None</p>
+<h3 id="example-2">Example</h3>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="co"># assert signal</span></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>visa::assert-util-signal <span class="dt">$vi</span> <span class="dt">$visa::UTIL_ASSERT_SYSRESET</span></span></code></pre></div>
+<h3 id="see-also-1">See Also</h3>
+<p><a
+href="#visaassert-intr-signal"><code>visa::assert-intr-signal</code></a></p>
+<h2 id="visaclear">visa::clear</h2>
+<h3 id="purpose-3">Purpose</h3>
+<p>Clears a device. This command is a front-end for <code>viClear</code>
+VISA API function.</p>
+<h3 id="syntax-3">Syntax</h3>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>`visa::<span class="ot">clear</span> session`</span></code></pre></div>
+<h4 id="arguments-3">Arguments</h4>
+<ul>
+<li><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</li>
+</ul>
+<h4 id="return-value-3">Return Value</h4>
+<p>None</p>
+<h3 id="example-3">Example</h3>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument with default access mode and timeout</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="co"># set device to known state</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>visa::<span class="ot">clear</span> <span class="dt">$vi</span></span></code></pre></div>
+<h3 id="see-also-2">See Also</h3>
+<p><a href="#visaopen"><code>visa::open</code></a></p>
+<h2 id="visafind">visa::find</h2>
+<h3 id="purpose-4">Purpose</h3>
+<p>Queries a VISA system to locate the resources associated with a
+specified interface. This command is a front-end for
+<code>viFindRsrc</code> and <code>viFindNext</code> VISA API
+functions.</p>
+<h3 id="syntax-4">Syntax</h3>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>`visa::<span class="kw">open</span> RMsession expr`</span></code></pre></div>
+<h4 id="arguments-4">Arguments</h4>
+<ul>
+<li><p><code>RMsession</code> - channel containing reference to open
+Resource Manager session opened by <a
+href="#visaopen-default-rm"><code>visa::open-default-rm</code></a>.</p></li>
+<li><p><code>expr</code> - regular expression followed by an optional
+logical expression. Refer to VISA API documentation for detailed
+discussion.</p></li>
+</ul>
+<h4 id="return-value-4">Return Value</h4>
+<p>Tcl list with addresses of all resources found. If no resources found
+that match the given expression, empty list is returned.</p>
+<h3 id="example-4">Example</h3>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open resource manager session</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> rm <span class="kw">[</span>visa::<span class="kw">open</span>-<span class="ot">default</span>-rm<span class="kw">]</span></span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># get addresses of all serial instruments</span></span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="kw">foreach</span> addr <span class="kw">[</span>visa::<span class="ot">find</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL?*INSTR&quot;</span><span class="kw">]</span> <span class="kw">{</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># address is in $addr variable</span></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<h3 id="see-also-3">See Also</h3>
+<p><a
+href="#visaopen-default-rm"><code>visa::open-default-rm</code></a></p>
+<h2 id="visaget-attribute">visa::get-attribute</h2>
+<h3 id="purpose-5">Purpose</h3>
+<p>Retrieves the state of an attribute. This command is a front-end for
+<code>viGetAttribute</code> VISA API function.</p>
+<h3 id="syntax-5">Syntax</h3>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>`visa::<span class="ot">get</span>-attribute session attribute`</span></code></pre></div>
+<h4 id="arguments-5">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>attribute</code> - Integer value with ID of the VISA
+attribute to retrieve. Use one of the predefned
+<code>visa::ATTR_XXX</code> constants.</p></li>
+</ul>
+<h4 id="return-value-5">Return Value</h4>
+<p>Attribute value.</p>
+<h3 id="example-5">Example</h3>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument with default access mode and timeout</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># retrieve current baud rate of a serial bus</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> baud <span class="kw">[</span>visa::<span class="ot">get</span>-attribute <span class="dt">$vi</span> <span class="dt">$visa::ATTR_ASRL_BAUD</span><span class="kw">]</span></span></code></pre></div>
+<h3 id="see-also-4">See Also</h3>
+<p><a href="#visaset-attribute"><code>visa::set-attribute</code></a></p>
+<h2 id="visagpib-command">visa::gpib-command</h2>
+<h3 id="purpose-6">Purpose</h3>
+<p>Write GPIB command bytes on the bus. This command is a front-end for
+<code>viGpibCommand</code> VISA API function.</p>
+<h3 id="syntax-6">Syntax</h3>
+<div class="sourceCode" id="cb21"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>`visa::gpib-<span class="ot">command</span> session buf ?count?`</span></code></pre></div>
+<h4 id="arguments-6">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>buf</code> - String containing valid GPIB
+commands.</p></li>
+<li><p><code>count</code> - Number of bytes to be written. If argument
+is omitted, string length of <code>buf</code> is assumed.</p></li>
+</ul>
+<h4 id="return-value-6">Return Value</h4>
+<p>Number of bytes actually transferred.</p>
+<h3 id="example-6">Example</h3>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># send command</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> cmd ... # this <span class="kw">variable</span> contains <span class="ot">command</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> ret <span class="kw">[</span>visa::gpib-<span class="ot">command</span> <span class="dt">$vi</span> <span class="dt">$cmd</span> <span class="dv">10</span><span class="kw">]</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="kw">puts</span> <span class="st">&quot;</span><span class="dt">$</span><span class="st">ret bytes are transmitted&quot;</span></span></code></pre></div>
+<h2 id="visagpib-control-atn">visa::gpib-control-atn</h2>
+<h3 id="purpose-7">Purpose</h3>
+<p>Specifies the state of the ATN line and the local active controller
+state. This command is a front-end for <code>viGpibControlATN</code>
+VISA API function.</p>
+<h3 id="syntax-7">Syntax</h3>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>`visa::gpib-control-atn session mode`</span></code></pre></div>
+<h4 id="arguments-7">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>mode</code> - Specifies the state of the ATN line and
+optionally the local active controller state. Valid value is one of the
+<code>visa::GPIB_ATN_xxx</code> predefined constants. Please refer to
+your VISA documentation for detailed help.</p></li>
+</ul>
+<h4 id="return-value-7">Return Value</h4>
+<p>None</p>
+<h3 id="example-7">Example</h3>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open a GPIB interface device</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> ...</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="co"># set &quot;assert&quot; state</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>visa::gpib-control-atn <span class="dt">$vi</span> <span class="dt">$visa::GPIB_ATN_ASSERT</span></span></code></pre></div>
+<h3 id="see-also-5">See Also</h3>
+<p><a
+href="#visagpib-control-ren"><code>visa::gpib-control-ren</code></a></p>
+<h2 id="visagpib-control-ren">visa::gpib-control-ren</h2>
+<h3 id="purpose-8">Purpose</h3>
+<p>Controls the state of the GPIB Remote Enable (REN) interface line,
+and optionally the remote/local state of the device. This command is a
+front-end for <code>viGpibControlREN</code> VISA API function.</p>
+<h3 id="syntax-8">Syntax</h3>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>`visa::gpib-control-ren session mode`</span></code></pre></div>
+<h4 id="arguments-8">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>mode</code> - Specifies the state of the REN line and
+optionally the device remote/local state. Valid value is one of the
+<code>visa::GPIB_REN_xxx</code> predefined constants. Please refer to
+your VISA documentation for detailed help.</p></li>
+</ul>
+<h4 id="return-value-8">Return Value</h4>
+<p>None</p>
+<h3 id="example-8">Example</h3>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open a GPIB interface device</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> ...</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># set &quot;assert&quot; state</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>visa::gpib-control-ren <span class="dt">$vi</span> <span class="dt">$visa::GPIB_REN_ASSERT</span></span></code></pre></div>
+<h3 id="see-also-6">See Also</h3>
+<p><a
+href="#visagpib-control-atn"><code>visa::gpib-control-atn</code></a></p>
+<h2 id="visagpib-pass-control">visa::gpib-pass-control</h2>
+<h3 id="purpose-9">Purpose</h3>
+<p>Tell the GPIB device at the specified address to become controller in
+charge (CIC). This command is a front-end for
+<code>viGpibPassControl</code> VISA API function.</p>
+<h3 id="syntax-9">Syntax</h3>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>`visa::gpib-pass-control session primAddr ?secAddr?`</span></code></pre></div>
+<h4 id="arguments-9">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>primAddr</code> - Primary address of the GPIB device to
+which you want to pass control.</p></li>
+<li><p><code>secAddr</code> - Secondary address of the targeted GPIB
+device. If argument is omitted, default <code>VI_NO_SEC_ADDR</code>
+value is assumed.</p></li>
+</ul>
+<h4 id="return-value-9">Return Value</h4>
+<p>None</p>
+<h3 id="example-9">Example</h3>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open a GPIB device</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> ...</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="co"># affect the device at primary address 1 </span></span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="co">#   and without secondary address</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>visa::gpib-pass-control <span class="dt">$vi</span> <span class="dv">1</span></span></code></pre></div>
+<h2 id="visagpib-send-ifc">visa::gpib-send-ifc</h2>
+<h3 id="purpose-10">Purpose</h3>
+<p>Pulse the interface clear line (IFC) for at least 100 microseconds.
+This command is a front-end for <code>viGpibSendIFC</code> VISA API
+function.</p>
+<h3 id="syntax-10">Syntax</h3>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>`visa::gpib-<span class="kw">send</span>-ifc session`</span></code></pre></div>
+<h4 id="arguments-10">Arguments</h4>
+<ul>
+<li><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</li>
+</ul>
+<h4 id="return-value-10">Return Value</h4>
+<p>None</p>
+<h3 id="example-10">Example</h3>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open a GPIB device</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> ...</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="co"># send a signal</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>visa::gpib-<span class="kw">send</span>-ifc <span class="dt">$vi</span></span></code></pre></div>
+<h2 id="visalast-error">visa::last-error</h2>
+<h3 id="purpose-11">Purpose</h3>
+<p>Returns last error occured on the channel or Resource Manager
+session. This command has no VISA API equivalent.</p>
+<h3 id="syntax-11">Syntax</h3>
+<div class="sourceCode" id="cb31"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>`visa::<span class="ot">last</span>-<span class="kw">error</span> session`</span></code></pre></div>
+<h4 id="arguments-11">Arguments</h4>
+<ul>
+<li><code>session</code> - channel containing reference to an either
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a> or Resource Manager session
+opened by <a
+href="#visaopen-default-rm"><code>visa::open-default-rm</code></a>.</li>
+</ul>
+<h4 id="return-value-11">Return Value</h4>
+<p>List of three elements:</p>
+<ul>
+<li><p>Numeric value of the last error.</p></li>
+<li><p>Character code of the last error that refers to a name of the
+corresponding C language macro. For example,
+“<code>VI_ERROR_TMO</code>”.</p></li>
+<li><p>Textual description of the last error or empty value if no
+error.</p></li>
+</ul>
+<h3 id="notes">Notes</h3>
+<p>This command is especially useful when IO operations fail, because
+exact VISA error is not translated to client code by standard Tcl IO
+procedures, such as <code>puts</code> or <code>read</code>. In other
+words, when IO procedure (say, <code>puts</code>) fails on a
+<code>tclvisa</code>channel, only way to know what exactly occured is to
+call <a href="#visalast-error"><code>visa::last-error</code></a>.</p>
+<p>Only result of last operation is stored. All subsequent calls of
+<code>tclvisa</code>or IO commands on a channel rewrite error
+information.</p>
+<p>The Resource Manager session holds result of last operation the
+session is used in, for example <a
+href="#visaopen"><code>visa::open</code></a> or <a
+href="#visafind"><code>visa::find</code></a>.</p>
+<h3 id="example-11">Example</h3>
+<p>In the following example we’re reading from an instrument and
+checking whether it timed out.</p>
+<div class="sourceCode" id="cb32"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># read from device</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> ans <span class="kw">[gets</span> <span class="dt">$vi</span><span class="kw">]</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="kw">{</span> <span class="dt">$ans</span> == <span class="st">&quot;&quot;</span> <span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Either timeout error or empty device response</span></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a>  <span class="kw">set</span> err <span class="kw">[</span>visa::<span class="ot">last</span>-<span class="kw">error</span> <span class="dt">$vi</span><span class="kw">]</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>  <span class="kw">if</span> <span class="kw">{</span> <span class="kw">[lindex</span> <span class="dt">$err</span> <span class="dv">0</span><span class="kw">]</span> == <span class="dt">$visa::ERROR_TMO</span> <span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>    <span class="kw">puts</span> stderr <span class="st">&quot;Error [lindex </span><span class="dt">$</span><span class="st">err 1] reading from a device&quot;</span></span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">puts</span> stderr <span class="st">&quot;[lindex </span><span class="dt">$</span><span class="st">err 2]&quot;</span></span>
+<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="kw">}</span></span>
+<span id="cb32-11"><a href="#cb32-11" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<p>If the read operation timed out, following message will be
+displayed:</p>
+<pre class="text"><code>Error VI_ERROR_TMO reading from a device
+The read/write operation was aborted because timeout expired 
+while operation was in progress.</code></pre>
+<h2 id="visalock">visa::lock</h2>
+<h3 id="purpose-12">Purpose</h3>
+<p>Establishes an access mode to the specified resource. This command is
+a front-end for <code>viLock</code> VISA API function.</p>
+<h3 id="syntax-12">Syntax</h3>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>`visa::lock session ?lockType? ?timeout? ?requestedKey?`</span></code></pre></div>
+<h4 id="arguments-12">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>lockType</code> - integer value determining type of
+locking. May be either <code>visa::EXCLUSIVE_LOCK</code> or
+<code>visa::SHARED_LOCK</code>. If argument is omitted,
+<code>visa::EXCLUSIVE_LOCK</code> is assumed.</p></li>
+<li><p><code>timeout</code> - timeout of getting lock. If argument is
+omitted, infinite timeout is assumed.</p></li>
+<li><p><code>requestedKey</code> - name of the shared lock to acquire.
+If exclusive locking is requested, this argument is ignored.</p></li>
+</ul>
+<h4 id="return-value-12">Return Value</h4>
+<ul>
+<li><p>If an exclusive lock is requiested and acquired, procedure
+returns nothing.</p></li>
+<li><p>If an shared lock is requiested and acquired, procedure returns
+name of the lock.</p></li>
+</ul>
+<h3 id="example-12">Example</h3>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get exclusive lock and wait forever</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>visa::lock <span class="dt">$vi</span></span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="co"># get exclusive lock and wait 5 seconds</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>visa::lock <span class="dt">$vi</span> <span class="dt">$visa::EXCLUSIVE_LOCK</span> <span class="dv">5000</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co"># get shared lock and wait 5 seconds</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> key <span class="kw">[</span>visa::lock <span class="dt">$vi</span> <span class="dt">$visa::SHARED_LOCK</span> <span class="dv">5000</span> <span class="st">&quot;MYLOCK&quot;</span><span class="kw">]</span></span></code></pre></div>
+<h3 id="see-also-7">See Also</h3>
+<p><a href="#visaopen"><code>visa::open</code></a>, <a
+href="#visaunlock"><code>visa::unlock</code></a></p>
+<h2 id="visaopen">visa::open</h2>
+<h3 id="purpose-13">Purpose</h3>
+<p>Opens a session to the specified resource. This command is a
+front-end for <code>viOpen</code> VISA API function.</p>
+<h3 id="syntax-13">Syntax</h3>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>`visa::<span class="kw">open</span> RMsession rsrcName ?accessMode? ?openTimeout?`</span></code></pre></div>
+<h4 id="arguments-13">Arguments</h4>
+<ul>
+<li><p><code>RMsession</code> - channel containing reference to open
+Resource Manager session opened by <a
+href="#visaopen-default-rm"><code>visa::open-default-rm</code></a>.</p></li>
+<li><p><code>rsrcName</code> - name of the VISA resource to connect
+to.</p></li>
+<li><p><code>accessMode</code> - integer parameter determining access
+mode. May be bitwise OR combination of the following constants:</p>
+<ul>
+<li><p><code>visa::EXCLUSIVE_LOCK</code> - acquire exclusive lock to a
+resource;</p></li>
+<li><p><code>visa::LOAD_CONFIG</code> - use external
+configuration;</p></li>
+</ul>
+<p>Refer to VISA documentation for more details about access mode. If
+parameter is omitted, default zero value is used.</p></li>
+<li><p><code>openTimeout</code> - operation timeout. If parameter is
+omitted, default timeout value is used.</p></li>
+</ul>
+<h4 id="return-value-13">Return Value</h4>
+<p>Tcl channel with reference to opened VISA session. This channel can
+be used in standard Tcl IO procedures, like <code>puts</code>.</p>
+<h3 id="notes-1">Notes</h3>
+<p>There is no a Tcl wrapper for <code>viClose</code> VISA API function.
+In order to close a VISA session one should use standard Tcl
+<code>close</code> command instead, which calls <code>viClose</code>
+internally.</p>
+<h3 id="example-13">Example</h3>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open resource manager session</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> rm <span class="kw">[</span>visa::<span class="kw">open</span>-<span class="ot">default</span>-rm<span class="kw">]</span></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument with default access mode and timeout</span></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi1 <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument exclusively</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi2 <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL2::INSTR&quot;</span> <span class="dt">$visa::EXCLUSIVE_LOCK</span><span class="kw">]</span></span></code></pre></div>
+<h3 id="see-also-8">See Also</h3>
+<p><a
+href="#visaopen-default-rm"><code>visa::open-default-rm</code></a></p>
+<h2 id="visaopen-default-rm">visa::open-default-rm</h2>
+<h3 id="purpose-14">Purpose</h3>
+<p>Returns a session to the Default Resource Manager resource. This
+command is a front-end for <code>viOpenDefaultRM</code> VISA API
+function.</p>
+<h3 id="syntax-14">Syntax</h3>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>`visa::<span class="kw">open</span>-<span class="ot">default</span>-rm`</span></code></pre></div>
+<h4 id="arguments-14">Arguments</h4>
+<p>None</p>
+<h4 id="return-value-14">Return Value</h4>
+<p>Tcl channel with reference to opened resource manager session. This
+channel can be used in subsequent <code>tclvisa</code>procedure
+calls.</p>
+<h3 id="notes-2">Notes</h3>
+<p>There is no a Tcl wrapper for <code>viClose</code> VISA API function.
+In order to close a VISA session one should use standard Tcl
+<code>close</code> command instead, which calls <code>viClose</code>
+internally.</p>
+<h3 id="example-14">Example</h3>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open resource manager session</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> rm <span class="kw">[</span>visa::<span class="kw">open</span>-<span class="ot">default</span>-rm<span class="kw">]</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># use session reference</span></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>...</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co"># close session</span></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="kw">close</span> <span class="dt">$rm</span></span></code></pre></div>
+<h3 id="see-also-9">See Also</h3>
+<p><a href="#visaopen"><code>visa::open</code></a></p>
+<h2 id="visaset-attribute">visa::set-attribute</h2>
+<h3 id="purpose-15">Purpose</h3>
+<p>Sets the state of an attribute. This command is a front-end for
+<code>viSetAttribute</code> VISA API function.</p>
+<h3 id="syntax-15">Syntax</h3>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>`visa::<span class="kw">set</span>-attribute session attribute attrState`</span></code></pre></div>
+<h4 id="arguments-15">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>attribute</code> - Integer value with ID of the VISA
+attribute to set. Use one of the predefned <code>visa::ATTR_XXX</code>
+constants.</p></li>
+<li><p><code>attrState</code> - Integer value with desired attribute
+state.</p></li>
+</ul>
+<h4 id="return-value-15">Return Value</h4>
+<p>None</p>
+<h3 id="example-15">Example</h3>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument with default access mode and timeout</span></span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="co"># set new baud rate of a serial bus</span></span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>visa::<span class="kw">set</span>-attribute <span class="dt">$vi</span> <span class="dt">$visa::ATTR_ASRL_BAUD</span> <span class="dv">19200</span></span></code></pre></div>
+<h3 id="see-also-10">See Also</h3>
+<p><a href="#visaget-attribute"><code>visa::get-attribute</code></a></p>
+<h2 id="visaparse-rsrc">visa::parse-rsrc</h2>
+<h3 id="purpose-16">Purpose</h3>
+<p>Parse a resource string to get the interface information. This
+command is a front-end for <code>viParseRsrc</code> VISA API
+function.</p>
+<h3 id="syntax-16">Syntax</h3>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>`visa::parse-rsrc RMsession rsrcName`</span></code></pre></div>
+<h4 id="arguments-16">Arguments</h4>
+<ul>
+<li><p><code>RMsession</code> - channel containing reference to open
+Resource Manager session opened by <a
+href="#visaopen-default-rm"><code>visa::open-default-rm</code></a>.</p></li>
+<li><p><code>rsrcName</code> - Unique symbolic name of a
+resource.</p></li>
+</ul>
+<h4 id="return-value-16">Return Value</h4>
+<ul>
+<li><p>On success returns Tcl list of two integers: interface type code
+and interface number.</p></li>
+<li><p>If address given is not valid or device does not exists, returns
+empty value.</p></li>
+</ul>
+<h3 id="example-16">Example</h3>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open resource manager session</span></span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> rm <span class="kw">[</span>visa::<span class="kw">open</span>-<span class="ot">default</span>-rm<span class="kw">]</span></span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="co"># parse instrument address</span></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="kw">lassign</span> <span class="kw">[</span>visa::parse-rsrc <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span> intfType intfNum</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a><span class="kw">if</span> <span class="kw">{</span> <span class="dt">$intfType</span> == <span class="dt">$visa::INTF_ASRL</span> <span class="kw">}</span> <span class="kw">{</span></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a>  <span class="kw">puts</span> <span class="st">&quot;Have serial interface device with interface number </span><span class="dt">$</span><span class="st">intfNum&quot;</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a><span class="kw">}</span></span></code></pre></div>
+<h3 id="see-also-11">See Also</h3>
+<p><a
+href="#visaopen-default-rm"><code>visa::open-default-rm</code></a></p>
+<h2 id="visaread-to-file">visa::read-to-file</h2>
+<h3 id="purpose-17">Purpose</h3>
+<p>Read data synchronously, and store the transferred data in a file.
+This command is a front-end for <code>viReadToFile</code> VISA API
+function.</p>
+<h3 id="syntax-17">Syntax</h3>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>`visa::<span class="kw">read</span>-to-<span class="kw">file</span> session fileName count`</span></code></pre></div>
+<h4 id="arguments-17">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>fileName</code> - name of file to which data will be
+written.</p></li>
+<li><p><code>count</code> - number of bytes to be read.</p></li>
+</ul>
+<h4 id="return-value-17">Return Value</h4>
+<p>Number of bytes actually transferred.</p>
+<h3 id="example-17">Example</h3>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument with default access mode and timeout</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a><span class="co"># read up to 1024 bytes of data </span></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a><span class="co"># or until term char is received</span></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>visa::<span class="kw">read</span>-to-<span class="kw">file</span> <span class="dt">$vi</span> <span class="st">&quot;raw.dat&quot;</span> <span class="dv">1024</span></span></code></pre></div>
+<h3 id="see-also-12">See Also</h3>
+<p><a
+href="#visawrite-from-file"><code>visa::write-from-file</code></a></p>
+<h2 id="visaunlock">visa::unlock</h2>
+<h3 id="purpose-18">Purpose</h3>
+<p>Relinquishes a lock for the specified resource. This command is a
+front-end for <code>viUnlock</code> VISA API function.</p>
+<h3 id="syntax-18">Syntax</h3>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>`visa::unlock session`</span></code></pre></div>
+<h4 id="arguments-18">Arguments</h4>
+<ul>
+<li><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</li>
+</ul>
+<h4 id="return-value-18">Return Value</h4>
+<p>None</p>
+<h3 id="example-18">Example</h3>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># get exclusive lock and wait forever</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>visa::lock <span class="dt">$vi</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="co"># release the lock</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>visa::unlock <span class="dt">$vi</span></span></code></pre></div>
+<h3 id="see-also-13">See Also</h3>
+<p><a href="#visaopen"><code>visa::open</code></a>, <a
+href="#visalock"><code>visa::lock</code></a></p>
+<h2 id="visawrite-from-file">visa::write-from-file</h2>
+<h3 id="purpose-19">Purpose</h3>
+<p>Take data from a file and write it out synchronously. This command is
+a front-end for <code>viWriteFromFile</code> VISA API function.</p>
+<h3 id="syntax-19">Syntax</h3>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>`visa::write-from-<span class="kw">file</span> session fileName ?count?`</span></code></pre></div>
+<h4 id="arguments-19">Arguments</h4>
+<ul>
+<li><p><code>session</code> - channel containing reference to a VISA
+resource session opened by <a
+href="#visaopen"><code>visa::open</code></a>.</p></li>
+<li><p><code>fileName</code> - name of file from which data will be
+read.</p></li>
+<li><p><code>count</code> - number of bytes to be written. If omitted,
+entire file is written.</p></li>
+</ul>
+<h4 id="return-value-19">Return Value</h4>
+<p>Number of bytes actually transferred.</p>
+<h3 id="example-19">Example</h3>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode tcl"><code class="sourceCode tcl"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="co"># open instrument with default access mode and timeout</span></span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="kw">set</span> vi <span class="kw">[</span>visa::<span class="kw">open</span> <span class="dt">$rm</span> <span class="st">&quot;ASRL1::INSTR&quot;</span><span class="kw">]</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="co"># write entire file content to device</span></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a>visa::write-from-<span class="kw">file</span> <span class="dt">$vi</span> <span class="st">&quot;raw.dat&quot;</span></span></code></pre></div>
+<h3 id="see-also-14">See Also</h3>
+<p><a href="#visaread-to-file"><code>visa::read-to-file</code></a></p>
+</body>
+</html>

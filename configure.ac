@@ -199,5 +199,5 @@ eval PACKAGE_DLL_VERSION=${TCL_TRIM_DOTS}
 # which require substituting th AC variables in.  Include these here.
 #--------------------------------------------------------------------
 
-AC_CONFIG_FILES([Makefile pkgIndex.tcl win/pkgIndex.tcl win/x86/Makefile.vc win/x64/Makefile.vc win/installer/tclvisa.wxi win/installer/build.cmd doc/title.tex])
+AC_CONFIG_FILES([Makefile pkgIndex.tcl win/pkgIndex.tcl win/x86/Makefile.vc win/x64/Makefile.vc win/installer/tclvisa.wxi win/installer/build.cmd])
 AC_OUTPUT
