@@ -16,7 +16,7 @@ at http://www.tcl.tk/doc/tea/
 
 ## Documentation
 
-Documentation could be found here: 
+Documentation could be found [here](https://tcltk-depot.github.io/tclvisa/tclvisa.html).
 
 ## Compiling and installing tclvisa
 
