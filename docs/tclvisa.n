@@ -35,45 +35,45 @@ Suppressed Errors \[la]#suppressed-errors\[ra]
 .IP \(bu 2
 Correspondence Between VISA Functions and Tcl Commands \[la]#correspondence-between-visa-functions-and-tcl-commands\[ra]
 .IP \(bu 2
-visa::assert\-intr\-signal \[la]#visa::assert-intr-signal\[ra]
+visa::assert\-intr\-signal \[la]#visaassert-intr-signal\[ra]
 .IP \(bu 2
-visa::assert\-trigger \[la]#visa::assert-trigger\[ra]
+visa::assert\-trigger \[la]#visaassert-trigger\[ra]
 .IP \(bu 2
-visa::assert\-util\-signal \[la]#visa::assert-util-signal\[ra]
+visa::assert\-util\-signal \[la]#visaassert-util-signal\[ra]
 .IP \(bu 2
-visa::clear \[la]#visa::clear\[ra]
+visa::clear \[la]#visaclear\[ra]
 .IP \(bu 2
-visa::find \[la]#visa::find\[ra]
+visa::find \[la]#visafind\[ra]
 .IP \(bu 2
-visa::get\-attribute \[la]#visa::get-attribute\[ra]
+visa::get\-attribute \[la]#visaget-attribute\[ra]
 .IP \(bu 2
-visa::gpib\-command \[la]#visa::gpib-command\[ra]
+visa::gpib\-command \[la]#visagpib-command\[ra]
 .IP \(bu 2
-visa::gpib\-control\-atn \[la]#visa::gpib-control-atn\[ra]
+visa::gpib\-control\-atn \[la]#visagpib-control-atn\[ra]
 .IP \(bu 2
-visa::gpib\-control\-ren \[la]#visa::gpib-control-ren\[ra]
+visa::gpib\-control\-ren \[la]#visagpib-control-ren\[ra]
 .IP \(bu 2
-visa::gpib\-pass\-control \[la]#visa::gpib-pass-control\[ra]
+visa::gpib\-pass\-control \[la]#visagpib-pass-control\[ra]
 .IP \(bu 2
-visa::gpib\-send\-ifc \[la]#visa::gpib-send-ifc\[ra]
+visa::gpib\-send\-ifc \[la]#visagpib-send-ifc\[ra]
 .IP \(bu 2
-visa::last\-error \[la]#visa::last-error\[ra]
+visa::last\-error \[la]#visalast-error\[ra]
 .IP \(bu 2
-visa::lock \[la]#visa::lock\[ra]
+visa::lock \[la]#visalock\[ra]
 .IP \(bu 2
-visa::open \[la]#visa::open\[ra]
+visa::open \[la]#visaopen\[ra]
 .IP \(bu 2
-visa::open\-default\-rm \[la]#visa::open-default-rm\[ra]
+visa::open\-default\-rm \[la]#visaopen-default-rm\[ra]
 .IP \(bu 2
-visa::set\-attribute \[la]#visa::set-attribute\[ra]
+visa::set\-attribute \[la]#visaset-attribute\[ra]
 .IP \(bu 2
-visa::parse\-rsrc \[la]#visa::parse-rsrc\[ra]
+visa::parse\-rsrc \[la]#visaparse-rsrc\[ra]
 .IP \(bu 2
-visa::read\-to\-file \[la]#visa::read-to-file\[ra]
+visa::read\-to\-file \[la]#visaread-to-file\[ra]
 .IP \(bu 2
-visa::unlock \[la]#visa::unlock\[ra]
+visa::unlock \[la]#visaunlock\[ra]
 .IP \(bu 2
-visa::write\-from\-file \[la]#visa::write-from-file\[ra]
+visa::write\-from\-file \[la]#visawrite-from-file\[ra]
 .RE
 .SH Introduction
 .PP
